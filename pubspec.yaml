@@ -20,6 +20,7 @@ dependencies:
   json_annotation: ^4.8.1
   u_search_api:
     path: ./packages/u_search_api
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

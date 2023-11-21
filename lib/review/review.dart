@@ -1,2 +1,3 @@
+export 'bloc/review_bloc.dart';
 export 'views/views.dart';
-export 'cubit/review_cubit.dart';
+export 'widgets/widgets.dart';

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:u_search_api/src/models/models.dart';
 
 part 'review.freezed.dart';
 part 'review.g.dart';
@@ -12,7 +13,9 @@ class Review with _$Review {
   /// {@macro review}
   const factory Review({
     /// The id of the Review
-    @JsonKey(required: true) required int? id,
+    @JsonKey(required: true) int? id,
+    /// List of califications of the review
+    @JsonKey(required: true) required List<Calification> califications,
   }) = _Review;
 
   /// Converts a Review from a json map

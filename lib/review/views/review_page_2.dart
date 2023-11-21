@@ -1,62 +1,25 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:u_search_api/u_search_api.dart';
 import 'package:u_search_flutter/review/review.dart';
+import 'package:intl/intl.dart';
+import 'package:u_search_flutter/review/views/applies_factory.dart';
 
 class ReviewPage2 extends StatelessWidget {
   const ReviewPage2({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final apply = Apply.fromJson(
-      {
-        'id': 1,
-        'contest': {
-          'id': 1,
-          'name': 'Contest 1',
-          'description': 'Contest 1 description',
-          'criterias': [
-            {
-              'id': 1,
-              'name': 'Criteria 1',
-              'description': 'Criteria 1 description',
-              'subCriterias': [
-                {'id': 1, 'name': 'SubCriteria 1'},
-                {'id': 2, 'name': 'SubCriteria 2'},
-                {'id': 3, 'name': 'SubCriteria 3'},
-              ]
-            },
-            {
-              'id': 2,
-              'name': 'Criteria 2',
-              'description': 'Criteria 2 description',
-              'subCriterias': [
-                {'id': 4, 'name': 'SubCriteria 4'},
-                {'id': 5, 'name': 'SubCriteria 5'},
-                {'id': 6, 'name': 'SubCriteria 6'},
-              ]
-            },
-            {
-              'id': 3,
-              'name': 'Criteria 3',
-              'description': 'Criteria 3 description',
-              'subCriterias': [
-                {'id': 7, 'name': 'SubCriteria 7'},
-                {'id': 8, 'name': 'SubCriteria 8'},
-                {'id': 9, 'name': 'SubCriteria 9'},
-              ]
-            },
-          ],
-        },
-        'review': {
-            'id': 1,
-        }
-      },
-    );
+
+    final apply = apply2;
 
     return BlocProvider(
-      create: (_) => ReviewCubit(apply: apply),
+      create: (_) => ReviewBloc(
+        apply: apply,
+        reviewRepository: const ReviewRepository(),
+      ),
       child: const ReviewView2(),
     );
   }
@@ -72,74 +35,122 @@ class ReviewView2 extends StatefulWidget {
 class _ReviewView2State extends State<ReviewView2> {
   @override
   Widget build(BuildContext context) {
-    final review = context.select((ReviewCubit cubit) => cubit.state.review);
+    final criterias = context.select(
+      (ReviewBloc bloc) => bloc.state.criterias,
+    );
+    final isNew = context.select(
+      (ReviewBloc bloc) => bloc.state.isNew,
+    );
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Review ${review.id}'),
+        title: Text(
+          isNew ? 'New Review' : 'Review',
+        ),
+      ),
+      body: CupertinoScrollbar(
+        child: ListView(
+          primary: true,
+          padding: const EdgeInsets.all(16),
+          children: [
+            for (final criteria in criterias)
+              Column(
+                children: [
+                  CriteriaListTile(criteria: criteria),
+                  const Divider(),
+                ],
+              ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: const BottomBar(),
+    );
+  }
+}
+
+
+class BottomBar extends StatelessWidget {
+  const BottomBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomAppBar(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('Total'),
+          Text(
+            '${context.select((ReviewBloc bloc) => bloc.state.totalScore)}',
+          ),
+        ],
       ),
     );
   }
 }
 
-class CriteriaWidget extends StatelessWidget {
-  const CriteriaWidget({
-    required this.criteria,
+
+class PercentBullet extends StatelessWidget {
+  const PercentBullet(
+    this.percent, {
     super.key,
   });
-  final Criteria criteria;
+
+  final double percent;
 
   @override
   Widget build(BuildContext context) {
+    // Add a percent sign and make it with 0 decimals
+    final perCent = '${(percent * 100).toStringAsFixed(0)}%';
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-    // final score = context.select(
-    //   (ReviewCubit cubit) => cubit.state.scoreFrom(criteria),
-    // );
-    final score = 5;
 
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              criteria.name,
-              style: textTheme.headlineLarge,
-            ),
-            Container(
-              decoration: ShapeDecoration(
-                shape: const StadiumBorder(),
-                // color: score >= criteria.minScore
-                //     ? Colors.green
-                //     : Colors.red,
-                color: score >= 5
-                    ? Colors.green
-                    : Colors.red,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  '$score',
-                  style: textTheme.headlineLarge,
-                ),
-              ),
-            ),
-          ],
+    return Container(
+      alignment: Alignment.center,
+      decoration: ShapeDecoration(
+        shape: const StadiumBorder(),
+        color: theme.colorScheme.primary.withOpacity(0.2),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 4,
+          horizontal: 12,
         ),
-        CupertinoScrollbar(
-          child: ListView(
-            children: [
-              for (final subCriteria in criteria.subCriterias)
-                SubCriteriaWidget(
-                  subCriteria: subCriteria,
-                  calification: context.select((ReviewCubit cubit) =>
-                      cubit.state.calificationFrom(subCriteria)),
-                ),
-            ],
+        child: Text(
+          perCent,
+          style: TextStyle(
+            color: theme.colorScheme.primary,
+            fontSize: 12,
           ),
         ),
-      ],
+      ),
+    );
+  }
+}
+
+class ToolTip extends StatelessWidget {
+  const ToolTip(
+    this.description, {
+    super.key,
+  });
+
+  final String description;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () => showDialog(
+        context: context,
+        builder: _buildDialog,
+      ),
+      icon: const Icon(Icons.info),
+    );
+  }
+
+  Dialog _buildDialog(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text(description),
+      ),
     );
   }
 }

@@ -24,12 +24,12 @@ mixin _$Apply {
   @JsonKey(required: true)
   int? get id => throw _privateConstructorUsedError;
 
-  /// An optional review of the apply
-  Review? get review => throw _privateConstructorUsedError;
-
   /// The contest of the apply
   @JsonKey(required: true)
   Contest get contest => throw _privateConstructorUsedError;
+
+  /// An optional review of the apply
+  Review? get review => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,11 +43,11 @@ abstract class $ApplyCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(required: true) int? id,
-      Review? review,
-      @JsonKey(required: true) Contest contest});
+      @JsonKey(required: true) Contest contest,
+      Review? review});
 
-  $ReviewCopyWith<$Res>? get review;
   $ContestCopyWith<$Res> get contest;
+  $ReviewCopyWith<$Res>? get review;
 }
 
 /// @nodoc
@@ -64,23 +64,31 @@ class _$ApplyCopyWithImpl<$Res, $Val extends Apply>
   @override
   $Res call({
     Object? id = freezed,
-    Object? review = freezed,
     Object? contest = null,
+    Object? review = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      review: freezed == review
-          ? _value.review
-          : review // ignore: cast_nullable_to_non_nullable
-              as Review?,
       contest: null == contest
           ? _value.contest
           : contest // ignore: cast_nullable_to_non_nullable
               as Contest,
+      review: freezed == review
+          ? _value.review
+          : review // ignore: cast_nullable_to_non_nullable
+              as Review?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ContestCopyWith<$Res> get contest {
+    return $ContestCopyWith<$Res>(_value.contest, (value) {
+      return _then(_value.copyWith(contest: value) as $Val);
+    });
   }
 
   @override
@@ -94,14 +102,6 @@ class _$ApplyCopyWithImpl<$Res, $Val extends Apply>
       return _then(_value.copyWith(review: value) as $Val);
     });
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $ContestCopyWith<$Res> get contest {
-    return $ContestCopyWith<$Res>(_value.contest, (value) {
-      return _then(_value.copyWith(contest: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -113,13 +113,13 @@ abstract class _$$ApplyImplCopyWith<$Res> implements $ApplyCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(required: true) int? id,
-      Review? review,
-      @JsonKey(required: true) Contest contest});
+      @JsonKey(required: true) Contest contest,
+      Review? review});
 
   @override
-  $ReviewCopyWith<$Res>? get review;
-  @override
   $ContestCopyWith<$Res> get contest;
+  @override
+  $ReviewCopyWith<$Res>? get review;
 }
 
 /// @nodoc
@@ -134,22 +134,22 @@ class __$$ApplyImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? review = freezed,
     Object? contest = null,
+    Object? review = freezed,
   }) {
     return _then(_$ApplyImpl(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      review: freezed == review
-          ? _value.review
-          : review // ignore: cast_nullable_to_non_nullable
-              as Review?,
       contest: null == contest
           ? _value.contest
           : contest // ignore: cast_nullable_to_non_nullable
               as Contest,
+      review: freezed == review
+          ? _value.review
+          : review // ignore: cast_nullable_to_non_nullable
+              as Review?,
     ));
   }
 }
@@ -159,8 +159,8 @@ class __$$ApplyImplCopyWithImpl<$Res>
 class _$ApplyImpl implements _Apply {
   const _$ApplyImpl(
       {@JsonKey(required: true) required this.id,
-      this.review,
-      @JsonKey(required: true) required this.contest});
+      @JsonKey(required: true) required this.contest,
+      this.review});
 
   factory _$ApplyImpl.fromJson(Map<String, dynamic> json) =>
       _$$ApplyImplFromJson(json);
@@ -170,18 +170,18 @@ class _$ApplyImpl implements _Apply {
   @JsonKey(required: true)
   final int? id;
 
-  /// An optional review of the apply
-  @override
-  final Review? review;
-
   /// The contest of the apply
   @override
   @JsonKey(required: true)
   final Contest contest;
 
+  /// An optional review of the apply
+  @override
+  final Review? review;
+
   @override
   String toString() {
-    return 'Apply(id: $id, review: $review, contest: $contest)';
+    return 'Apply(id: $id, contest: $contest, review: $review)';
   }
 
   @override
@@ -190,13 +190,13 @@ class _$ApplyImpl implements _Apply {
         (other.runtimeType == runtimeType &&
             other is _$ApplyImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.review, review) || other.review == review) &&
-            (identical(other.contest, contest) || other.contest == contest));
+            (identical(other.contest, contest) || other.contest == contest) &&
+            (identical(other.review, review) || other.review == review));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, review, contest);
+  int get hashCode => Object.hash(runtimeType, id, contest, review);
 
   @JsonKey(ignore: true)
   @override
@@ -215,8 +215,8 @@ class _$ApplyImpl implements _Apply {
 abstract class _Apply implements Apply {
   const factory _Apply(
       {@JsonKey(required: true) required final int? id,
-      final Review? review,
-      @JsonKey(required: true) required final Contest contest}) = _$ApplyImpl;
+      @JsonKey(required: true) required final Contest contest,
+      final Review? review}) = _$ApplyImpl;
 
   factory _Apply.fromJson(Map<String, dynamic> json) = _$ApplyImpl.fromJson;
 
@@ -227,13 +227,13 @@ abstract class _Apply implements Apply {
   int? get id;
   @override
 
-  /// An optional review of the apply
-  Review? get review;
-  @override
-
   /// The contest of the apply
   @JsonKey(required: true)
   Contest get contest;
+  @override
+
+  /// An optional review of the apply
+  Review? get review;
   @override
   @JsonKey(ignore: true)
   _$$ApplyImplCopyWith<_$ApplyImpl> get copyWith =>

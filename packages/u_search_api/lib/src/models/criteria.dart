@@ -18,6 +18,18 @@ class Criteria with _$Criteria {
 
     /// The description of the criteria
     @JsonKey(required: true) required String description,
+
+    /// The sub criterias of the criteria
+    @JsonKey(required: true) @Default([]) List<SubCriteria> subCriterias,
+
+    /// The minimum score of the criteria
+    double? minScore,
+
+    /// The maximum score of the criteria
+    @JsonKey(required: true) @Default(5) double maxScore,
+
+    /// The percent of the score
+    @JsonKey(required: true) @Default(1.0) double percent,
   }) = _Criteria;
 
   /// Converts a Criteria from a json map
@@ -36,10 +48,19 @@ class SubCriteria with _$SubCriteria {
     @JsonKey(required: true) required int id,
 
     /// The name of the sub criteria
-    @JsonKey(required: true) required String name,
+    @JsonKey(required: true) @Default('') String name,
 
     /// The description of the sub criteria
-    @JsonKey(required: true) required String description,
+    @JsonKey(required: true) @Default('') String description,
+
+    /// The minimum score of the sub criteria
+    double? minScore,
+
+    /// The maximum score of the sub criteria
+    @JsonKey(required: true) @Default(5) double maxScore,
+
+    /// The percent of the score
+    @JsonKey(required: true) @Default(1.0) double percent,
   }) = _SubCriteria;
 
   /// Converts a SubCriteria from a json map
