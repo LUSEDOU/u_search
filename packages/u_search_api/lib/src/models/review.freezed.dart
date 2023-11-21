@@ -28,6 +28,9 @@ mixin _$Review {
   @JsonKey(required: true)
   List<Calification> get califications => throw _privateConstructorUsedError;
 
+  /// The apply of the review
+  Apply? get apply => throw _privateConstructorUsedError;
+
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ReviewCopyWith<Review> get copyWith => throw _privateConstructorUsedError;
@@ -40,7 +43,10 @@ abstract class $ReviewCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(required: true) int? id,
-      @JsonKey(required: true) List<Calification> califications});
+      @JsonKey(required: true) List<Calification> califications,
+      Apply? apply});
+
+  $ApplyCopyWith<$Res>? get apply;
 }
 
 /// @nodoc
@@ -58,6 +64,7 @@ class _$ReviewCopyWithImpl<$Res, $Val extends Review>
   $Res call({
     Object? id = freezed,
     Object? califications = null,
+    Object? apply = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -68,7 +75,23 @@ class _$ReviewCopyWithImpl<$Res, $Val extends Review>
           ? _value.califications
           : califications // ignore: cast_nullable_to_non_nullable
               as List<Calification>,
+      apply: freezed == apply
+          ? _value.apply
+          : apply // ignore: cast_nullable_to_non_nullable
+              as Apply?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ApplyCopyWith<$Res>? get apply {
+    if (_value.apply == null) {
+      return null;
+    }
+
+    return $ApplyCopyWith<$Res>(_value.apply!, (value) {
+      return _then(_value.copyWith(apply: value) as $Val);
+    });
   }
 }
 
@@ -81,7 +104,11 @@ abstract class _$$ReviewImplCopyWith<$Res> implements $ReviewCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(required: true) int? id,
-      @JsonKey(required: true) List<Calification> califications});
+      @JsonKey(required: true) List<Calification> califications,
+      Apply? apply});
+
+  @override
+  $ApplyCopyWith<$Res>? get apply;
 }
 
 /// @nodoc
@@ -97,6 +124,7 @@ class __$$ReviewImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? califications = null,
+    Object? apply = freezed,
   }) {
     return _then(_$ReviewImpl(
       id: freezed == id
@@ -107,6 +135,10 @@ class __$$ReviewImplCopyWithImpl<$Res>
           ? _value._califications
           : califications // ignore: cast_nullable_to_non_nullable
               as List<Calification>,
+      apply: freezed == apply
+          ? _value.apply
+          : apply // ignore: cast_nullable_to_non_nullable
+              as Apply?,
     ));
   }
 }
@@ -116,7 +148,9 @@ class __$$ReviewImplCopyWithImpl<$Res>
 class _$ReviewImpl implements _Review {
   const _$ReviewImpl(
       {@JsonKey(required: true) this.id,
-      @JsonKey(required: true) required final List<Calification> califications})
+      @JsonKey(required: true)
+      final List<Calification> califications = const [],
+      this.apply})
       : _califications = califications;
 
   factory _$ReviewImpl.fromJson(Map<String, dynamic> json) =>
@@ -139,9 +173,13 @@ class _$ReviewImpl implements _Review {
     return EqualUnmodifiableListView(_califications);
   }
 
+  /// The apply of the review
+  @override
+  final Apply? apply;
+
   @override
   String toString() {
-    return 'Review(id: $id, califications: $califications)';
+    return 'Review(id: $id, califications: $califications, apply: $apply)';
   }
 
   @override
@@ -151,13 +189,14 @@ class _$ReviewImpl implements _Review {
             other is _$ReviewImpl &&
             (identical(other.id, id) || other.id == id) &&
             const DeepCollectionEquality()
-                .equals(other._califications, _califications));
+                .equals(other._califications, _califications) &&
+            (identical(other.apply, apply) || other.apply == apply));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, const DeepCollectionEquality().hash(_califications));
+  int get hashCode => Object.hash(runtimeType, id,
+      const DeepCollectionEquality().hash(_califications), apply);
 
   @JsonKey(ignore: true)
   @override
@@ -176,8 +215,8 @@ class _$ReviewImpl implements _Review {
 abstract class _Review implements Review {
   const factory _Review(
       {@JsonKey(required: true) final int? id,
-      @JsonKey(required: true)
-      required final List<Calification> califications}) = _$ReviewImpl;
+      @JsonKey(required: true) final List<Calification> califications,
+      final Apply? apply}) = _$ReviewImpl;
 
   factory _Review.fromJson(Map<String, dynamic> json) = _$ReviewImpl.fromJson;
 
@@ -191,6 +230,10 @@ abstract class _Review implements Review {
   /// List of califications of the review
   @JsonKey(required: true)
   List<Calification> get califications;
+  @override
+
+  /// The apply of the review
+  Apply? get apply;
   @override
   @JsonKey(ignore: true)
   _$$ReviewImplCopyWith<_$ReviewImpl> get copyWith =>

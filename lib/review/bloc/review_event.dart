@@ -33,3 +33,7 @@ final class ReviewCommentChanged extends ReviewEvent {
   List<Object?> get props => [subCriteria, comment];
 }
 
+final class ReviewSubmitted extends ReviewEvent {
+  const ReviewSubmitted();
+}
+

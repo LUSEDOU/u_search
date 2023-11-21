@@ -19,6 +19,7 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
         ) {
     on<ReviewScoreChanged>(_onScoreChangedvent);
     on<ReviewCommentChanged>(_onCommentChangedEvent);
+    on<ReviewSubmitted>(_onSubmitted);
   }
 
   final ReviewRepository _reviewRepository;
@@ -55,6 +56,30 @@ class ReviewBloc extends Bloc<ReviewEvent, ReviewState> {
     emit(
       state.copyWith(
         califications: califications,
+      ),
+    );
+  }
+
+  Future<void> _onSubmitted(
+    ReviewSubmitted event,
+    Emitter<ReviewState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: ReviewStatus.loading,
+      ),
+    );
+
+    final review = (state.initialReview ?? Review(apply: state.apply)).copyWith(
+      califications: state.califications,
+    );
+
+    final savedReview = await _reviewRepository.saveReview(review);
+
+    emit(
+      state.copyWith(
+        status: ReviewStatus.success,
+        initialReview: savedReview,
       ),
     );
   }

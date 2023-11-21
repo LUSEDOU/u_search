@@ -14,8 +14,12 @@ class Review with _$Review {
   const factory Review({
     /// The id of the Review
     @JsonKey(required: true) int? id,
+
     /// List of califications of the review
-    @JsonKey(required: true) required List<Calification> califications,
+    @JsonKey(required: true) @Default([]) List<Calification> califications,
+
+    /// The apply of the review
+    Apply? apply,
   }) = _Review;
 
   /// Converts a Review from a json map
