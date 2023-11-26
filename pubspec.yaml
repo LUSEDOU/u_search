@@ -20,7 +20,14 @@ dependencies:
   json_annotation: ^4.8.1
   u_search_api:
     path: ./packages/u_search_api
+  form_inputs:
+    path: ./packages/form_inputs
+  data_repository:
+    path: ./packages/data_repository
+  authentication_repository:
+    path: ./packages/authentication_repository
   intl: ^0.18.1
+  logger: ^2.0.2+1
 
 dev_dependencies:
   flutter_test:

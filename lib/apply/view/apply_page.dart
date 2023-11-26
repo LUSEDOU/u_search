@@ -1,24 +1,30 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../apply.dart';
 
 class ApplyPage extends StatelessWidget {
   const ApplyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ApplyView();
+    return BlocProvider(
+      create: (_) => ApplyBloc(),
+      child: const ApplyView(),
+    );
   }
 }
 
-class ApplyView extends StatefulWidget {
+class ApplyView extends StatelessWidget {
   const ApplyView({super.key});
 
   @override
-  State<ApplyView> createState() => _ApplyViewState();
-}
-
-class _ApplyViewState extends State<ApplyView> {
-  @override
   Widget build(BuildContext context) {
-    return const Scaffold();
+    return BlocBuilder<ApplyBloc, ApplyState>(
+      builder: (context, state) {
+        // TODO: return correct widget based on the state.
+        return const SizedBox();
+      },
+    );
   }
 }

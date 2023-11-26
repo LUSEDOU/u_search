@@ -33,6 +33,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  authentication_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/authentication_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   bloc:
     dependency: "direct main"
     description:
@@ -185,6 +192,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.3"
+  data_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/data_repository"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   dio:
     dependency: transitive
     description:
@@ -256,6 +270,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  form_inputs:
+    dependency: "direct main"
+    description:
+      path: "packages/form_inputs"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   formz:
     dependency: "direct main"
     description:
@@ -376,6 +397,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  logger:
+    dependency: "direct main"
+    description:
+      name: logger
+      sha256: "6bbb9d6f7056729537a4309bda2e74e18e5d9f14302489cc1e93f33b3fe32cac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2+1"
   logging:
     dependency: transitive
     description:

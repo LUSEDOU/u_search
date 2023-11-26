@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:u_search_api/src/models/models.dart';
 
 part 'apply.freezed.dart';

@@ -36,4 +36,3 @@ final class ReviewCommentChanged extends ReviewEvent {
 final class ReviewSubmitted extends ReviewEvent {
   const ReviewSubmitted();
 }
-

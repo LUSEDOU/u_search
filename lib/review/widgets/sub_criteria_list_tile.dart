@@ -70,10 +70,7 @@ class SubCriteriaListTile extends StatelessWidget {
         _CommentField(
           initalComment: calification.comment,
           onChanged: (value) => context.read<ReviewBloc>().add(
-                ReviewCommentChanged(
-                  subCriteria: subCriteria,
-                  comment: value
-                ),
+                ReviewCommentChanged(subCriteria: subCriteria, comment: value),
               ),
         ),
         const SizedBox(height: 16),

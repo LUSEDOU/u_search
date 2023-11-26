@@ -1,4 +1,4 @@
-part of 'applies_cubit.dart';
+part of 'applies_bloc.dart';
 
 enum AppliesStatus { initial, loading, success, failure }
 

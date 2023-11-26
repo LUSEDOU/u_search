@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:u_search_api/u_search_api.dart';
 import 'package:u_search_flutter/review/review.dart';
-import 'package:intl/intl.dart';
 import 'package:u_search_flutter/review/views/applies_factory.dart';
 
 class ReviewPage2 extends StatelessWidget {
@@ -12,7 +9,6 @@ class ReviewPage2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final apply = apply2;
 
     return BlocProvider(
@@ -68,7 +64,6 @@ class _ReviewView2State extends State<ReviewView2> {
   }
 }
 
-
 class BottomBar extends StatelessWidget {
   const BottomBar({super.key});
 
@@ -87,7 +82,6 @@ class BottomBar extends StatelessWidget {
     );
   }
 }
-
 
 class PercentBullet extends StatelessWidget {
   const PercentBullet(

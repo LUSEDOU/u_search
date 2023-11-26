@@ -5,7 +5,7 @@ class ContestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ContestView();
+    return const ContestView();
   }
 }
 

@@ -1,23 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:u_search_flutter/router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:u_search_flutter/bootstrap.dart';
+import 'package:u_search_flutter/observer.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  Bloc.observer = AppBlocObserver();
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-    );
-  }
+  bootstrap();
 }
