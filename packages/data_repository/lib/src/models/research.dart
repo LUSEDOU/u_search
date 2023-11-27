@@ -1,44 +1,24 @@
-// import 'package:equatable/equatable.dart';
-// import 'package:json_annotation/json_annotation.dart';
-// import 'package:meta/meta.dart';
-//
-// @immutable
-// @JsonSerializable(
-//   fieldRename: FieldRename.snake,
-// )
-// class Research extends Equatable {
-//   const Research({
-//     required this.researcher,
-//     this.id,
-//     this.name,
-//     this.description,
-//     this.url,
-//   });
-//
-//   final int? id;
-//   final String? name;
-//   final String? description;
-//   final String? url;
-//   final Researcher researcher;
-//
-//   @override
-//   List<Object> get props => [];
-// }
-//
-// class Researcher extends Equatable {
-//   final int? id;
-//   final String? name;
-//   final String? lastName;
-//   final String? email;
-//   final String? phone;
-//   final String? url;
-//   final String? institution;
-//   final String? faculty;
-//   final String? department;
-//   final String? researchGroup;
-//   final String? researchLine;
-//   final String? cvlac;
-//
-//   @override
-//   List<Object> get props => [];
-// }
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'research.freezed.dart';
+part 'research.g.dart';
+
+/// {@template research}
+/// A model representing a research.
+/// {@endtemplate}
+@freezed
+class Research with _$Research {
+  /// {@macro research}
+  const factory Research({
+    /// The id of the research
+    required String uuid,
+    /// The name of the research
+    required String url,
+    /// The id of the applicant
+    required int applicantId,
+  }) = _Research;
+
+  /// Converts a Research from a json map
+  factory Research.fromJson(Map<String, dynamic> json) =>
+      _$ResearchFromJson(json);
+}

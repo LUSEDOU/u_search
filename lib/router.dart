@@ -1,9 +1,16 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_flutter/app/app.dart';
+import 'package:u_search_flutter/applies_overview/view/apply_overview_page.dart';
+import 'package:u_search_flutter/applies_overview/view/view.dart';
 import 'package:u_search_flutter/login/login.dart';
 import 'package:u_search_flutter/register/register.dart';
 import 'package:u_search_flutter/review/review.dart';
+import 'package:u_search_flutter/sign_up/sign_up.dart';
+import 'package:u_search_flutter/user_type/user_type.dart';
 
 GoRouter router = GoRouter(
+  initialLocation: '/',
   debugLogDiagnostics: true,
   // redirect: (context, state) async {
   //   Future.delayed(const Duration(milliseconds: 1000));
@@ -22,8 +29,9 @@ GoRouter router = GoRouter(
   routes: <GoRoute>[
     GoRoute(
       path: '/',
-      builder: (context, state) => const AccountTypePage(),
-      // pageBuilder: (context, state) => HomePage(),
+      builder: (context, state) => UserTypePage(
+        appBloc: context.read<AppBloc>(),
+      ),
     ),
     GoRoute(
       path: '/login',
@@ -31,15 +39,15 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/signup',
-      builder: (context, state) => const RegisterPage(),
+      builder: (context, state) => const SignUpPage(),
     ),
     GoRoute(
       path: '/applies',
-      builder: (context, state) => const ReviewPage2(),
+      builder: (context, state) => const AppliesOverviewPage(),
       routes: [
         GoRoute(
-          path: 'applies/:id',
-          builder: (context, state) => const ReviewPage2(),
+          path: ':id',
+          builder: (context, state) => const ApplyOverviewPage(),
           routes: [
             GoRoute(
               path: 'review',

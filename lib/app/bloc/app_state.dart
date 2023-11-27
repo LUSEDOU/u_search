@@ -2,31 +2,60 @@ part of 'app_bloc.dart';
 
 enum AppStatus { authenticated, unauthenticated }
 
-enum AppMode { user, evaluator, admin, unknown }
+enum UserType {
+  user('Applicant'),
+  evaluator('Evaluator'),
+  admin('Admin'),
+  unknown('Unknown');
+
+  const UserType(
+    this.name,
+  );
+
+  final String name;
+
+  static List<UserType> get permitted => [
+        user,
+        evaluator,
+      ];
+}
 
 class AppState extends Equatable {
   const AppState({
     this.status = AppStatus.unauthenticated,
-    this.mode = AppMode.unknown,
+    this.type = UserType.unknown,
     this.user = User.empty,
   });
 
   final AppStatus status;
-  final AppMode mode;
+  final UserType type;
   final User user;
 
   AppState copyWith({
     AppStatus? status,
-    AppMode? mode,
+    UserType? type,
     User? user,
   }) {
     return AppState(
       status: status ?? this.status,
-      mode: mode ?? this.mode,
+      type: type ?? this.type,
       user: user ?? this.user,
     );
   }
 
+  bool get isEvaluator => type == UserType.evaluator;
+  bool get isApplicant => type == UserType.user;
+  int? get id {
+    switch (type) {
+      case UserType.evaluator:
+        return user.evaluatorId;
+      case UserType.user:
+        return user.applicantId;
+      default:
+        return null;
+    }
+  }
+
   @override
-  List<Object> get props => [status, mode, user];
+  List<Object> get props => [status, type, user];
 }

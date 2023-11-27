@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/u_search_api.dart';
 import 'package:u_search_flutter/applies/applies.dart';
-import 'package:u_search_flutter/repositories.dart';
 
 class AppliesPage extends StatelessWidget {
   const AppliesPage({super.key});

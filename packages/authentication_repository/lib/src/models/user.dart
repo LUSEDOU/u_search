@@ -11,6 +11,8 @@ class User extends Equatable {
     required this.id,
     this.email,
     this.name,
+    this.evaluatorId,
+    this.applicantId,
     // this.photo,
   });
 
@@ -19,6 +21,12 @@ class User extends Equatable {
 
   /// The current user's id.
   final String id;
+
+  /// The current user's evaluator id.
+  final int? evaluatorId;
+
+  /// The current user's applicant id.
+  final int? applicantId;
 
   /// The current user's name (display name).
   final String? name;

@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
@@ -6,12 +7,9 @@ import 'package:formz/formz.dart';
 part 'sign_up_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
-  SignUpCubit(
-      // this._authenticationRepository
-      )
-      : super(const SignUpState());
+  SignUpCubit(this._authenticationRepository) : super(const SignUpState());
 
-  // final AuthenticationRepository _authenticationRepository;
+  final AuthenticationRepository _authenticationRepository;
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
@@ -67,10 +65,10 @@ class SignUpCubit extends Cubit<SignUpState> {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      // await _authenticationRepository.signUp(
-      //   email: state.email.value,
-      //   password: state.password.value,
-      // );
+      await _authenticationRepository.signUp(
+        email: state.email.value,
+        password: state.password.value,
+      );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
       // } on SignUpWithEmailAndPasswordFailure catch (e) {
       //   emit(

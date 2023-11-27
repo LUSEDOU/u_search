@@ -11,11 +11,14 @@ part 'apply.g.dart';
 class Apply with _$Apply {
   /// {@macro apply}
   const factory Apply({
-    /// The id of the apply
-    @JsonKey(required: true) required int? id,
-
     /// The contest of the apply
     @JsonKey(required: true) required Contest contest,
+
+    /// The id of the apply
+    @JsonKey(required: true) int? id,
+
+    /// The applicant of the apply
+    @JsonKey(required: true) required String research,
 
     /// An optional review of the apply
     Review? review,

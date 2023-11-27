@@ -12,7 +12,7 @@ abstract class AuthClient {
   Stream<User?> authStateChanges();
 
   /// Sign up with [email] and [password].
-  Future<void> singUp({required String email, required String password});
+  Future<void> signUp({required String email, required String password});
 
   /// Log in with [email] and [password].
   Future<void> logIn({required String email, required String password});

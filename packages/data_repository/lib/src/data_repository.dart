@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:data_repository/data_repository.dart';
 
 /// {@template data_repository}
@@ -15,4 +17,13 @@ class DataRepository {
   Future<List<Contest>> getContests() => _client.getContests();
 
   Stream<List<Apply>> getApplies() => _client.getApplies();
+
+  Future<String> uploadResearch({
+    required int applicantId,
+    required File research,
+  }) =>
+      _client.uploadResearch(
+        applicantId: applicantId,
+        research: research,
+      );
 }

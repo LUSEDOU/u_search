@@ -1,7 +1,7 @@
+import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:u_search_api/u_search_api.dart';
-import 'package:u_search_flutter/repositories.dart';
 
 part 'applies_state.dart';
 part 'applies_event.dart';

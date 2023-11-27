@@ -6,3 +6,7 @@ sealed class AppliesOverviewEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+final class AppliesOverviewSubscriptionRequested extends AppliesOverviewEvent {
+  const AppliesOverviewSubscriptionRequested();
+}

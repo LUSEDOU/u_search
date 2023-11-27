@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
@@ -34,10 +35,10 @@ class LoginCubit extends Cubit<LoginState> {
     if (!state.isValid) return;
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
     try {
-      // await _authenticationRepository.logInWithEmailAndPassword(
-      //   email: state.email.value,
-      //   password: state.password.value,
-      // );
+      await _authenticationRepository.logIn(
+        email: state.email.value,
+        password: state.password.value,
+      );
       emit(state.copyWith(status: FormzSubmissionStatus.success));
       // } on LogInWithEmailAndPasswordFailure catch (e) {
       //   emit(

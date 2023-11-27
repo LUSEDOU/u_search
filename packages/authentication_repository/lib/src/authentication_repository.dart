@@ -75,12 +75,12 @@ class AuthenticationRepository {
   /// Creates a new user with the provided [email] and [password].
   ///
   /// Throws a [SingUpFailure] if an exception occurs.
-  Future<void> singUp({
+  Future<void> signUp({
     required String email,
     required String password,
   }) async {
     try {
-      await _auth.singUp(email: email, password: password);
+      await _auth.signUp(email: email, password: password);
     } on Exception {
       throw const SingUpFailure();
     }
@@ -94,7 +94,7 @@ class AuthenticationRepository {
     required String password,
   }) async {
     try {
-      await _auth.singUp(email: email, password: password);
+      await _auth.logIn(email: email, password: password);
     } on Exception {
       throw const LogInFailure();
     }
@@ -104,7 +104,7 @@ class AuthenticationRepository {
   /// [User.empty] from the [user] Stream.
   Future<void> logOut() async {
     try {
-      await _auth.signOut();
+      await _auth.logOut();
     } on Exception {
       throw const LogOutFailure();
     }

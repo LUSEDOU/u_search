@@ -1,4 +1,4 @@
-import 'package:u_search_api/u_search_api.dart';
+import 'package:data_repository/data_repository.dart';
 
 const shortLoremIpsum =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
@@ -53,6 +53,11 @@ Contest contestFactory(
       criterias: criteriasListFactory(index, criteriasLength),
     );
 
+List<Contest> contestsListFactory(int length) => List.generate(
+      length,
+      (index) => contestFactory(index),
+    );
+
 Apply applyFactory(
   int index, {
   int criteriasLength = 2,
@@ -60,6 +65,7 @@ Apply applyFactory(
     Apply(
       id: index,
       contest: contestFactory(index, criteriasLength: criteriasLength),
+      research: '',
     );
 
 List<Apply> appliesListFactory(int length) => List.generate(

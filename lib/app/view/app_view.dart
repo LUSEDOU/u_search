@@ -1,24 +1,31 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:data_repository/data_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:u_search_flutter/router.dart';
 
 import '../app.dart';
 
 class App extends StatelessWidget {
   const App({
     required AuthenticationRepository authenticationRepository,
+    required DataRepository dataRepository,
     super.key,
-  }) : _authenticationRepository = authenticationRepository;
+  })  : _authenticationRepository = authenticationRepository,
+        _dataRepository = dataRepository;
 
   final AuthenticationRepository _authenticationRepository;
+  final DataRepository _dataRepository;
 
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider.value(
+        RepositoryProvider<AuthenticationRepository>.value(
           value: _authenticationRepository,
+        ),
+        RepositoryProvider<DataRepository>.value(
+          value: _dataRepository,
         ),
       ],
       child: BlocProvider(
@@ -36,8 +43,12 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return MaterialApp.router(
-              theme: ThemeData.
-              );
+    return MaterialApp.router(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      routerConfig: router,
+    );
   }
 }

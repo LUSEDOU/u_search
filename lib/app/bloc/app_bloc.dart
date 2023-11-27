@@ -21,7 +21,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         ) {
     on<AppLogoutRequested>(_onLogoutRequested);
     on<_AppUserChanged>(_onUserChanged);
-    on<AppModeChanged>(_onModeChanged);
+    on<AppUserTypeChanged>(_onUserTypeChanged);
     _userSubscription = _authenticationRepository.user.listen(
       (user) => add(_AppUserChanged(user)),
     );
@@ -44,13 +44,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     );
   }
 
-  void _onModeChanged(
-    AppModeChanged event,
+  void _onUserTypeChanged(
+    AppUserTypeChanged event,
     Emitter<AppState> emit,
   ) {
     emit(
       state.copyWith(
-        mode: event.mode,
+        type: event.type,
       ),
     );
   }

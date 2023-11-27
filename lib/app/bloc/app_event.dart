@@ -13,7 +13,7 @@ final class _AppUserChanged extends AppEvent {
   final User user;
 }
 
-final class _AppModeChanged extends AppEvent {
-  const _AppModeChanged(this.mode);
-  final AppMode mode;
+final class AppUserTypeChanged extends AppEvent {
+  const AppUserTypeChanged(this.type);
+  final UserType type;
 }
