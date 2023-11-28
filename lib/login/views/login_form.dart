@@ -78,8 +78,9 @@ class _PasswordInput extends StatelessWidget {
           decoration: InputDecoration(
             labelText: 'password',
             helperText: '',
-            errorText:
-                state.password.displayError != null ? 'invalid password' : null,
+            errorText: state.password.displayError != null
+                ? 'Your password needs to be at least 6 characters long and contain at least one number'
+                : null,
           ),
         );
       },
@@ -105,7 +106,7 @@ class _LoginButton extends StatelessWidget {
                 onPressed: state.isValid
                     ? () {
                         context.read<LoginCubit>().logIn();
-                        context.go('/applies');
+                        // context.go('/applies');
                       }
                     : null,
                 child: const Text('LOGIN'),
@@ -122,7 +123,7 @@ class _SignUpButton extends StatelessWidget {
     return TextButton(
       key: const Key('loginForm_createAccount_flatButton'),
       // onPressed: () => Navigator.of(context).push<void>(SignUpPage.route()),
-      onPressed: () => context.go('/signup'),
+      onPressed: () => context.go('/auth/sign_up'),
       child: Text(
         'CREATE ACCOUNT',
         style: TextStyle(color: theme.primaryColor),

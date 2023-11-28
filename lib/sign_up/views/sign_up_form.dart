@@ -130,7 +130,7 @@ class _SignUpButton extends StatelessWidget {
                 onPressed: state.isValid
                     ? () {
                         context.read<SignUpCubit>().signUpFormSubmitted();
-                        context.go('/applies');
+                        // context.go('/applies');
                       }
                     : null,
                 child: const Text('SIGN UP'),

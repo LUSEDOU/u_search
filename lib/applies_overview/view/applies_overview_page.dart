@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_flutter/app/app.dart';
 
 import '../applies_overview.dart';
 
@@ -25,6 +26,8 @@ class AppliesOverviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Applies Overview'),
@@ -62,6 +65,7 @@ class AppliesOverviewView extends StatelessWidget {
           return CupertinoScrollbar(
             child: ListView(
               children: [
+                WelcomeText(),
                 for (final apply in state.applies)
                   ApplyTile(
                     apply: apply,
@@ -72,6 +76,26 @@ class AppliesOverviewView extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class WelcomeText extends StatelessWidget {
+  const WelcomeText({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return Text(
+          'Hi! ${state.user.email}',
+          style: theme.textTheme.titleLarge,
+        );
+      },
     );
   }
 }

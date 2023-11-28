@@ -43,6 +43,9 @@ class AppState extends Equatable {
     );
   }
 
+  bool get isUnauthenticated => status == AppStatus.unauthenticated;
+  bool get isAuthenticated => status == AppStatus.authenticated;
+  bool get isUnknown => type == UserType.unknown;
   bool get isEvaluator => type == UserType.evaluator;
   bool get isApplicant => type == UserType.user;
   int? get id {

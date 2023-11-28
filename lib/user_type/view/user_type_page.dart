@@ -6,18 +6,12 @@ import 'package:u_search_flutter/app/app.dart';
 
 class UserTypePage extends StatelessWidget {
   const UserTypePage({
-    required this.appBloc,
     super.key,
   });
 
-  final AppBloc appBloc;
-
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: appBloc,
-      child: const UserTypeView(),
-    );
+    return const UserTypeView();
   }
 }
 
@@ -130,7 +124,6 @@ class _UserTypeButton extends StatelessWidget {
           context.read<AppBloc>().add(
                 AppUserTypeChanged(userType),
               );
-          context.go('/login');
         },
         child: Text(
           userType.name,

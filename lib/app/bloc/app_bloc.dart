@@ -3,11 +3,12 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
 
-class AppBloc extends Bloc<AppEvent, AppState> {
+class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
   AppBloc({
     required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
@@ -42,6 +43,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             )
           : const AppState(),
     );
+    notifyListeners();
   }
 
   void _onUserTypeChanged(
@@ -53,13 +55,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         type: event.type,
       ),
     );
+    notifyListeners();
   }
 
   void _onLogoutRequested(
     AppLogoutRequested event,
     Emitter<AppState> emit,
   ) {
+    emit(
+      state.copyWith(type: UserType.unknown),
+    );
     _authenticationRepository.logOut();
+    notifyListeners();
   }
 
   @override
