@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/sign_up/sign_up.dart';
 
 class SignUpForm extends StatelessWidget {

@@ -28,8 +28,7 @@ class AppliesOverviewBloc
         status: AppliesOverviewStatus.success,
         applies: applies,
       ),
-      onError: (_, __) =>
-          state.copyWith(status: AppliesOverviewStatus.failure),
+      onError: (_, __) => state.copyWith(status: AppliesOverviewStatus.failure),
     );
   }
 }

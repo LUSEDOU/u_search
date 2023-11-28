@@ -65,7 +65,7 @@ class AppliesOverviewView extends StatelessWidget {
           return CupertinoScrollbar(
             child: ListView(
               children: [
-                WelcomeText(),
+                const WelcomeText(),
                 for (final apply in state.applies)
                   ApplyTile(
                     apply: apply,
