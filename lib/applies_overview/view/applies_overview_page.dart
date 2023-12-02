@@ -32,6 +32,10 @@ class AppliesOverviewView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Applies Overview'),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.go('/applies/new'),
+        child: const Icon(Icons.add),
+      ),
       body: BlocConsumer<AppliesOverviewBloc, AppliesOverviewState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
@@ -69,7 +73,10 @@ class AppliesOverviewView extends StatelessWidget {
                 for (final apply in state.applies)
                   ApplyTile(
                     apply: apply,
-                    onTap: () => context.go('${apply.id}'),
+                    onTap: () => context.go(
+                      '/applies/${apply.id}',
+                      extra: apply,
+                    ),
                   ),
               ],
             ),

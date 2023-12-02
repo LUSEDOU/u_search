@@ -81,4 +81,12 @@ class ApiClientTest implements ApiClient {
       () => 'url',
     );
   }
+
+  @override
+  Future<Apply> getApply(int id) {
+    return Future.delayed(
+      const Duration(milliseconds: 100),
+      () => applyFactory(id),
+    );
+  }
 }

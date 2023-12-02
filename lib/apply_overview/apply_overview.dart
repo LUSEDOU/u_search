@@ -1,2 +1,2 @@
-export './cubit/apply_overview_cubit.dart';
+export './bloc/apply_overview_bloc.dart';
 export './view/view.dart';

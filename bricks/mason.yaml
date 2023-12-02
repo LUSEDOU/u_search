@@ -1,0 +1,7 @@
+bricks:
+  fbloc:
+    path: ./fbloc
+  bloc:
+    path: ./bloc
+  cubit:
+    path: ./cubit

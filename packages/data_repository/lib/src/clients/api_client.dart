@@ -11,4 +11,6 @@ abstract class ApiClient {
     required int applicantId,
     required File research,
   });
+
+  Future<Apply> getApply(int id);
 }

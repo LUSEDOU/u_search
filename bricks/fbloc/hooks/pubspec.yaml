@@ -1,0 +1,8 @@
+name: fbloc_hooks
+
+environment:
+  sdk: ">=3.1.5 <4.0.0"
+
+dependencies:
+  mason: ^0.1.0-dev.40
+  path: ^1.8.2

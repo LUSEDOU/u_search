@@ -13,9 +13,10 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
     required int applicantId,
   })  : _dataRepository = dataRepository,
         super(ApplyState(applicantId: applicantId)) {
-    on<ApplyEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<ApplyFetchContests>(_onFetchContests);
+    on<ApplySelectContest>(_onSelectContest);
+    on<ApplyUploadResearch>(_onUploadResearch);
+    on<ApplySubmitApplication>(_onSubmitApplication);
   }
 
   final DataRepository _dataRepository;
@@ -45,6 +46,7 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
       emit(state.copyWith(
         selectedContest: event.contest,
         status: ApplyStatus.success,
+        step: ApplyStep.research,
       ));
     } on Exception {
       emit(state.copyWith(status: ApplyStatus.failure));

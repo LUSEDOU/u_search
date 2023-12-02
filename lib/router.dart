@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/app/app.dart';
-import 'package:u_search_flutter/applies_overview/view/apply_overview_page.dart';
 import 'package:u_search_flutter/applies_overview/view/view.dart';
+import 'package:u_search_flutter/apply/apply.dart';
+import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/login/login.dart';
 import 'package:u_search_flutter/review/review.dart';
 import 'package:u_search_flutter/sign_up/sign_up.dart';
@@ -52,7 +53,7 @@ GoRouter router(AppBloc bloc) => GoRouter(
           path: '/auth',
           redirect: (context, state) async {
             final logger = LoggerManager().logger;
-            logger.i('Redirecting from ${state.path}');
+            logger.i('Redirecting from ${state.path} / ${state.fullPath}');
             if (context.read<AppBloc>().state.isAuthenticated) {
               logger.i('Redirecting to /applies');
               return '/applies';
@@ -76,8 +77,25 @@ GoRouter router(AppBloc bloc) => GoRouter(
           builder: (context, state) => const AppliesOverviewPage(),
           routes: [
             GoRoute(
-              path: ':id',
-              builder: (context, state) => const ApplyOverviewPage(),
+              path: 'new',
+              builder: (context, state) => const ApplyPage(),
+            ),
+            GoRoute(
+              path: ':applyId',
+              redirect: (context, state) async {
+                final logger = LoggerManager().logger;
+                final id =
+                    int.tryParse(state.pathParameters['applyId'] as String);
+                if (id == null) {
+                  logger.i('Redirecting from ${state.path}');
+                  return '/applies/new';
+                }
+                return null;
+              },
+              builder: (context, state) => ApplyOverviewPage(
+                id: state.pathParameters['applyId'] as int,
+                apply: state.extra,
+              ),
               routes: [
                 GoRoute(
                   path: 'review',
@@ -93,19 +111,3 @@ GoRouter router(AppBloc bloc) => GoRouter(
         // ),
       ],
     );
-
-class AppStateNotifier extends ChangeNotifier {
-  late final StreamSubscription<AppState> _subscription;
-
-  AppStateNotifier(AppBloc bloc) {
-    _subscription = bloc.stream.listen((event) {
-      notifyListeners();
-    });
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
-}

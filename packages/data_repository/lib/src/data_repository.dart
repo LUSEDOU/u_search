@@ -26,4 +26,6 @@ class DataRepository {
         applicantId: applicantId,
         research: research,
       );
+
+    Future<Apply> getApply(int id) => _client.getApply(id);
 }
