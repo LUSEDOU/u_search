@@ -22,6 +22,7 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
                     .map(CalificationForm.fromModel)
                     .toList() ??
                 apply.contest.califications,
+            isValid: apply.review == null ? null : true,
           ),
         ) {
     on<ApplyReviewCommentChanged>(_onCommentChanged);
@@ -38,15 +39,19 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
       CalificationForm calification =
           state.califications.firstWhere((element) => element.id == event.id);
 
-      final califications = state.califications..remove(calification);
+      final updatedCalifications =
+          List<CalificationForm>.from(state.califications);
+
+      updatedCalifications.remove(calification);
 
       calification = calification.dirty(comment: event.comment);
 
-      califications.add(calification);
+      updatedCalifications.add(calification);
 
       emit(
         state.copyWith(
-            califications: califications, isValid: califications.validate()),
+            califications: updatedCalifications,
+            isValid: updatedCalifications.validate()),
       );
     } catch (e) {
       LoggerManager().logger.e(e);
@@ -61,19 +66,34 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     Emitter<ApplyReviewState> emit,
   ) {
     try {
-      CalificationForm calification =
-          state.califications.firstWhere((element) => element.id == event.id);
+      CalificationForm? calification = state.califications
+          .firstWhereOrNull((element) => element.id == event.id);
 
-      final califications = state.califications..remove(calification);
+      if (calification == null) {
+        final subCriteria = state.apply.contest.criterias
+            .expand((element) => element.subCriterias)
+            .toList()
+            .firstWhere((element) => element.id == event.id);
+
+        calification = CalificationForm.pure(
+          id: subCriteria.id,
+          maxScore: subCriteria.maxScore,
+        );
+      }
+
+      final updatedCalifications =
+          List<CalificationForm>.from(state.califications);
+
+      updatedCalifications.remove(calification);
 
       calification = calification.dirty(score: event.score);
 
-      califications.add(calification);
+      updatedCalifications.add(calification);
 
       emit(
         state.copyWith(
-          califications: califications,
-          isValid: califications.validate(),
+          califications: updatedCalifications,
+          isValid: updatedCalifications.validate(),
         ),
       );
     } catch (e) {
