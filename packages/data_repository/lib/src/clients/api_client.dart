@@ -5,12 +5,15 @@ import 'package:data_repository/data_repository.dart';
 abstract class ApiClient {
   Future<List<Contest>> getContests();
 
-  Stream<List<Apply>> getApplies();
+  Future<Stream<List<Apply>>> getApplies();
 
-  Future<String> uploadResearch({
-    required int applicantId,
+  Future<Apply> getApply(int id);
+
+  Future<String> uploadResearchFile({
     required File research,
   });
 
-  Future<Apply> getApply(int id);
+  Future<Research> addResearch(Research research);
+
+  Future<Apply> addApply(Apply apply);
 }

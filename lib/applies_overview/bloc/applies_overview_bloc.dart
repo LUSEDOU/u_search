@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 
 part 'applies_overview_event.dart';
 part 'applies_overview_state.dart';
@@ -23,12 +24,16 @@ class AppliesOverviewBloc
     emit(state.copyWith(status: AppliesOverviewStatus.loading));
 
     await emit.forEach<List<Apply>>(
-      _dataRepository.getApplies(),
+      await _dataRepository.getApplies(),
       onData: (applies) => state.copyWith(
         status: AppliesOverviewStatus.success,
         applies: applies,
       ),
-      onError: (_, __) => state.copyWith(status: AppliesOverviewStatus.failure),
+      onError: (error, stackTrace) {
+        LoggerManager().logger.e(error);
+        LoggerManager().logger.e(stackTrace);
+        return state.copyWith(status: AppliesOverviewStatus.failure);
+      },
     );
   }
 }

@@ -1,0 +1,15 @@
+
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:{{repository.snakeCase()}}/{{repository.snakeCase()}}.dart';
+
+part '{{name.snakeCase()}}_state.dart';
+
+class {{name.pascalCase()}}Cubit extends Cubit<{{name.pascalCase()}}State> {
+  {{name.pascalCase()}}Cubit({
+    required {{repository.pascalCase()}} {{repository.camelCase()}},
+  }) : _{{repository.camelCase()}} = {{repository.camelCase()}},
+        super(const {{name.pascalCase()}}State());
+
+  final {{repository.pascalCase()}} _{{repository.camelCase()}};
+}

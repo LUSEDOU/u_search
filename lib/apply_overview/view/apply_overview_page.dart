@@ -8,13 +8,14 @@ import '../apply_overview.dart';
 
 class ApplyOverviewPage extends StatelessWidget {
   const ApplyOverviewPage({
-    required this.id,
-    Object? apply,
+    required int id,
+    Apply? apply,
     super.key,
-  }) : initialApply = apply is Apply ? apply : null;
+  })  : _apply = apply,
+        _id = id;
 
-  final Apply? initialApply;
-  final int id;
+  final Apply? _apply;
+  final int _id;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +23,10 @@ class ApplyOverviewPage extends StatelessWidget {
       create: (_) {
         final bloc = ApplyOverviewBloc(
           dataRepository: context.read<DataRepository>(),
-          initialApply: initialApply,
+          apply: _apply,
         );
-        if (initialApply == null) {
-          bloc.add(ApplyOverviewFetchApply(id: id));
+        if (_apply == null) {
+          bloc.add(ApplyOverviewFetchApply(id: _id));
         }
         return bloc;
       },
@@ -43,10 +44,20 @@ class ApplyOverviewView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Apply Overview'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(
-            '/applies/${context.read<ApplyOverviewBloc>().state.initialApply!.id}/review'),
-        child: const Icon(Icons.edit),
+      floatingActionButton: BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
+        builder: (context, state) {
+          if (state.apply == null) {
+            return const SizedBox.shrink();
+          }
+
+          return FloatingActionButton(
+            onPressed: () => context.go(
+              '/applies/${state.apply!.id}/review',
+              extra: state.apply,
+            ),
+            child: const Icon(Icons.edit),
+          );
+        },
       ),
       body: BlocConsumer<ApplyOverviewBloc, ApplyOverviewState>(
         listenWhen: (previous, current) => previous.status != current.status,
@@ -60,15 +71,14 @@ class ApplyOverviewView extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          if (state.initialApply == null) {
+          if (state.apply == null) {
             if (state.status == ApplyOverviewStatus.loading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state.status != ApplyOverviewStatus.success) {
               return const SizedBox.shrink();
             } else {
               return Center(
-                child: Text(
-                    'No apply with id ${state.initialApply?.id ?? 'null'}'),
+                child: Text('No apply with id ${state.apply?.id ?? 'null'}'),
               );
             }
           }
@@ -76,13 +86,85 @@ class ApplyOverviewView extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text(state.initialApply!.id.toString()),
+                  Text('id: ${state.apply!.id}'),
+                  const SizedBox(height: 8),
+                  ContestTile(contest: state.apply!.contest),
+                  const SizedBox(height: 8),
+                  if (state.apply!.evaluator != null)
+                    EvaluatorTile(
+                      evaluator: state.apply!.evaluator!,
+                    )
+                  else
+                    const EmptyEvaluatorTile(),
+                  const SizedBox(height: 8),
+                  ResearchTile(research: state.apply!.research!),
                 ],
               ),
             ),
           );
         },
       ),
+    );
+  }
+}
+
+class ContestTile extends StatelessWidget {
+  const ContestTile({
+    required Contest contest,
+    super.key,
+  }) : _contest = contest;
+
+  final Contest _contest;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(_contest.name),
+      subtitle: Text(_contest.description),
+    );
+  }
+}
+
+class EvaluatorTile extends StatelessWidget {
+  const EvaluatorTile({
+    required User evaluator,
+    super.key,
+  }) : _evaluator = evaluator;
+
+  final User _evaluator;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(_evaluator.name),
+      subtitle: Text(_evaluator.email),
+    );
+  }
+}
+
+class EmptyEvaluatorTile extends StatelessWidget {
+  const EmptyEvaluatorTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const ListTile(
+      title: Text('No evaluator'),
+    );
+  }
+}
+
+class ResearchTile extends StatelessWidget {
+  const ResearchTile({
+    required Research research,
+    super.key,
+  }) : _research = research;
+  final Research _research;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(_research.title),
+      subtitle: Text('${_research.length} kb'),
     );
   }
 }

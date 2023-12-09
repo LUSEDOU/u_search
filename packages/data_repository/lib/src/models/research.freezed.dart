@@ -20,14 +20,22 @@ Research _$ResearchFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Research {
-  /// The id of the research
-  String get uuid => throw _privateConstructorUsedError;
-
-  /// The name of the research
-  String get url => throw _privateConstructorUsedError;
-
   /// The id of the applicant
   int get applicantId => throw _privateConstructorUsedError;
+
+  /// The length of the research in bytes
+  int get length => throw _privateConstructorUsedError;
+
+  /// The title of the research
+  String get title => throw _privateConstructorUsedError;
+
+  /// The uuid of the file
+  @JsonKey(required: true)
+  String? get uuid => throw _privateConstructorUsedError;
+
+  /// The id of the research
+  @JsonKey(required: true)
+  int? get id => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -40,7 +48,12 @@ abstract class $ResearchCopyWith<$Res> {
   factory $ResearchCopyWith(Research value, $Res Function(Research) then) =
       _$ResearchCopyWithImpl<$Res, Research>;
   @useResult
-  $Res call({String uuid, String url, int applicantId});
+  $Res call(
+      {int applicantId,
+      int length,
+      String title,
+      @JsonKey(required: true) String? uuid,
+      @JsonKey(required: true) int? id});
 }
 
 /// @nodoc
@@ -56,23 +69,33 @@ class _$ResearchCopyWithImpl<$Res, $Val extends Research>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? uuid = null,
-    Object? url = null,
     Object? applicantId = null,
+    Object? length = null,
+    Object? title = null,
+    Object? uuid = freezed,
+    Object? id = freezed,
   }) {
     return _then(_value.copyWith(
-      uuid: null == uuid
-          ? _value.uuid
-          : uuid // ignore: cast_nullable_to_non_nullable
-              as String,
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
       applicantId: null == applicantId
           ? _value.applicantId
           : applicantId // ignore: cast_nullable_to_non_nullable
               as int,
+      length: null == length
+          ? _value.length
+          : length // ignore: cast_nullable_to_non_nullable
+              as int,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      uuid: freezed == uuid
+          ? _value.uuid
+          : uuid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
     ) as $Val);
   }
 }
@@ -85,7 +108,12 @@ abstract class _$$ResearchImplCopyWith<$Res>
       __$$ResearchImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String uuid, String url, int applicantId});
+  $Res call(
+      {int applicantId,
+      int length,
+      String title,
+      @JsonKey(required: true) String? uuid,
+      @JsonKey(required: true) int? id});
 }
 
 /// @nodoc
@@ -99,23 +127,33 @@ class __$$ResearchImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? uuid = null,
-    Object? url = null,
     Object? applicantId = null,
+    Object? length = null,
+    Object? title = null,
+    Object? uuid = freezed,
+    Object? id = freezed,
   }) {
     return _then(_$ResearchImpl(
-      uuid: null == uuid
-          ? _value.uuid
-          : uuid // ignore: cast_nullable_to_non_nullable
-              as String,
-      url: null == url
-          ? _value.url
-          : url // ignore: cast_nullable_to_non_nullable
-              as String,
       applicantId: null == applicantId
           ? _value.applicantId
           : applicantId // ignore: cast_nullable_to_non_nullable
               as int,
+      length: null == length
+          ? _value.length
+          : length // ignore: cast_nullable_to_non_nullable
+              as int,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      uuid: freezed == uuid
+          ? _value.uuid
+          : uuid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -124,26 +162,40 @@ class __$$ResearchImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ResearchImpl implements _Research {
   const _$ResearchImpl(
-      {required this.uuid, required this.url, required this.applicantId});
+      {required this.applicantId,
+      required this.length,
+      required this.title,
+      @JsonKey(required: true) this.uuid,
+      @JsonKey(required: true) this.id});
 
   factory _$ResearchImpl.fromJson(Map<String, dynamic> json) =>
       _$$ResearchImplFromJson(json);
-
-  /// The id of the research
-  @override
-  final String uuid;
-
-  /// The name of the research
-  @override
-  final String url;
 
   /// The id of the applicant
   @override
   final int applicantId;
 
+  /// The length of the research in bytes
+  @override
+  final int length;
+
+  /// The title of the research
+  @override
+  final String title;
+
+  /// The uuid of the file
+  @override
+  @JsonKey(required: true)
+  final String? uuid;
+
+  /// The id of the research
+  @override
+  @JsonKey(required: true)
+  final int? id;
+
   @override
   String toString() {
-    return 'Research(uuid: $uuid, url: $url, applicantId: $applicantId)';
+    return 'Research(applicantId: $applicantId, length: $length, title: $title, uuid: $uuid, id: $id)';
   }
 
   @override
@@ -151,15 +203,18 @@ class _$ResearchImpl implements _Research {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ResearchImpl &&
-            (identical(other.uuid, uuid) || other.uuid == uuid) &&
-            (identical(other.url, url) || other.url == url) &&
             (identical(other.applicantId, applicantId) ||
-                other.applicantId == applicantId));
+                other.applicantId == applicantId) &&
+            (identical(other.length, length) || other.length == length) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.uuid, uuid) || other.uuid == uuid) &&
+            (identical(other.id, id) || other.id == id));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, uuid, url, applicantId);
+  int get hashCode =>
+      Object.hash(runtimeType, applicantId, length, title, uuid, id);
 
   @JsonKey(ignore: true)
   @override
@@ -177,25 +232,37 @@ class _$ResearchImpl implements _Research {
 
 abstract class _Research implements Research {
   const factory _Research(
-      {required final String uuid,
-      required final String url,
-      required final int applicantId}) = _$ResearchImpl;
+      {required final int applicantId,
+      required final int length,
+      required final String title,
+      @JsonKey(required: true) final String? uuid,
+      @JsonKey(required: true) final int? id}) = _$ResearchImpl;
 
   factory _Research.fromJson(Map<String, dynamic> json) =
       _$ResearchImpl.fromJson;
 
   @override
 
-  /// The id of the research
-  String get uuid;
-  @override
-
-  /// The name of the research
-  String get url;
-  @override
-
   /// The id of the applicant
   int get applicantId;
+  @override
+
+  /// The length of the research in bytes
+  int get length;
+  @override
+
+  /// The title of the research
+  String get title;
+  @override
+
+  /// The uuid of the file
+  @JsonKey(required: true)
+  String? get uuid;
+  @override
+
+  /// The id of the research
+  @JsonKey(required: true)
+  int? get id;
   @override
   @JsonKey(ignore: true)
   _$$ResearchImplCopyWith<_$ResearchImpl> get copyWith =>

@@ -24,13 +24,21 @@ mixin _$Apply {
   @JsonKey(required: true)
   Contest get contest => throw _privateConstructorUsedError;
 
+  /// The applicant of the apply
+  @Deprecated('Use research instead')
+  @JsonKey(required: true)
+  String get url => throw _privateConstructorUsedError;
+
+  /// The research of the apply
+  @JsonKey(required: true)
+  Research? get research => throw _privateConstructorUsedError;
+
   /// The id of the apply
   @JsonKey(required: true)
   int? get id => throw _privateConstructorUsedError;
 
-  /// The applicant of the apply
-  @JsonKey(required: true)
-  String get research => throw _privateConstructorUsedError;
+  /// The evaluator
+  User? get evaluator => throw _privateConstructorUsedError;
 
   /// An optional review of the apply
   Review? get review => throw _privateConstructorUsedError;
@@ -47,11 +55,15 @@ abstract class $ApplyCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(required: true) Contest contest,
+      @Deprecated('Use research instead') @JsonKey(required: true) String url,
+      @JsonKey(required: true) Research? research,
       @JsonKey(required: true) int? id,
-      @JsonKey(required: true) String research,
+      User? evaluator,
       Review? review});
 
   $ContestCopyWith<$Res> get contest;
+  $ResearchCopyWith<$Res>? get research;
+  $UserCopyWith<$Res>? get evaluator;
   $ReviewCopyWith<$Res>? get review;
 }
 
@@ -69,8 +81,10 @@ class _$ApplyCopyWithImpl<$Res, $Val extends Apply>
   @override
   $Res call({
     Object? contest = null,
+    Object? url = null,
+    Object? research = freezed,
     Object? id = freezed,
-    Object? research = null,
+    Object? evaluator = freezed,
     Object? review = freezed,
   }) {
     return _then(_value.copyWith(
@@ -78,14 +92,22 @@ class _$ApplyCopyWithImpl<$Res, $Val extends Apply>
           ? _value.contest
           : contest // ignore: cast_nullable_to_non_nullable
               as Contest,
+      url: null == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String,
+      research: freezed == research
+          ? _value.research
+          : research // ignore: cast_nullable_to_non_nullable
+              as Research?,
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      research: null == research
-          ? _value.research
-          : research // ignore: cast_nullable_to_non_nullable
-              as String,
+      evaluator: freezed == evaluator
+          ? _value.evaluator
+          : evaluator // ignore: cast_nullable_to_non_nullable
+              as User?,
       review: freezed == review
           ? _value.review
           : review // ignore: cast_nullable_to_non_nullable
@@ -98,6 +120,30 @@ class _$ApplyCopyWithImpl<$Res, $Val extends Apply>
   $ContestCopyWith<$Res> get contest {
     return $ContestCopyWith<$Res>(_value.contest, (value) {
       return _then(_value.copyWith(contest: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $ResearchCopyWith<$Res>? get research {
+    if (_value.research == null) {
+      return null;
+    }
+
+    return $ResearchCopyWith<$Res>(_value.research!, (value) {
+      return _then(_value.copyWith(research: value) as $Val);
+    });
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserCopyWith<$Res>? get evaluator {
+    if (_value.evaluator == null) {
+      return null;
+    }
+
+    return $UserCopyWith<$Res>(_value.evaluator!, (value) {
+      return _then(_value.copyWith(evaluator: value) as $Val);
     });
   }
 
@@ -123,12 +169,18 @@ abstract class _$$ApplyImplCopyWith<$Res> implements $ApplyCopyWith<$Res> {
   @useResult
   $Res call(
       {@JsonKey(required: true) Contest contest,
+      @Deprecated('Use research instead') @JsonKey(required: true) String url,
+      @JsonKey(required: true) Research? research,
       @JsonKey(required: true) int? id,
-      @JsonKey(required: true) String research,
+      User? evaluator,
       Review? review});
 
   @override
   $ContestCopyWith<$Res> get contest;
+  @override
+  $ResearchCopyWith<$Res>? get research;
+  @override
+  $UserCopyWith<$Res>? get evaluator;
   @override
   $ReviewCopyWith<$Res>? get review;
 }
@@ -145,8 +197,10 @@ class __$$ApplyImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? contest = null,
+    Object? url = null,
+    Object? research = freezed,
     Object? id = freezed,
-    Object? research = null,
+    Object? evaluator = freezed,
     Object? review = freezed,
   }) {
     return _then(_$ApplyImpl(
@@ -154,14 +208,22 @@ class __$$ApplyImplCopyWithImpl<$Res>
           ? _value.contest
           : contest // ignore: cast_nullable_to_non_nullable
               as Contest,
+      url: null == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String,
+      research: freezed == research
+          ? _value.research
+          : research // ignore: cast_nullable_to_non_nullable
+              as Research?,
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int?,
-      research: null == research
-          ? _value.research
-          : research // ignore: cast_nullable_to_non_nullable
-              as String,
+      evaluator: freezed == evaluator
+          ? _value.evaluator
+          : evaluator // ignore: cast_nullable_to_non_nullable
+              as User?,
       review: freezed == review
           ? _value.review
           : review // ignore: cast_nullable_to_non_nullable
@@ -175,8 +237,12 @@ class __$$ApplyImplCopyWithImpl<$Res>
 class _$ApplyImpl implements _Apply {
   const _$ApplyImpl(
       {@JsonKey(required: true) required this.contest,
+      @Deprecated('Use research instead')
+      @JsonKey(required: true)
+      required this.url,
+      @JsonKey(required: true) this.research,
       @JsonKey(required: true) this.id,
-      @JsonKey(required: true) required this.research,
+      this.evaluator,
       this.review});
 
   factory _$ApplyImpl.fromJson(Map<String, dynamic> json) =>
@@ -187,15 +253,25 @@ class _$ApplyImpl implements _Apply {
   @JsonKey(required: true)
   final Contest contest;
 
+  /// The applicant of the apply
+  @override
+  @Deprecated('Use research instead')
+  @JsonKey(required: true)
+  final String url;
+
+  /// The research of the apply
+  @override
+  @JsonKey(required: true)
+  final Research? research;
+
   /// The id of the apply
   @override
   @JsonKey(required: true)
   final int? id;
 
-  /// The applicant of the apply
+  /// The evaluator
   @override
-  @JsonKey(required: true)
-  final String research;
+  final User? evaluator;
 
   /// An optional review of the apply
   @override
@@ -203,7 +279,7 @@ class _$ApplyImpl implements _Apply {
 
   @override
   String toString() {
-    return 'Apply(contest: $contest, id: $id, research: $research, review: $review)';
+    return 'Apply(contest: $contest, url: $url, research: $research, id: $id, evaluator: $evaluator, review: $review)';
   }
 
   @override
@@ -212,15 +288,19 @@ class _$ApplyImpl implements _Apply {
         (other.runtimeType == runtimeType &&
             other is _$ApplyImpl &&
             (identical(other.contest, contest) || other.contest == contest) &&
-            (identical(other.id, id) || other.id == id) &&
+            (identical(other.url, url) || other.url == url) &&
             (identical(other.research, research) ||
                 other.research == research) &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.evaluator, evaluator) ||
+                other.evaluator == evaluator) &&
             (identical(other.review, review) || other.review == review));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, contest, id, research, review);
+  int get hashCode =>
+      Object.hash(runtimeType, contest, url, research, id, evaluator, review);
 
   @JsonKey(ignore: true)
   @override
@@ -239,8 +319,12 @@ class _$ApplyImpl implements _Apply {
 abstract class _Apply implements Apply {
   const factory _Apply(
       {@JsonKey(required: true) required final Contest contest,
+      @Deprecated('Use research instead')
+      @JsonKey(required: true)
+      required final String url,
+      @JsonKey(required: true) final Research? research,
       @JsonKey(required: true) final int? id,
-      @JsonKey(required: true) required final String research,
+      final User? evaluator,
       final Review? review}) = _$ApplyImpl;
 
   factory _Apply.fromJson(Map<String, dynamic> json) = _$ApplyImpl.fromJson;
@@ -252,14 +336,24 @@ abstract class _Apply implements Apply {
   Contest get contest;
   @override
 
+  /// The applicant of the apply
+  @Deprecated('Use research instead')
+  @JsonKey(required: true)
+  String get url;
+  @override
+
+  /// The research of the apply
+  @JsonKey(required: true)
+  Research? get research;
+  @override
+
   /// The id of the apply
   @JsonKey(required: true)
   int? get id;
   @override
 
-  /// The applicant of the apply
-  @JsonKey(required: true)
-  String get research;
+  /// The evaluator
+  User? get evaluator;
   @override
 
   /// An optional review of the apply

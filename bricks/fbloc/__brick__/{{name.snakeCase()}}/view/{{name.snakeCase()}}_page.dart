@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../{{name.snakeCase()}}.dart';
 
 enum {{name.pascalCase()}}Status { initial, loading, success, failure }
 

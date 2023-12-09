@@ -60,7 +60,7 @@ class AuthenticationRepository {
 
   /// Returns the current cached user.
   /// Defaults to [User.empty] if there is no cached user.
-  User get currentUser => _cache.read(key: _userCacheKey) ?? User.empty;
+  User get currentUser => _cache.read<User>(key: _userCacheKey) ?? User.empty;
 
   /// Stream of [User] which will emit the current user when
   /// the authentication state changes.

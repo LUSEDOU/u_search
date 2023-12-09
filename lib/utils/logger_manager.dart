@@ -17,7 +17,7 @@ class LoggerManager {
       level: Level.debug, // Set the log level
       printer: PrettyPrinter(
         methodCount: 0, // number of method calls to be displayed
-        errorMethodCount: 8, // number of method calls if stacktrace is provided
+        errorMethodCount: 10, // number of method calls if stacktrace is provided
         lineLength: 60, // width of the output
         colors: true, // Colorful log messages
         printEmojis: false, // Print an emoji for each log message

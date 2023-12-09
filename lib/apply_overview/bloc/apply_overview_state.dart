@@ -4,30 +4,30 @@ enum ApplyOverviewStatus { initial, loading, success, failure }
 
 class ApplyOverviewState extends Equatable {
   const ApplyOverviewState({
-    this.initialApply,
+    this.apply,
     this.status = ApplyOverviewStatus.initial,
     this.evaluator,
     this.evaluators = const <User>[],
   });
 
-  final Apply? initialApply;
+  final Apply? apply;
   final ApplyOverviewStatus status;
   final User? evaluator;
   final List<User> evaluators;
 
   ApplyOverviewState copyWith({
-    Apply? initialApply,
+    Apply? apply,
     ApplyOverviewStatus? status,
     User? evaluator,
     List<User>? evaluators,
   }) =>
       ApplyOverviewState(
-        initialApply: initialApply ?? this.initialApply,
+        apply: apply ?? this.apply,
         status: status ?? this.status,
         evaluator: evaluator ?? this.evaluator,
         evaluators: evaluators ?? this.evaluators,
       );
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [apply, status, evaluator, evaluators];
 }

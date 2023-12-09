@@ -21,12 +21,12 @@ final class ApplySelectContest extends ApplyEvent {
 }
 
 final class ApplyUploadResearch extends ApplyEvent {
-  const ApplyUploadResearch(this.research);
+  const ApplyUploadResearch(this.file);
 
-  final File research;
+  final File file;
 
   @override
-  List<Object> get props => [research];
+  List<Object> get props => [file];
 }
 
 final class ApplySubmitApplication extends ApplyEvent {

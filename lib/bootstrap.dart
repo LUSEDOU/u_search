@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:u_search_flutter/app/app.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 
 void bootstrap({
   required AuthClient authClient,
@@ -12,8 +12,10 @@ void bootstrap({
   required ApiClient apiClient,
   required String userCacheKey,
 }) {
+    final logger = LoggerManager().logger;
   FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
+    logger.e(details.exceptionAsString());
+    logger.e(details.stack);
   };
 
   final AuthenticationRepository authenticationRepository =
@@ -32,6 +34,8 @@ void bootstrap({
         dataRepository: dataRepository,
       ),
     ),
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+    (error, stackTrace) {
+      logger.e(error.toString());
+      logger.e(stackTrace.toString());}
   );
 }

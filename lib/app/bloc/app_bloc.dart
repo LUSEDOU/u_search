@@ -4,6 +4,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -20,6 +21,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
                 )
               : const AppState(),
         ) {
+    LoggerManager().logger.i(authenticationRepository.currentUser);
     on<AppLogoutRequested>(_onLogoutRequested);
     on<_AppUserChanged>(_onUserChanged);
     on<AppUserTypeChanged>(_onUserTypeChanged);

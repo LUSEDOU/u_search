@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:authentication_repository/authentication_repository.dart'
     as auth;
 import 'package:data_repository/data_repository.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:u_search_flutter/factory.dart';
 
 class AuthClientTest implements auth.AuthClient {
@@ -43,7 +44,8 @@ class AuthClientTest implements auth.AuthClient {
 class CacheClientTest implements auth.CacheClient {
   @override
   T? read<T>({required String key}) {
-    return null;
+    return const auth.User(id: '123', email: 'test@test.com') as T;
+    // return null;
   }
 
   @override
@@ -53,16 +55,14 @@ class CacheClientTest implements auth.CacheClient {
 }
 
 class ApiClientTest implements ApiClient {
-  final StreamController<List<Apply>> _applyController =
-      StreamController<List<Apply>>();
+  final _applyController = BehaviorSubject<List<Apply>>.seeded(
+    appliesListFactory(5),
+  );
 
   @override
-  Stream<List<Apply>> getApplies() async* {
+  Future<Stream<List<Apply>>> getApplies() async {
     await Future.delayed(const Duration(milliseconds: 100));
-    _applyController.add(
-      appliesListFactory(4),
-    );
-    yield* _applyController.stream;
+    return _applyController.stream;
   }
 
   @override
@@ -72,13 +72,12 @@ class ApiClientTest implements ApiClient {
   }
 
   @override
-  Future<String> uploadResearch({
-    required int applicantId,
+  Future<String> uploadResearchFile({
     required File research,
   }) {
     return Future.delayed(
       const Duration(milliseconds: 100),
-      () => 'url',
+      () => '123',
     );
   }
 
@@ -86,7 +85,22 @@ class ApiClientTest implements ApiClient {
   Future<Apply> getApply(int id) {
     return Future.delayed(
       const Duration(milliseconds: 100),
-      () => applyFactory(id),
+      () => _applyController.value.firstWhere((apply) => apply.id == id),
     );
+  }
+
+  @override
+  Future<Research> addResearch(Research research) {
+    return Future.delayed(
+        const Duration(milliseconds: 100), () => research.copyWith());
+  }
+
+  @override
+  Future<Apply> addApply(Apply apply) async {
+    await Future.delayed(const Duration(milliseconds: 100));
+    final applies = [..._applyController.value];
+    final newApply = apply.copyWith(id: applies.length + 1);
+    _applyController.add(applies..add(newApply));
+    return newApply;
   }
 }

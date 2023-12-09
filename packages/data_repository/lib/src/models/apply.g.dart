@@ -9,12 +9,18 @@ part of 'apply.dart';
 _$ApplyImpl _$$ApplyImplFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const ['contest', 'id', 'research'],
+    requiredKeys: const ['contest', 'url', 'research', 'id'],
   );
   return _$ApplyImpl(
     contest: Contest.fromJson(json['contest'] as Map<String, dynamic>),
+    url: json['url'] as String,
+    research: json['research'] == null
+        ? null
+        : Research.fromJson(json['research'] as Map<String, dynamic>),
     id: json['id'] as int?,
-    research: json['research'] as String,
+    evaluator: json['evaluator'] == null
+        ? null
+        : User.fromJson(json['evaluator'] as Map<String, dynamic>),
     review: json['review'] == null
         ? null
         : Review.fromJson(json['review'] as Map<String, dynamic>),
@@ -24,7 +30,9 @@ _$ApplyImpl _$$ApplyImplFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$$ApplyImplToJson(_$ApplyImpl instance) =>
     <String, dynamic>{
       'contest': instance.contest,
-      'id': instance.id,
+      'url': instance.url,
       'research': instance.research,
+      'id': instance.id,
+      'evaluator': instance.evaluator,
       'review': instance.review,
     };

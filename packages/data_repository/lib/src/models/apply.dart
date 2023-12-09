@@ -14,11 +14,19 @@ class Apply with _$Apply {
     /// The contest of the apply
     @JsonKey(required: true) required Contest contest,
 
+    /// The applicant of the apply
+    @Deprecated('Use research instead')
+    @JsonKey(required: true)
+    required String url,
+
+    /// The research of the apply
+    @JsonKey(required: true) Research? research,
+
     /// The id of the apply
     @JsonKey(required: true) int? id,
 
-    /// The applicant of the apply
-    @JsonKey(required: true) required String research,
+    /// The evaluator
+    User? evaluator,
 
     /// An optional review of the apply
     Review? review,
