@@ -16,4 +16,6 @@ abstract class ApiClient {
   Future<Research> addResearch(Research research);
 
   Future<Apply> addApply(Apply apply);
+
+  Future<Review> addReview(Review review);
 }
