@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 extension IterableExtension<T> on Iterable<T> {
   Iterable<T?> whereNotNull() => where((T? element) => element != null);
 
@@ -28,4 +30,12 @@ extension IterableExtension<T> on Iterable<T> {
       return e;
     });
   }
+}
+
+extension ContextExtension on BuildContext {
+    Size get size => MediaQuery.of(this).size;
+    double get width => size.width;
+    double get height => size.height;
+
+    ThemeData get theme => Theme.of(this);
 }
