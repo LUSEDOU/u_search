@@ -1,4 +1,3 @@
-import 'package:data_repository/data_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +21,7 @@ class CommentField extends StatelessWidget {
         return TextFormField(
           key: Key('applyReviewView_comment_textFormField_$id'),
           initialValue: comment?.value,
-          readOnly: state.isNew,
+          readOnly: !state.isNew,
           onChanged: (value) => context.read<ApplyReviewBloc>().add(
                 ApplyReviewCommentChanged(
                   id: id,
@@ -63,18 +62,21 @@ class ScoreField extends StatelessWidget {
         return TextFormField(
           key: Key('applyReviewView_score_textFormField_$id'),
           initialValue: score?.value,
-          readOnly: state.isNew,
+          readOnly: !state.isNew,
           onChanged: (value) => context.read<ApplyReviewBloc>().add(
                 ApplyReviewScoreChanged(
                   id: id,
                   score: value,
                 ),
               ),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
             labelText: 'Score',
             isDense: true,
             isCollapsed: false,
+            errorText: score?.displayError != null
+                ? (score?.displayError as ScoreValidationError).message
+                : null,
           ),
           inputFormatters: [
             FilteringTextInputFormatter.allow(

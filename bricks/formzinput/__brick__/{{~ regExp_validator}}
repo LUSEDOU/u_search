@@ -1,0 +1,3 @@
+if (!RegExp(_{{name.camelCase()}}RegExp).hasMatch(value)) {
+    return {{name.pascalCase()}}ValidationError.invalid;
+}

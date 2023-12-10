@@ -1,5 +1,5 @@
 import 'package:data_repository/data_repository.dart';
-import 'package:u_search_flutter/apply_review/models/calification_form.dart';
+import 'package:u_search_flutter/apply_review/apply_review.dart';
 
 const shortLoremIpsum =
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';

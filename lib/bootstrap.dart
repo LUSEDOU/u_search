@@ -12,7 +12,7 @@ void bootstrap({
   required ApiClient apiClient,
   required String userCacheKey,
 }) {
-    final logger = LoggerManager().logger;
+  final logger = LoggerManager().logger;
   FlutterError.onError = (details) {
     logger.e(details.exceptionAsString());
     logger.e(details.stack);
@@ -27,15 +27,17 @@ void bootstrap({
 
   final dataRepository = DataRepository(apiClient);
 
-  runZonedGuarded(
-    () => runApp(
+  runZonedGuarded(() {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    runApp(
       App(
         authenticationRepository: authenticationRepository,
         dataRepository: dataRepository,
       ),
-    ),
-    (error, stackTrace) {
-      logger.e(error.toString());
-      logger.e(stackTrace.toString());}
-  );
+    );
+  }, (error, stackTrace) {
+    logger.e(error.toString());
+    logger.e(stackTrace.toString());
+  });
 }

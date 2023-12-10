@@ -64,6 +64,33 @@ void main() {
         criterias: buildCriterias(),
       );
 
+  CalificationForm buildCalificationPure({
+    int id = 0,
+    double percent = 1,
+    double maxScore = 4,
+  }) =>
+      CalificationForm.pure(
+        id: id,
+        percent: percent,
+        maxScore: maxScore,
+      );
+
+  CalificationForm buildCalificationDirty({
+    int id = 0,
+    double percent = 1,
+    double maxScore = 4,
+    String score = '',
+    String comment = '',
+  }) =>
+      buildCalificationPure(
+        id: id,
+        percent: percent,
+        maxScore: maxScore,
+      ).dirty(
+        score: score,
+        comment: comment,
+      );
+
   group(
     'Pure',
     () {
@@ -109,18 +136,57 @@ void main() {
   );
 
   group('dirty', () {
-    late final SubCriteria subcriteria;
+    late SubCriteria subcriteria;
+    late CalificationForm calification;
 
     setUp(() {
       subcriteria = buildSubcriteria(id: 1, percent: 0.5);
+
+      calification = CalificationForm.pure(
+        id: subcriteria.id,
+        maxScore: subcriteria.maxScore,
+        percent: subcriteria.percent,
+      );
     });
 
     test('returns a CalificationForm with the given score', () {
-      final calification = CalificationForm.pure(id: subcriteria.id);
-
       final calificationForm = calification.dirty(score: '5');
 
       expect(calificationForm.score.value, '5');
+    });
+
+    test('returns a CalificationForm with the given comment', () {
+      final calificationForm = calification.dirty(comment: 'comment');
+
+      expect(calificationForm.comment.value, 'comment');
+    });
+
+    test('returns a CalificationForm with the given score and comment', () {
+      final calificationForm = calification.dirty(
+        score: '5',
+        comment: 'comment',
+      );
+
+      expect(calificationForm.score.value, '5');
+      expect(calificationForm.comment.value, 'comment');
+    });
+
+    test('returns the same if not give anything', () {
+      final calificationForm = calification.dirty();
+
+      expect(calificationForm, calification);
+    });
+
+    test('returns a score dirty if its given a score', () {
+      final calificationForm = calification.dirty(score: '5');
+
+      expect(calificationForm.score.isPure, false);
+    });
+
+    test('returns a comment dirty if its given a comment', () {
+      final calificationForm = calification.dirty(comment: 'comment');
+
+      expect(calificationForm.comment.isPure, false);
     });
   });
 
@@ -266,4 +332,173 @@ void main() {
       });
     });
   });
+
+  group('isValid', () {
+    late CalificationForm calificationForm;
+    late CalificationForm calificationFormDirty;
+    late Calification calification;
+
+    setUp(() {
+      final subCriteria = buildSubcriteria(id: 1, percent: 0.5);
+
+      calification = Calification(
+        subCriteria: subCriteria,
+        score: 3.33,
+        comment: 'comment',
+      );
+
+      calificationForm = CalificationForm.pure(
+        id: subCriteria.id,
+        maxScore: subCriteria.maxScore,
+        percent: subCriteria.percent,
+      );
+
+      calificationFormDirty = calificationForm.dirty(
+        score: calification.score?.toString(),
+        comment: calification.comment,
+      );
+    });
+
+    test('isValid fromModel', () {
+      final calificationForm = CalificationForm.fromModel(calification);
+
+      expect(
+        calificationForm.isValid,
+        true,
+      );
+    });
+
+    test('isValid is null if doesn\'t assing in pure', () {
+      expect(
+        calificationForm.isValid,
+        null,
+      );
+    });
+
+    test('returns null if not give anything', () {
+      calificationForm = calificationForm.dirty();
+
+      expect(
+        calificationForm.isValid,
+        null,
+      );
+    });
+
+    test('returns null if score and comment are pure', () {
+      expect(
+        calificationForm.isValid,
+        null,
+      );
+    });
+
+    test('returns not null if both are given', () {
+      calificationFormDirty = calificationForm.dirty(
+        score: calification.score?.toString(),
+        comment: calification.comment,
+      );
+
+      expect(
+        calificationFormDirty.isValid,
+        isNotNull,
+      );
+    });
+
+    test('return false if comment is empty', () {
+      calificationFormDirty = calificationFormDirty.dirty(
+        comment: '',
+      );
+
+      expect(
+        calificationFormDirty.isValid,
+        false,
+      );
+    });
+
+    test('return false if score is empty', () {
+      calificationFormDirty = calificationFormDirty.dirty(
+        score: '',
+      );
+
+      expect(
+        calificationFormDirty.isValid,
+        false,
+      );
+    });
+
+    test('return false if score is invalid', () {
+      calificationFormDirty = calificationFormDirty.dirty(
+        score: 'invalid',
+      );
+
+      expect(
+        calificationFormDirty.isValid,
+        false,
+      );
+    });
+
+    test('return false if score is greater than maxScore', () {
+      calificationFormDirty = calificationFormDirty.dirty(
+        score: (calificationForm.score.maxScore! + 1).toString(),
+      );
+
+      expect(
+        calificationFormDirty.isValid,
+        false,
+      );
+    });
+
+    test('return true if score and comment are valid', () {
+      calificationFormDirty = calificationFormDirty.dirty(
+        score: calification.score?.toString(),
+        comment: calification.comment,
+      );
+
+      expect(
+        calificationFormDirty.isValid,
+        true,
+      );
+    });
+  });
+
+  group('ponderateScore', () {
+    late CalificationForm calificationForm;
+    late double score;
+    late double percent;
+
+    setUp(() {
+      score = 3.33;
+      percent = 0.5;
+
+      calificationForm = buildCalificationDirty(
+        score: score.toString(),
+        percent: percent,
+      );
+    });
+
+    test('returns the score ponderated', () {
+      expect(calificationForm.score.value, score.toString());
+      expect(calificationForm.percent, percent);
+      expect(
+        calificationForm.ponderateScore,
+        score * percent,
+      );
+    });
+
+    test('returns 0 with score invalid', () {
+      calificationForm = calificationForm.dirty(
+        score: 'invalid',
+      );
+
+      expect(calificationForm.score.value, 'invalid');
+      expect(calificationForm.percent, percent);
+      expect(
+        calificationForm.ponderateScore,
+        0,
+      );
+    });
+  });
+
+  group('List<CalificationForm>', () {
+
+      });
 }

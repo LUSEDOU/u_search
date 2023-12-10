@@ -37,4 +37,6 @@ class DataRepository {
 
   /// Returns an [Apply] with the given [id].
   Future<Apply> getApply(int id) => _client.getApply(id);
+
+  Future<Review> addReview(Review review) => _client.addReview(review);
 }

@@ -5,3 +5,5 @@ bricks:
     path: ./bloc
   cubit:
     path: ./cubit
+  formzinput:
+    path: formzinput

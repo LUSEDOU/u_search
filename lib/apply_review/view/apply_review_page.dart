@@ -1,5 +1,4 @@
 import 'package:data_repository/data_repository.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -43,18 +42,27 @@ class ApplyReviewView extends StatelessWidget {
       ),
       bottomNavigationBar: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
         builder: (context, state) {
+          final score = state.totalScore;
+
           return BottomAppBar(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Text('${state.isValid}'),
                 if (state.isNew)
                   ElevatedButton(
-                    onPressed: state.isValid == null
-                        ? null
-                        : () => context.read<ApplyReviewBloc>().add(
+                    onPressed: state.isValid ?? false
+                        ? () => context.read<ApplyReviewBloc>().add(
                               const ApplyReviewSubmit(),
-                            ),
-                    child: const Text('Save'),
+                            )
+                        : null,
+                    child: Text(
+                      '$score',
+                    ),
+                  )
+                else
+                  Text(
+                    '$score',
                   ),
               ],
             ),
@@ -86,10 +94,6 @@ class ApplyReviewView extends StatelessWidget {
             listenWhen: (previous, current) =>
                 previous.status != current.status && current.isSuccess,
             listener: (context, state) {
-              context.go(
-                '/applies/${state.apply.id}/review',
-                extra: state.apply,
-              );
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
@@ -100,9 +104,8 @@ class ApplyReviewView extends StatelessWidget {
             },
           ),
         ],
-        child: ApplyReviewForm(),
+        child: const ApplyReviewForm(),
       ),
     );
   }
 }
-
