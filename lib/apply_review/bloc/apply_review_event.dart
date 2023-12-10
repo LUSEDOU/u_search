@@ -4,22 +4,6 @@ sealed class ApplyReviewEvent extends Equatable {
   const ApplyReviewEvent();
 }
 
-final class ApplyReviewSubcriptionRequested extends ApplyReviewEvent {
-  const ApplyReviewSubcriptionRequested();
-
-  @override
-  List<Object> get props => [];
-}
-
-final class ApplyReviewFetchApply extends ApplyReviewEvent {
-  const ApplyReviewFetchApply({required this.id});
-
-  final int id;
-
-  @override
-  List<Object> get props => [id];
-}
-
 final class ApplyReviewScoreChanged extends ApplyReviewEvent {
   const ApplyReviewScoreChanged({
     required this.id,

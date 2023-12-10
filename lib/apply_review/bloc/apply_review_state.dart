@@ -44,4 +44,6 @@ extension ApplyReviewStateX on ApplyReviewState {
   bool get isSuccess => status == ApplyReviewStatus.success;
   bool get isFailure => status == ApplyReviewStatus.failure;
   bool get isInitial => status == ApplyReviewStatus.initial;
+
+  double get totalScore => califications.totalScore(apply.contest.criterias);
 }

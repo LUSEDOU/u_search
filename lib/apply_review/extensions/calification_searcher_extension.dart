@@ -4,13 +4,6 @@ import 'package:u_search_flutter/apply_review/extensions/double_score_extension.
 import 'package:u_search_flutter/utils/dart_extensions.dart';
 
 extension CalificationSearcher<T> on Iterable<CalificationForm> {
-  static List<CalificationForm> fromContest(
-    Contest contest,
-  ) =>
-      contest.criterias
-          .expand((element) => element.subCriterias)
-          .map(CalificationForm.fromSubCriteria)
-          .toList();
 
   CalificationForm? getFromSubCriteria(SubCriteria subCriteria) =>
       firstWhereOrNull((element) => element.id == subCriteria.id);

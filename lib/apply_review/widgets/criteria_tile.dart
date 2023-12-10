@@ -36,12 +36,9 @@ class CriteriaTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (score != null)
-                  Text(
-                    '${state.califications.scoreFrom(criteria)}',
-                  )
-                else
-                  const SizedBox.shrink(),
+                Text(
+                  '$score',
+                )
               ],
             ),
             Text(

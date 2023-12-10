@@ -15,7 +15,8 @@ class SubCriteriaTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
       builder: (context, state) {
-        final calification = state.califications.fromSubCriteria(subCriteria);
+        final calification =
+            state.califications.getFromSubCriteria(subCriteria);
 
         return Column(
           children: [
@@ -33,12 +34,6 @@ class SubCriteriaTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (calification != null)
-                  Text(
-                    '${calification.ponderateScore}',
-                  )
-                else
-                  const SizedBox.shrink(),
               ],
             ),
             Text(
