@@ -49,6 +49,9 @@ class Role with _$Role {
   }) = _Role;
 
   /// {@macro role}
+  factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
+
+  /// {@macro role}
   const Role._();
 
   /// Empty role
@@ -56,7 +59,27 @@ class Role with _$Role {
     id: -1,
     type: RoleType.unknown,
   );
+}
 
-  /// {@macro role}
-  factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
+/// {@template role_x}
+/// Extension for [Role]
+/// {@endtemplate}
+extension RoleX on Role {
+  /// Role is empty
+  bool get isEmpty => this == Role.empty;
+
+  /// Role is not empty
+  bool get isNotEmpty => this != Role.empty;
+
+  /// Role is unknown
+  bool get isUnknown => type == RoleType.unknown;
+
+  /// Role is researcher
+  bool get isResearcher => type == RoleType.researcher;
+
+  /// Role is reviewer
+  bool get isReviewer => type == RoleType.reviewer;
+
+  /// Role is admin
+  bool get isAdmin => type == RoleType.admin;
 }

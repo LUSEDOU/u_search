@@ -14,7 +14,7 @@ _$RoleImpl _$$RoleImplFromJson(Map<String, dynamic> json) => _$RoleImpl(
 Map<String, dynamic> _$$RoleImplToJson(_$RoleImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'type': _$RoleTypeEnumMap[instance.type]!,
+      'type': _$RoleTypeEnumMap[instance.type],
     };
 
 const _$RoleTypeEnumMap = {
