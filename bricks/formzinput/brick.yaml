@@ -1,0 +1,19 @@
+name: formzinput
+description: A new brick created with the Mason CLI.
+
+version: 0.1.0+1
+
+environment:
+  mason: ">=0.1.0-dev.51 <0.1.0"
+
+vars:
+  name:
+    type: string
+    description: The model name
+    default: Email
+    prompt: What is the model name?
+  hasRegExp:
+    type: boolean
+    description: If the model has RegExp pattern
+    default: false
+    prompt: The model has RegExp pattern?
