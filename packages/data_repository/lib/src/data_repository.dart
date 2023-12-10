@@ -17,17 +17,23 @@ class DataRepository {
   final ApiClient _client;
   final CacheClient _cache;
 
+  /// Returns a Stream of [Role]s.
   Stream<Role> get role => _client.roleChanges().map((role) {
-        final _role = role ?? Role.empty;
-        _cache.write(key: _cache.roleCacheKey, value: _role);
-        return _role;
+        final newRole = role ?? Role.empty;
+        _cache.write(key: _cache.roleCacheKey, value: newRole);
+        return newRole;
       });
 
+  /// Returns the current [Role] from the cache.
   Role get currentRole =>
       _cache.read<Role>(key: _cache.roleCacheKey) ?? Role.empty;
 
+  /// Adds a [role] to the current user.
   Future<Role> addRoleToUser(Role role, {required User user}) =>
       _client.addRoleToUser(role, user: user);
+
+  /// Logs out the current role.
+  void logOut() => _client.logout();
 
   /// Returns a List of [Contest]s.
   Future<List<Contest>> getContests() => _client.getContests();
@@ -35,6 +41,7 @@ class DataRepository {
   /// Returns a Stream of List of [Apply]s.
   Future<Stream<List<Apply>>> getApplies() => _client.getApplies();
 
+  /// Updates a [user] and returns it.
   Future<User> updateUser(User user) => _client.updateUser(user);
 
   /// Uploads a [research] file

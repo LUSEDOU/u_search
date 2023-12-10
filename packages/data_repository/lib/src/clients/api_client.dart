@@ -11,6 +11,8 @@ abstract class ApiClient {
 
   Future<Role> addRoleToUser(Role role, {required User user});
 
+  void logout();
+
   Future<User> updateUser(User user);
 
   Future<Apply> getApply(int id);
