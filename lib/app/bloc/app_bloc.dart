@@ -1,9 +1,14 @@
 import 'dart:async';
 
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
+import 'package:authentication_repository/authentication_repository.dart'
+    as auth;
+import 'package:data_repository/data_repository.dart';
+import 'package:u_search_flutter/app/app.dart';
+
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
 part 'app_event.dart';
@@ -11,27 +16,37 @@ part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
   AppBloc({
-    required AuthenticationRepository authenticationRepository,
+    required auth.AuthenticationRepository authenticationRepository,
+    required DataRepository dataRepository,
   })  : _authenticationRepository = authenticationRepository,
+        _dataRepository = dataRepository,
         super(
           authenticationRepository.currentUser.isNotEmpty
               ? AppState(
                   status: AppStatus.authenticated,
-                  user: authenticationRepository.currentUser,
+                  user: authenticationRepository.currentUser.toModel(),
+                  role: dataRepository.currentRole,
                 )
-              : const AppState(),
+              : AppState(
+                  role: dataRepository.currentRole,
+                ),
         ) {
     LoggerManager().logger.i(authenticationRepository.currentUser);
     on<AppLogoutRequested>(_onLogoutRequested);
     on<_AppUserChanged>(_onUserChanged);
-    on<AppUserTypeChanged>(_onUserTypeChanged);
+    on<AppRoleChanged>(_onRoleChanged);
     _userSubscription = _authenticationRepository.user.listen(
-      (user) => add(_AppUserChanged(user)),
+      (user) => add(_AppUserChanged(user.toModel())),
+    );
+    _roleSubscription = _dataRepository.role.listen(
+      (role) => add(AppRoleChanged(role)),
     );
   }
 
-  final AuthenticationRepository _authenticationRepository;
-  late final StreamSubscription<User> _userSubscription;
+  final auth.AuthenticationRepository _authenticationRepository;
+  final DataRepository _dataRepository;
+  late final StreamSubscription<auth.User> _userSubscription;
+  late final StreamSubscription<Role> _roleSubscription;
 
   void _onUserChanged(
     _AppUserChanged event,
@@ -48,13 +63,13 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
     notifyListeners();
   }
 
-  void _onUserTypeChanged(
-    AppUserTypeChanged event,
+  void _onRoleChanged(
+    AppRoleChanged event,
     Emitter<AppState> emit,
   ) {
     emit(
       state.copyWith(
-        type: event.type,
+        role: event.role,
       ),
     );
     notifyListeners();
@@ -64,9 +79,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
     AppLogoutRequested event,
     Emitter<AppState> emit,
   ) {
-    emit(
-      state.copyWith(type: UserType.unknown),
-    );
+    _dataRepository.logOut();
     _authenticationRepository.logOut();
     notifyListeners();
   }
@@ -74,6 +87,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
   @override
   Future<void> close() {
     _userSubscription.cancel();
+    _roleSubscription.cancel();
     return super.close();
   }
 }
