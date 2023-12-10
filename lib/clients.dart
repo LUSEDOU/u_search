@@ -103,4 +103,24 @@ class ApiClientTest implements ApiClient {
     _applyController.add(applies..add(newApply));
     return newApply;
   }
+
+  @override
+  Future<Review> addReview(Review review) {
+    final newReview = review.copyWith(
+      id: review.apply!.id,
+    );
+    final newApply = review.apply!.copyWith(
+      review: newReview,
+    );
+    final applies = [..._applyController.value];
+    _applyController.add(
+      applies
+        ..removeWhere((element) => element.id == newApply.id)
+        ..add(newApply),
+    );
+    return Future.delayed(
+      const Duration(milliseconds: 100),
+      () => newReview,
+    );
+  }
 }
