@@ -20,7 +20,7 @@ class ApplyPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => ApplyBloc(
         dataRepository: context.read<DataRepository>(),
-        applicantId: context.read<AppBloc>().state.user.applicantId ?? 0,
+        applicantId: context.read<AppBloc>().state.role.id,
       )..add(const ApplyFetchContests()),
       child: Scaffold(
         appBar: AppBar(title: const Text('Apply')),
