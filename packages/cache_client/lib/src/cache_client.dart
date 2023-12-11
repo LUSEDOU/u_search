@@ -10,4 +10,18 @@ abstract class CacheClient {
 
   /// Write value to cache
   void write<T>({required String key, required T value});
+
+  /// Delete value from cache
+  void delete({required String key});
+
+  /// Delete all values from cache
+  void deleteAll();
+}
+
+/// {@template cache_keys}
+/// Abstract class for CacheKeys
+/// {@endtemplate}
+interface class CacheKeys {
+  /// {@macro cache_keys}
+  const CacheKeys();
 }

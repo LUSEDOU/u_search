@@ -7,8 +7,8 @@ import 'package:u_search_flutter/apply/apply.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/apply_review/apply_review.dart';
 import 'package:u_search_flutter/login/login.dart';
+import 'package:u_search_flutter/role_selector/role_selector.dart';
 import 'package:u_search_flutter/sign_up/sign_up.dart';
-import 'package:u_search_flutter/user_type/user_type.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
 GoRouter router(AppBloc bloc) => GoRouter(
@@ -33,16 +33,16 @@ GoRouter router(AppBloc bloc) => GoRouter(
       routes: <GoRoute>[
         GoRoute(
           path: '/',
-          builder: (context, state) => const UserTypePage(),
-          redirect: (context, state) async {
-            final logger = LoggerManager().logger;
-            if (!context.read<AppBloc>().state.isUnknown) {
-              logger.i('From ${state.fullPath} To /applies');
-              return '/applies';
-            }
-            logger.i('To ${state.fullPath}');
-            return null;
-          },
+          builder: (context, state) => const RoleSelectorPage(),
+          // redirect: (context, state) async {
+          //   final logger = LoggerManager().logger;
+          //   if (!context.read<AppBloc>().state.isUnknown) {
+          //     logger.i('From ${state.fullPath} To /applies');
+          //     return '/applies';
+          //   }
+          //   logger.i('To ${state.fullPath}');
+          //   return null;
+          // },
         ),
         GoRoute(
           path: '/auth',
@@ -89,13 +89,13 @@ GoRouter router(AppBloc bloc) => GoRouter(
               },
               builder: (context, state) => ApplyOverviewPage(
                 id: int.parse(state.pathParameters['applyId'].toString()),
-                apply: state.extra is Apply ? state.extra as Apply : null,
+                apply: state.extra is Apply ? state.extra! as Apply : null,
               ),
               routes: [
                 GoRoute(
                   path: 'review',
                   builder: (context, state) => ApplyReviewPage(
-                    apply: state.extra as Apply,
+                    apply: state.extra! as Apply,
                   ),
                 ),
               ],

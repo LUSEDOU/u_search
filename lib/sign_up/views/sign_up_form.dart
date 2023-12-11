@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/sign_up/sign_up.dart';
 
 class SignUpForm extends StatelessWidget {
@@ -9,9 +10,10 @@ class SignUpForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<SignUpCubit, SignUpState>(
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
         if (state.status.isSuccess) {
-          Navigator.of(context).pop();
+          context.go('/applies');
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -25,6 +27,8 @@ class SignUpForm extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            _NameInput(),
+            const SizedBox(height: 8),
             _EmailInput(),
             const SizedBox(height: 8),
             _PasswordInput(),
@@ -104,6 +108,27 @@ class _ConfirmPasswordInput extends StatelessWidget {
             errorText: state.confirmedPassword.displayError != null
                 ? 'passwords do not match'
                 : null,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _NameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SignUpCubit, SignUpState>(
+      buildWhen: (previous, current) => previous.name != current.name,
+      builder: (context, state) {
+        return TextField(
+          key: const Key('signUpForm_nameInput_textField'),
+          onChanged: (name) => context.read<SignUpCubit>().nameChanged(name),
+          keyboardType: TextInputType.name,
+          decoration: InputDecoration(
+            labelText: 'name',
+            helperText: '',
+            errorText: state.name.displayError != null ? 'invalid name' : null,
           ),
         );
       },

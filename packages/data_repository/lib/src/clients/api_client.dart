@@ -7,6 +7,16 @@ abstract class ApiClient {
 
   Future<Stream<List<Apply>>> getApplies();
 
+  Stream<Role?> roleChanges();
+
+  Future<Role> addRoleToUser(Role role, {required User user});
+
+  Role updateRole(Role role);
+
+  void logout();
+
+  Future<User> upsertUser(User user);
+
   Future<Apply> getApply(int id);
 
   Future<String> uploadResearchFile({
@@ -18,4 +28,8 @@ abstract class ApiClient {
   Future<Apply> addApply(Apply apply);
 
   Future<Review> addReview(Review review);
+
+  Future<bool> validateCode(String code, int type);
+
+  Future<User> addUser(User user);
 }

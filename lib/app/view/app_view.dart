@@ -2,9 +2,10 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/router.dart';
 
-import '../app.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -31,6 +32,7 @@ class App extends StatelessWidget {
       child: BlocProvider(
         create: (_) => AppBloc(
           authenticationRepository: _authenticationRepository,
+          dataRepository: _dataRepository,
         ),
         child: const AppView(),
       ),

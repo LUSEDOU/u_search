@@ -20,4 +20,10 @@ abstract class AuthClient {
   /// Log out the current user which will emit [User.empty] from
   /// [authStateChanges].
   Future<void> logOut();
+
+  /// Returns the current user uid.
+  Future<String> getUid();
+
+  /// Returns the current user.
+  Future<User> getUser();
 }

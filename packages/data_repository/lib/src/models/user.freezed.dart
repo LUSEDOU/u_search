@@ -21,16 +21,13 @@ User _$UserFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$User {
   /// User email
-  @JsonKey(required: true)
   String get email => throw _privateConstructorUsedError;
 
   /// User's name
-  @JsonKey(required: true)
   String get name => throw _privateConstructorUsedError;
 
   /// User id
-  @JsonKey(required: true)
-  int? get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -42,10 +39,7 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res, User>;
   @useResult
-  $Res call(
-      {@JsonKey(required: true) String email,
-      @JsonKey(required: true) String name,
-      @JsonKey(required: true) int? id});
+  $Res call({String email, String name, String id});
 }
 
 /// @nodoc
@@ -63,7 +57,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   $Res call({
     Object? email = null,
     Object? name = null,
-    Object? id = freezed,
+    Object? id = null,
   }) {
     return _then(_value.copyWith(
       email: null == email
@@ -74,10 +68,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String,
     ) as $Val);
   }
 }
@@ -89,10 +83,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$$UserImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {@JsonKey(required: true) String email,
-      @JsonKey(required: true) String name,
-      @JsonKey(required: true) int? id});
+  $Res call({String email, String name, String id});
 }
 
 /// @nodoc
@@ -107,7 +98,7 @@ class __$$UserImplCopyWithImpl<$Res>
   $Res call({
     Object? email = null,
     Object? name = null,
-    Object? id = freezed,
+    Object? id = null,
   }) {
     return _then(_$UserImpl(
       email: null == email
@@ -118,39 +109,34 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$UserImpl implements _User {
-  const _$UserImpl(
-      {@JsonKey(required: true) required this.email,
-      @JsonKey(required: true) required this.name,
-      @JsonKey(required: true) this.id});
+class _$UserImpl extends _User {
+  const _$UserImpl({required this.email, required this.name, required this.id})
+      : super._();
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
 
   /// User email
   @override
-  @JsonKey(required: true)
   final String email;
 
   /// User's name
   @override
-  @JsonKey(required: true)
   final String name;
 
   /// User id
   @override
-  @JsonKey(required: true)
-  final int? id;
+  final String id;
 
   @override
   String toString() {
@@ -185,29 +171,27 @@ class _$UserImpl implements _User {
   }
 }
 
-abstract class _User implements User {
+abstract class _User extends User {
   const factory _User(
-      {@JsonKey(required: true) required final String email,
-      @JsonKey(required: true) required final String name,
-      @JsonKey(required: true) final int? id}) = _$UserImpl;
+      {required final String email,
+      required final String name,
+      required final String id}) = _$UserImpl;
+  const _User._() : super._();
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
   @override
 
   /// User email
-  @JsonKey(required: true)
   String get email;
   @override
 
   /// User's name
-  @JsonKey(required: true)
   String get name;
   @override
 
   /// User id
-  @JsonKey(required: true)
-  int? get id;
+  String get id;
   @override
   @JsonKey(ignore: true)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>

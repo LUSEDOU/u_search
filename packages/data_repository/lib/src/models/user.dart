@@ -16,15 +16,31 @@ class User with _$User {
   /// {@macro user}
   const factory User({
     /// User email
-    @JsonKey(required: true) required String email,
+    required String email,
 
     /// User's name
-    @JsonKey(required: true) required String name,
+    required String name,
 
     /// User id
-    @JsonKey(required: true) int? id,
+    required String id,
   }) = _User;
 
   /// {@macro user}
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  /// {@macro user}
+  const User._();
+
+  /// Empty user
+  static const empty = User(
+    email: '',
+    name: '',
+    id: '',
+  );
+
+  /// User is empty
+  bool get isEmpty => this == User.empty;
+
+  /// User is not empty
+  bool get isNotEmpty => this != User.empty;
 }

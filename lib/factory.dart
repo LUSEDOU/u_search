@@ -52,7 +52,7 @@ List<Criteria> criteriasListFactory(int parentIndex, int length) {
   return List.generate(
     length,
     (index) => criteriaFactory(index + parentIndex,
-        subCriterias: subCriterias.sublist(index * 2, (index + 1) * 2)),
+        subCriterias: subCriterias.sublist(index * 2, (index + 1) * 2),),
   );
 }
 
@@ -69,7 +69,7 @@ Contest contestFactory(
 
 List<Contest> contestsListFactory(int length) => List.generate(
       length,
-      (index) => contestFactory(index),
+      contestFactory,
     );
 
 Review reviewFactory(
@@ -107,7 +107,7 @@ Apply applyFactory(
 
 List<Apply> appliesListFactory(int length) => List.generate(
       length,
-      (index) => applyFactory(index),
+      applyFactory,
     );
 
 Research researchFactory(
@@ -122,7 +122,7 @@ Research researchFactory(
     );
 
 User userFactory() => const User(
-      id: 1,
+      id: '123',
       name: 'User',
       email: 'user@demo.com',
     );

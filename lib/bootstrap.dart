@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cache_client/cache_client.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:u_search_flutter/app/app.dart';
@@ -10,22 +11,27 @@ void bootstrap({
   required AuthClient authClient,
   required CacheClient cacheClient,
   required ApiClient apiClient,
-  required String userCacheKey,
+  required DataCacheKeys dataKeys,
+  required AuthCacheKeys authKeys,
 }) {
   final logger = LoggerManager().logger;
   FlutterError.onError = (details) {
-    logger.e(details.exceptionAsString());
-    logger.e(details.stack);
+    logger
+      ..e(details.exceptionAsString())
+      ..e(details.stack);
   };
 
-  final AuthenticationRepository authenticationRepository =
-      AuthenticationRepository(
+  final authenticationRepository = AuthenticationRepository(
     authClient: authClient,
     cacheClient: cacheClient,
-    userCacheKey: userCacheKey,
+    keys: authKeys,
   );
 
-  final dataRepository = DataRepository(apiClient);
+  final dataRepository = DataRepository(
+    client: apiClient,
+    cache: cacheClient,
+    cacheKeys: dataKeys,
+  );
 
   runZonedGuarded(() {
     WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +43,8 @@ void bootstrap({
       ),
     );
   }, (error, stackTrace) {
-    logger.e(error.toString());
-    logger.e(stackTrace.toString());
+    logger
+      ..e(error.toString())
+      ..e(stackTrace.toString());
   });
 }

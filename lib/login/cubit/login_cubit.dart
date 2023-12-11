@@ -1,15 +1,23 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
+import 'package:u_search_flutter/utils/models_extensions.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this._authenticationRepository) : super(const LoginState());
+  LoginCubit({
+    required AuthenticationRepository authenticationRepository,
+    required DataRepository dataRepository,
+  })  : _authenticationRepository = authenticationRepository,
+        _dataRepository = dataRepository,
+        super(const LoginState());
 
   final AuthenticationRepository _authenticationRepository;
+  final DataRepository _dataRepository;
 
   void emailChanged(String value) {
     final email = Email.dirty(value);
@@ -39,6 +47,15 @@ class LoginCubit extends Cubit<LoginState> {
         email: state.email.value,
         password: state.password.value,
       );
+      final role = _dataRepository.currentRole;
+      if (!role.isCreated) {
+        final user = await _authenticationRepository.getUser();
+        await _dataRepository.addRoleToUser(
+          role,
+          user: user.toModel(),
+        );
+      }
+
       emit(state.copyWith(status: FormzSubmissionStatus.success));
       // } on LogInWithEmailAndPasswordFailure catch (e) {
       //   emit(

@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:data_repository/data_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -21,7 +22,8 @@ class SignUpPage extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: BlocProvider(
           create: (_) => SignUpCubit(
-            context.read<AuthenticationRepository>(),
+            authenticationRepository: context.read<AuthenticationRepository>(),
+            dataRepository: context.read<DataRepository>(),
           ),
           child: const SignUpForm(),
         ),
