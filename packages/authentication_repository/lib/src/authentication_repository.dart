@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cache_client/cache_client.dart';
 
 /// {@template sing_up_failure}
 /// Exception thrown when a sing up fails.
@@ -47,20 +48,19 @@ class AuthenticationRepository {
   const AuthenticationRepository({
     required CacheClient cacheClient,
     required AuthClient authClient,
-    required String userCacheKey,
+    required AuthCacheKeys keys,
   })  : _cache = cacheClient,
         _auth = authClient,
-        _userCacheKey = userCacheKey;
+        _keys = keys;
 
   final CacheClient _cache;
   final AuthClient _auth;
-
-  /// User cache key.
-  final String _userCacheKey;
+  final AuthCacheKeys _keys;
 
   /// Returns the current cached user.
   /// Defaults to [User.empty] if there is no cached user.
-  User get currentUser => _cache.read<User>(key: _userCacheKey) ?? User.empty;
+  User get currentUser =>
+      _cache.read<User>(key: _keys.userCacheKey) ?? User.empty;
 
   /// Stream of [User] which will emit the current user when
   /// the authentication state changes.
@@ -68,7 +68,7 @@ class AuthenticationRepository {
   /// Emits [User.empty] if the user is not authenticated.
   Stream<User> get user => _auth.authStateChanges().map((authUser) {
         final user = authUser ?? User.empty;
-        _cache.write(key: _userCacheKey, value: user);
+        _cache.write(key: _keys.userCacheKey, value: user);
         return user;
       });
 
@@ -86,6 +86,8 @@ class AuthenticationRepository {
     }
   }
 
+  Future<User> getUser() => _auth.getUser();
+
   /// Signs in with the provided [email] and [password].
   ///
   /// Throws a [LogInFailure] if an exception occurs.
@@ -95,6 +97,14 @@ class AuthenticationRepository {
   }) async {
     try {
       await _auth.logIn(email: email, password: password);
+    } on Exception {
+      throw const LogInFailure();
+    }
+  }
+
+  Future<String> getUid() async {
+    try {
+      return await _auth.getUid();
     } on Exception {
       throw const LogInFailure();
     }
