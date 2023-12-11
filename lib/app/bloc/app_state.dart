@@ -28,3 +28,13 @@ class AppState extends Equatable {
   @override
   List<Object> get props => [status, role, user];
 }
+
+extension AppStateX on AppState {
+  bool get isAuthenticated => status == AppStatus.authenticated;
+  bool get isUnauthenticated => status == AppStatus.unauthenticated;
+
+  bool get isResearcher => role.isResearcher;
+  bool get isReviewer => role.isReviewer;
+  bool get isUnknown => role.isUnknown;
+  bool get isAdmin => role.isAdmin;
+}

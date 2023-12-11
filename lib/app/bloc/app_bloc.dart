@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:authentication_repository/authentication_repository.dart'
     as auth;
 import 'package:data_repository/data_repository.dart';
-import 'package:u_search_flutter/app/app.dart';
 
 import 'package:u_search_flutter/utils/logger_manager.dart';
+import 'package:u_search_flutter/utils/models_extensions.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
@@ -60,7 +60,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
             )
           : const AppState(),
     );
-    notifyListeners();
+    // notifyListeners();
   }
 
   void _onRoleChanged(
@@ -72,7 +72,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
         role: event.role,
       ),
     );
-    notifyListeners();
+    // notifyListeners();
   }
 
   void _onLogoutRequested(
@@ -91,3 +91,4 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
     return super.close();
   }
 }
+
