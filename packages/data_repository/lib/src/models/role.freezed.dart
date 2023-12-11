@@ -107,7 +107,8 @@ class __$$RoleImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$RoleImpl extends _Role {
-  const _$RoleImpl({required this.id, required this.type}) : super._();
+  const _$RoleImpl({required this.id, this.type = RoleType.unknown})
+      : super._();
 
   factory _$RoleImpl.fromJson(Map<String, dynamic> json) =>
       _$$RoleImplFromJson(json);
@@ -118,6 +119,7 @@ class _$RoleImpl extends _Role {
 
   /// Role type
   @override
+  @JsonKey()
   final RoleType type;
 
   @override
@@ -153,7 +155,7 @@ class _$RoleImpl extends _Role {
 }
 
 abstract class _Role extends Role {
-  const factory _Role({required final int id, required final RoleType type}) =
+  const factory _Role({required final int id, final RoleType type}) =
       _$RoleImpl;
   const _Role._() : super._();
 

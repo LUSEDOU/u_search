@@ -32,6 +32,36 @@ enum RoleType {
 
   /// Role id
   final int id;
+
+  /// Permitted roles
+  static const permitted = [
+    RoleType.researcher,
+    RoleType.reviewer,
+    RoleType.admin,
+  ];
+}
+
+/// {@template role_type_x}
+/// Extension for [RoleType]
+/// {@endtemplate}
+extension RoleTypeX on RoleType {
+  /// Role is researcher
+  bool get isResearcher => this == RoleType.researcher;
+
+  /// Role is reviewer
+  bool get isReviewer => this == RoleType.reviewer;
+
+  /// Role is admin
+  bool get isAdmin => this == RoleType.admin;
+
+  /// Role is unknown
+  bool get isUnknown => this == RoleType.unknown;
+
+  /// Role is permitted
+  bool get isPermitted => RoleType.permitted.contains(this);
+
+  /// Role is not permitted
+  bool get isNotPermitted => !isPermitted;
 }
 
 /// {@template role}
@@ -45,7 +75,7 @@ class Role with _$Role {
     required int id,
 
     /// Role type
-    required RoleType type,
+    @Default(RoleType.unknown) RoleType type,
   }) = _Role;
 
   /// {@macro role}
@@ -57,7 +87,6 @@ class Role with _$Role {
   /// Empty role
   static const empty = Role(
     id: -1,
-    type: RoleType.unknown,
   );
 }
 
@@ -70,6 +99,9 @@ extension RoleX on Role {
 
   /// Role is not empty
   bool get isNotEmpty => this != Role.empty;
+
+  /// Role belongs to user
+  bool get isCreated => id != -1;
 
   /// Role is unknown
   bool get isUnknown => type == RoleType.unknown;

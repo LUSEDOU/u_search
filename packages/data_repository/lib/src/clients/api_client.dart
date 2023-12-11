@@ -11,9 +11,11 @@ abstract class ApiClient {
 
   Future<Role> addRoleToUser(Role role, {required User user});
 
+  Role updateRole(Role role);
+
   void logout();
 
-  Future<User> updateUser(User user);
+  Future<User> upsertUser(User user);
 
   Future<Apply> getApply(int id);
 
@@ -28,4 +30,6 @@ abstract class ApiClient {
   Future<Review> addReview(Review review);
 
   Future<bool> validateCode(String code, int type);
+
+  Future<User> addUser(User user);
 }

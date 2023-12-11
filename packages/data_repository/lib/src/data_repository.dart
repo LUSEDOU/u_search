@@ -1,36 +1,44 @@
 import 'dart:io';
 
 import 'package:data_repository/data_repository.dart';
-import 'package:data_repository/src/clients/cache_clients.dart';
+import 'package:cache_client/cache_client.dart';
 
 /// {@template data_repository}
 /// A Very Good Project created by Very Good CLI.
 /// {@endtemplate}
 class DataRepository {
   /// {@macro data_repository}
-  const DataRepository(
-    ApiClient client,
-    CacheClient cache,
-  )   : _client = client,
-        _cache = cache;
+  const DataRepository({
+    required ApiClient client,
+    required CacheClient cache,
+    required DataCacheKeys cacheKeys,
+  })  : _client = client,
+        _cache = cache,
+        _keys = cacheKeys;
 
   final ApiClient _client;
   final CacheClient _cache;
+  final DataCacheKeys _keys;
 
   /// Returns a Stream of [Role]s.
   Stream<Role> get role => _client.roleChanges().map((role) {
         final newRole = role ?? Role.empty;
-        _cache.write(key: _cache.roleCacheKey, value: newRole);
+        _cache.write(key: _keys.roleCacheKey, value: newRole);
         return newRole;
       });
 
   /// Returns the current [Role] from the cache.
   Role get currentRole =>
-      _cache.read<Role>(key: _cache.roleCacheKey) ?? Role.empty;
+      _cache.read<Role>(key: _keys.roleCacheKey) ?? Role.empty;
+
+  /// Adds a [user] and returns it.
+  Future<User> addUser(User user) => _client.addUser(user);
 
   /// Adds a [role] to the current user.
   Future<Role> addRoleToUser(Role role, {required User user}) =>
       _client.addRoleToUser(role, user: user);
+
+  Role updateRole(Role role) => _client.updateRole(role);
 
   /// Logs out the current role.
   void logOut() => _client.logout();
@@ -41,8 +49,8 @@ class DataRepository {
   /// Returns a Stream of List of [Apply]s.
   Future<Stream<List<Apply>>> getApplies() => _client.getApplies();
 
-  /// Updates a [user] and returns it.
-  Future<User> updateUser(User user) => _client.updateUser(user);
+  /// Updates a [user] if it exists, otherwise creates it, then returns it.
+  Future<User> upsertUser(User user) => _client.upsertUser(user);
 
   /// Uploads a [research] file
   /// Returns the Uuid of the uploaded file.

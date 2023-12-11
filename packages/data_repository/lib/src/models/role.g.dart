@@ -8,13 +8,14 @@ part of 'role.dart';
 
 _$RoleImpl _$$RoleImplFromJson(Map<String, dynamic> json) => _$RoleImpl(
       id: json['id'] as int,
-      type: $enumDecode(_$RoleTypeEnumMap, json['type']),
+      type: $enumDecodeNullable(_$RoleTypeEnumMap, json['type']) ??
+          RoleType.unknown,
     );
 
 Map<String, dynamic> _$$RoleImplToJson(_$RoleImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'type': _$RoleTypeEnumMap[instance.type],
+      'type': _$RoleTypeEnumMap[instance.type]!,
     };
 
 const _$RoleTypeEnumMap = {
