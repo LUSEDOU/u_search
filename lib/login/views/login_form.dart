@@ -10,7 +10,11 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
+      listenWhen: (previous, current) => previous.status != current.status,
       listener: (context, state) {
+        if (state.status.isSuccess) {
+          context.go('/applies');
+        }
         if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
