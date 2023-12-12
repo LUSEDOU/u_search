@@ -1,3 +1,4 @@
+import 'package:data_repository/src/models/role.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'research.freezed.dart';
@@ -11,7 +12,7 @@ class Research with _$Research {
   /// {@macro research}
   const factory Research({
     /// The id of the applicant
-    required int applicantId,
+    required Role researcher,
 
     /// The length of the research in bytes
     required int length,
