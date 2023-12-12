@@ -31,3 +31,10 @@ class ApplyOverviewState extends Equatable {
   @override
   List<Object?> get props => [apply, status, evaluator, evaluators];
 }
+
+extension ApplyOverviewStatusX on ApplyOverviewStatus {
+  bool get isInitial => this == ApplyOverviewStatus.initial;
+  bool get isLoading => this == ApplyOverviewStatus.loading;
+  bool get isSuccess => this == ApplyOverviewStatus.success;
+  bool get isFailure => this == ApplyOverviewStatus.failure;
+}

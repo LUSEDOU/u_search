@@ -14,3 +14,22 @@ final class ApplyOverviewFetchApply extends ApplyOverviewEvent {
   @override
   List<Object> get props => [id];
 }
+
+final class ApplyOverviewFetchEvaluators extends ApplyOverviewEvent {
+  const ApplyOverviewFetchEvaluators();
+
+
+  @override
+  List<Object> get props => [];
+}
+
+final class ApplyOverviewSelectEvaluator extends ApplyOverviewEvent {
+  const ApplyOverviewSelectEvaluator({
+      required this.evaluator,
+  });
+
+  final User evaluator;
+
+  @override
+  List<Object> get props => [evaluator];
+}
