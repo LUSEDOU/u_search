@@ -91,4 +91,3 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
     return super.close();
   }
 }
-
