@@ -9,7 +9,6 @@ build/
 pubspec.lock
 
 # Freezed
-.freezed.dart
-.freezed.json
-.g.dart
+*.freezed.dart
+*.g.dart
 
