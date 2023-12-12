@@ -10,9 +10,8 @@ part 'apply_state.dart';
 class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ApplyBloc({
     required DataRepository dataRepository,
-    required int applicantId,
   })  : _dataRepository = dataRepository,
-        super(ApplyState(applicantId: applicantId)) {
+        super(const ApplyState()) {
     on<ApplyFetchContests>(_onFetchContests);
     on<ApplySelectContest>(_onSelectContest);
     on<ApplyUploadResearch>(_onUploadResearch);
@@ -28,10 +27,12 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
     emit(state.copyWith(status: ApplyStatus.loading));
     try {
       final contests = await _dataRepository.getContests();
-      emit(state.copyWith(
-        contests: contests,
-        status: ApplyStatus.success,
-      ));
+      emit(
+        state.copyWith(
+          contests: contests,
+          status: ApplyStatus.success,
+        ),
+      );
     } on Exception {
       emit(state.copyWith(status: ApplyStatus.failure));
     }
@@ -43,11 +44,13 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ) async {
     emit(state.copyWith(status: ApplyStatus.loading));
     try {
-      emit(state.copyWith(
-        selectedContest: event.contest,
-        status: ApplyStatus.success,
-        step: ApplyStep.research,
-      ));
+      emit(
+        state.copyWith(
+          selectedContest: event.contest,
+          status: ApplyStatus.success,
+          step: ApplyStep.research,
+        ),
+      );
     } on Exception {
       emit(state.copyWith(status: ApplyStatus.failure));
     }
@@ -59,15 +62,17 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ) async {
     emit(state.copyWith(status: ApplyStatus.loading));
     try {
-      emit(state.copyWith(
-        file: event.file,
-        research: Research(
-          applicantId: state.applicantId,
-          length: await event.file.length(),
-          title: event.file.path.split('/').last,
+      emit(
+        state.copyWith(
+          file: event.file,
+          research: Research(
+            researcher: event.researcher,
+            length: await event.file.length(),
+            title: event.file.path.split('/').last,
+          ),
+          status: ApplyStatus.success,
         ),
-        status: ApplyStatus.success,
-      ));
+      );
     } on Exception {
       emit(state.copyWith(status: ApplyStatus.failure));
     }
@@ -90,16 +95,17 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
       final apply = await _dataRepository.addApply(
         Apply(
           contest: state.selectedContest!,
-          url: state.file!.path,
           research: research,
         ),
       );
 
-      emit(state.copyWith(
-        research: research,
-        apply: apply,
-        status: ApplyStatus.success,
-      ));
+      emit(
+        state.copyWith(
+          research: research,
+          apply: apply,
+          status: ApplyStatus.success,
+        ),
+      );
     } on Exception {
       emit(state.copyWith(status: ApplyStatus.failure));
     }
