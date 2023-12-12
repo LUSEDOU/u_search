@@ -33,7 +33,8 @@ class RoleSelectorView extends StatelessWidget {
       body: MultiBlocListener(
         listeners: [
           BlocListener<RoleSelectorCubit, RoleSelectorState>(
-            listenWhen: (previous, current) => current.isFailure,
+            listenWhen: (previous, current) =>
+                previous.status != current.status && current.isFailure,
             listener: (context, state) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
@@ -47,7 +48,6 @@ class RoleSelectorView extends StatelessWidget {
           BlocListener<AppBloc, AppState>(
             listenWhen: (previous, current) => previous.role != current.role,
             listener: (context, state) {
-              LoggerManager().logger.i('RoleSelectorView: isSuccess');
               context.go('/applies');
             },
           ),
