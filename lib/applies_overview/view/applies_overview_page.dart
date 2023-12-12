@@ -133,7 +133,7 @@ class ApplyTile extends StatelessWidget {
       title: Row(
         children: [
           Text('Apply ${apply.id} - ${apply.contest.name}'),
-          if (apply.evaluator != null)
+          if (apply.reviewer != null)
             BulletText(
               text: 'Reviewer assigned',
               color: Colors.green.withOpacity(0.5),

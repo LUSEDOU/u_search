@@ -90,9 +90,9 @@ class ApplyOverviewView extends StatelessWidget {
                   const SizedBox(height: 8),
                   ContestTile(contest: state.apply!.contest),
                   const SizedBox(height: 8),
-                  if (state.apply!.evaluator != null)
+                  if (state.apply!.reviewer != null)
                     EvaluatorTile(
-                      evaluator: state.apply!.evaluator!,
+                      reviewer: state.apply!.reviewer!,
                     )
                   else
                     const EmptyEvaluatorTile(),
@@ -127,17 +127,17 @@ class ContestTile extends StatelessWidget {
 
 class EvaluatorTile extends StatelessWidget {
   const EvaluatorTile({
-    required User evaluator,
+    required Role reviewer,
     super.key,
-  }) : _evaluator = evaluator;
+  }) : _evaluator = reviewer;
 
-  final User _evaluator;
+  final Role _evaluator;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(_evaluator.name),
-      subtitle: Text(_evaluator.email),
+      title: Text(_evaluator.user.name),
+      subtitle: Text(_evaluator.user.email),
     );
   }
 }
@@ -148,7 +148,7 @@ class EmptyEvaluatorTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const ListTile(
-      title: Text('No evaluator'),
+      title: Text('No reviewer'),
     );
   }
 }
