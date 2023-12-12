@@ -46,8 +46,11 @@ class DataRepository {
   /// Returns a List of [Contest]s.
   Future<List<Contest>> getContests() => _client.getContests();
 
-  /// Returns a Stream of List of [Apply]s.
-  Future<Stream<List<Apply>>> getApplies() => _client.getApplies();
+  /// Returns a Stream of List of [Apply]s for the given [role].
+  Future<Stream<List<Apply>>> getApplies({
+    required Role role,
+  }) =>
+      _client.getApplies(role: role);
 
   /// Updates a [user] if it exists, otherwise creates it, then returns it.
   Future<User> upsertUser(User user) => _client.upsertUser(user);
