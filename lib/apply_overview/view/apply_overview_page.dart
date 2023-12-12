@@ -168,3 +168,24 @@ class ResearchTile extends StatelessWidget {
     );
   }
 }
+
+class DownloadButton extends StatelessWidget {
+  const DownloadButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
+      builder: (context, state) {
+        if (state.apply == null) {
+          return const SizedBox.shrink();
+        }
+        return ElevatedButton(
+          onPressed: () {},
+          child: state.status.isLoading
+              ? const Text('Download')
+              : const CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+}
