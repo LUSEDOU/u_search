@@ -85,9 +85,11 @@ class ApiClientTest implements ApiClient {
   final _roleController = BehaviorSubject<Role?>();
 
   @override
-  Future<Stream<List<Apply>>> getApplies() async {
-    await Future<void>.delayed(const Duration(milliseconds: 100));
-    return _applyController.stream;
+  Future<Stream<List<Apply>>> getApplies({required Role role}) async {
+    return Future.delayed(
+      const Duration(milliseconds: 100),
+      () => _applyController.stream,
+    );
   }
 
   @override
