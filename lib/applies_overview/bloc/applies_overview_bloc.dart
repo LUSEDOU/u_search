@@ -24,16 +24,19 @@ class AppliesOverviewBloc
     emit(state.copyWith(status: AppliesOverviewStatus.loading));
 
     await emit.forEach<List<Apply>>(
-      await _dataRepository.getApplies(),
+      await _dataRepository.getApplies(role: event.role),
       onData: (applies) => state.copyWith(
         status: AppliesOverviewStatus.success,
         applies: applies,
       ),
       onError: (error, stackTrace) {
-        LoggerManager().logger.e(error);
-        LoggerManager().logger.e(stackTrace);
+        LoggerManager().logger
+          ..e(error)
+          ..e(stackTrace);
         return state.copyWith(status: AppliesOverviewStatus.failure);
       },
     );
+
+    emit(state.copyWith(status: AppliesOverviewStatus.success));
   }
 }

@@ -8,5 +8,10 @@ sealed class AppliesOverviewEvent extends Equatable {
 }
 
 final class AppliesOverviewSubscriptionRequested extends AppliesOverviewEvent {
-  const AppliesOverviewSubscriptionRequested();
+  const AppliesOverviewSubscriptionRequested(this.role);
+
+  final Role role;
+
+  @override
+  List<Object> get props => [role];
 }

@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/app/app.dart';
 
-import '../applies_overview.dart';
+import 'package:u_search_flutter/applies_overview/applies_overview.dart';
+import 'package:u_search_flutter/utils/dart_extensions.dart';
 
 class AppliesOverviewPage extends StatelessWidget {
   const AppliesOverviewPage({super.key});
@@ -15,7 +16,11 @@ class AppliesOverviewPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => AppliesOverviewBloc(
         dataRepository: context.read<DataRepository>(),
-      )..add(const AppliesOverviewSubscriptionRequested()),
+      )..add(
+          AppliesOverviewSubscriptionRequested(
+            context.read<AppBloc>().state.role,
+          ),
+        ),
       child: const AppliesOverviewView(),
     );
   }
@@ -27,15 +32,18 @@ class AppliesOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final role = context.read<AppBloc>().state.role;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Applies Overview'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/applies/new'),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: role.isResearcher
+          ? FloatingActionButton(
+              onPressed: () => context.go('/applies/new'),
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: BlocConsumer<AppliesOverviewBloc, AppliesOverviewState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
@@ -58,9 +66,11 @@ class AppliesOverviewView extends StatelessWidget {
             } else if (state.status != AppliesOverviewStatus.success) {
               return const SizedBox();
             } else {
-              return const Center(
+              return Center(
                 child: Text(
-                  'No Applies',
+                  role.isReviewer
+                      ? 'Wait until we assign you an apply'
+                      : 'You have no applies',
                 ),
               );
             }
@@ -120,11 +130,87 @@ class ApplyTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text('Apply ${apply.id}'),
+      title: Row(
+        children: [
+          Text('Apply ${apply.id} - ${apply.contest.name}'),
+          if (apply.evaluator != null)
+            BulletText(
+              text: 'Reviewer assigned',
+              color: Colors.green.withOpacity(0.5),
+              textColor: Colors.green.shade900,
+            )
+          else
+            BulletText(
+              text: 'Reviewer Pending',
+              color: Colors.yellow.withOpacity(0.5),
+              textColor: Colors.yellow.shade900,
+            ),
+          if (apply.review != null)
+            BulletText(
+              text: 'Reviewed',
+              color: Colors.green.withOpacity(0.5),
+              textColor: Colors.green.shade900,
+            )
+          else
+            BulletText(
+              text: 'Pending',
+              color: Colors.yellow.withOpacity(0.5),
+              textColor: Colors.yellow.shade900,
+            ),
+        ],
+      ),
       onTap: onTap,
-      trailing: apply.review != null
-          ? const Icon(Icons.check_circle_outline)
-          : const Icon(Icons.pending_outlined),
+      trailing: apply.review == null
+          ? const Icon(Icons.pending_outlined)
+          : IconButton(
+              icon: const Icon(Icons.remove_red_eye_outlined),
+              onPressed: () => context.go(
+                '/applies/${apply.id}/review',
+                extra: apply,
+              ),
+            ),
+    );
+  }
+}
+
+class BulletText extends StatelessWidget {
+  const BulletText({
+    required this.text,
+    required this.color,
+    this.textColor,
+    super.key,
+  });
+
+  final String text;
+  final Color? textColor;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.theme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          shape: const StadiumBorder(),
+          color: color,
+        ),
+        // BoxDecoration(
+        //   color: color,
+        //   borderRadius: BorderRadius.circular(10),
+        // ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 10,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
