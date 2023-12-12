@@ -99,7 +99,6 @@ Apply applyFactory(
   return Apply(
     id: index,
     contest: contest,
-    url: '',
     research: researchFactory(index),
     review: reviewFactory(index, contest: contest),
   );
@@ -117,7 +116,11 @@ Research researchFactory(
       id: index,
       length: 50,
       title: 'Research $index',
-      applicantId: 1,
+      researcher: Role(
+        id: index,
+        user: userFactory(),
+        type: RoleType.researcher,
+      ),
       uuid: '123',
     );
 
