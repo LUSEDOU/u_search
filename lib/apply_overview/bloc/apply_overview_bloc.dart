@@ -10,8 +10,17 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     required DataRepository dataRepository,
     Apply? apply,
   })  : _dataRepository = dataRepository,
-        super(ApplyOverviewState(apply: apply)) {
+        super(
+          ApplyOverviewState(
+            apply: apply,
+            reviewer: apply?.reviewer,
+          ),
+        ) {
     on<ApplyOverviewFetchApply>(_onFetchApply);
+    on<ApplyOverviewFetchEvaluators>(_onFetchEvaluaators);
+    on<ApplyOverviewSelectEvaluator>(_onSelectEvaluator);
+    on<ApplyOverviewSubmit>(_onSubmit);
+    on<ApplyOverviewDeleteEvaluator>(_onDeleteEvaluator);
   }
 
   final DataRepository _dataRepository;
@@ -34,5 +43,69 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     }
   }
 
+  Future<void> _onFetchEvaluaators(
+    ApplyOverviewFetchEvaluators event,
+    Emitter<ApplyOverviewState> emit,
+  ) async {
+    emit(state.copyWith(status: ApplyOverviewStatus.loading));
+    try {
+      final evaluators = await _dataRepository.getEvaluators();
+      emit(
+        state.copyWith(
+          status: ApplyOverviewStatus.success,
+          evaluators: evaluators,
+        ),
+      );
+    } on Exception {
+      emit(state.copyWith(status: ApplyOverviewStatus.failure));
+    }
+  }
 
+  void _onSelectEvaluator(
+    ApplyOverviewSelectEvaluator event,
+    Emitter<ApplyOverviewState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        reviewer: () => event.reviewer,
+      ),
+    );
+  }
+
+  Future<void> _onSubmit(
+    ApplyOverviewSubmit event,
+    Emitter<ApplyOverviewState> emit,
+  ) async {
+    if (state.reviewer == null) {
+        emit(state.copyWith(status: ApplyOverviewStatus.failure));
+        return;
+    }
+
+    emit(state.copyWith(status: ApplyOverviewStatus.loading));
+    try {
+      final apply = state.apply!.copyWith(
+        reviewer: state.reviewer,
+      );
+      final updatedApply = await _dataRepository.updateApply(apply);
+      emit(
+        state.copyWith(
+          status: ApplyOverviewStatus.success,
+          apply: updatedApply,
+        ),
+      );
+    } on Exception {
+      emit(state.copyWith(status: ApplyOverviewStatus.failure));
+    }
+  }
+
+  void _onDeleteEvaluator(
+    ApplyOverviewDeleteEvaluator event,
+    Emitter<ApplyOverviewState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        reviewer: () => null,
+      ),
+    );
+  }
 }
