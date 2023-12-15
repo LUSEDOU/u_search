@@ -51,8 +51,10 @@ List<Criteria> criteriasListFactory(int parentIndex, int length) {
 
   return List.generate(
     length,
-    (index) => criteriaFactory(index + parentIndex,
-        subCriterias: subCriterias.sublist(index * 2, (index + 1) * 2),),
+    (index) => criteriaFactory(
+      index + parentIndex,
+      subCriterias: subCriterias.sublist(index * 2, (index + 1) * 2),
+    ),
   );
 }
 
@@ -128,4 +130,10 @@ User userFactory() => const User(
       id: '123',
       name: 'User',
       email: 'user@demo.com',
+    );
+
+Role roleFactory(int id) => Role(
+      id: id,
+      user: userFactory(),
+      type: RoleType.researcher,
     );

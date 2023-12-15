@@ -23,6 +23,8 @@ abstract class ApiClient {
     required File research,
   });
 
+  Future<Apply> updateApply(Apply apply);
+
   Future<Research> addResearch(Research research);
 
   Future<Apply> addApply(Apply apply);
@@ -32,4 +34,6 @@ abstract class ApiClient {
   Future<bool> validateCode(String code, int type);
 
   Future<User> addUser(User user);
+
+  Future<List<Role>> getEvaluators();
 }

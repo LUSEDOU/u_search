@@ -207,4 +207,27 @@ class ApiClientTest implements ApiClient {
         const Duration(milliseconds: 100),
         () => user,
       );
+
+  @override
+  Future<List<Role>> getEvaluators() => Future.delayed(
+        const Duration(milliseconds: 100),
+        () => List.generate(
+          3,
+          roleFactory,
+        ),
+      );
+
+  @override
+  Future<Apply> updateApply(Apply apply) {
+    final applies = [..._applyController.value];
+    _applyController.add(
+      applies
+        ..removeWhere((element) => element.id == apply.id)
+        ..add(apply),
+    );
+    return Future.delayed(
+      const Duration(milliseconds: 100),
+      () => apply,
+    );
+  }
 }
