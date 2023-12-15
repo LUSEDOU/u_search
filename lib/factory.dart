@@ -51,8 +51,10 @@ List<Criteria> criteriasListFactory(int parentIndex, int length) {
 
   return List.generate(
     length,
-    (index) => criteriaFactory(index + parentIndex,
-        subCriterias: subCriterias.sublist(index * 2, (index + 1) * 2),),
+    (index) => criteriaFactory(
+      index + parentIndex,
+      subCriterias: subCriterias.sublist(index * 2, (index + 1) * 2),
+    ),
   );
 }
 
@@ -99,7 +101,6 @@ Apply applyFactory(
   return Apply(
     id: index,
     contest: contest,
-    url: '',
     research: researchFactory(index),
     review: reviewFactory(index, contest: contest),
   );
@@ -117,7 +118,11 @@ Research researchFactory(
       id: index,
       length: 50,
       title: 'Research $index',
-      applicantId: 1,
+      researcher: Role(
+        id: index,
+        user: userFactory(),
+        type: RoleType.researcher,
+      ),
       uuid: '123',
     );
 
@@ -125,4 +130,10 @@ User userFactory() => const User(
       id: '123',
       name: 'User',
       email: 'user@demo.com',
+    );
+
+Role roleFactory(int id) => Role(
+      id: id,
+      user: userFactory(),
+      type: RoleType.researcher,
     );

@@ -1,16 +1,16 @@
 import 'dart:io';
 
+import 'package:data_repository/data_repository.dart';
+import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:data_repository/data_repository.dart';
-import 'package:u_search_flutter/app/app.dart';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../apply.dart';
+import 'package:u_search_flutter/app/app.dart';
+import 'package:u_search_flutter/apply/apply.dart';
 
 class ApplyPage extends StatelessWidget {
   const ApplyPage({super.key});
@@ -20,7 +20,6 @@ class ApplyPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => ApplyBloc(
         dataRepository: context.read<DataRepository>(),
-        applicantId: context.read<AppBloc>().state.role.id,
       )..add(const ApplyFetchContests()),
       child: Scaffold(
         appBar: AppBar(title: const Text('Apply')),
@@ -120,17 +119,20 @@ class SubmitView extends StatelessWidget {
               ),
             Center(
               child: TextButton(
-                onPressed: () async {
-                  await FilePicker.platform.pickFiles(
-                    type: FileType.custom,
-                    allowedExtensions: ['pdf'],
-                  ).then(
-                    (value) =>
-                        context.read<ApplyBloc>().add(ApplyUploadResearch(
-                              File(value!.files.single.path!),
-                            )),
-                  );
-                },
+                onPressed: () => FilePicker.platform.pickFiles(
+                  type: FileType.custom,
+                  allowedExtensions: ['pdf'],
+                ).then(
+                  (value) {
+                    if (value != null) return;
+                    context.read<ApplyBloc>().add(
+                          ApplyUploadResearch(
+                            file: File(value!.files.single.path!),
+                            researcher: context.read<AppBloc>().state.role,
+                          ),
+                        );
+                  },
+                ),
                 child: Text(
                   'Submit',
                   style: Theme.of(context).textTheme.headlineMedium,

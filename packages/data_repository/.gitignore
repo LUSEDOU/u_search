@@ -1,7 +1,14 @@
-# See https://www.dartlang.org/guides/libraries/private-files
-
-# Files and directories created by pub
+### Dart ###
+# Build results
 .dart_tool/
 .packages
 build/
+
+# Dart Pub dependencies
+.pub/
 pubspec.lock
+
+# Freezed
+*.freezed.dart
+*.g.dart
+

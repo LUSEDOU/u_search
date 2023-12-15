@@ -52,6 +52,8 @@ class DataRepository {
   }) =>
       _client.getApplies(role: role);
 
+  Future<Apply> updateApply(Apply apply) => _client.updateApply(apply);
+
   /// Updates a [user] if it exists, otherwise creates it, then returns it.
   Future<User> upsertUser(User user) => _client.upsertUser(user);
 
@@ -78,4 +80,6 @@ class DataRepository {
 
   Future<bool> validateCode(String code, int type) =>
       _client.validateCode(code, type);
+
+  Future<List<Role>> getEvaluators() => _client.getEvaluators();
 }

@@ -6,7 +6,6 @@ enum ApplyStep { contest, research }
 
 class ApplyState extends Equatable {
   const ApplyState({
-    required this.applicantId,
     this.status = ApplyStatus.initial,
     this.file,
     this.research,
@@ -20,7 +19,6 @@ class ApplyState extends Equatable {
   final Research? research;
   final Contest? selectedContest;
   final List<Contest> contests;
-  final int applicantId;
   final ApplyStatus status;
   final ApplyStep step;
   final Apply? apply;
@@ -40,7 +38,6 @@ class ApplyState extends Equatable {
       selectedContest: selectedContest ?? this.selectedContest,
       contests: contests ?? this.contests,
       status: status ?? this.status,
-      applicantId: applicantId,
       step: step ?? this.step,
       apply: apply ?? this.apply,
     );

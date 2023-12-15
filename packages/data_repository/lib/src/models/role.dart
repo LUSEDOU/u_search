@@ -1,3 +1,4 @@
+import 'package:data_repository/data_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'role.freezed.dart';
@@ -76,6 +77,9 @@ class Role with _$Role {
 
     /// Role type
     @Default(RoleType.unknown) RoleType type,
+
+    /// User role
+    @JsonKey(required: true) @Default(User.empty) User user,
   }) = _Role;
 
   /// {@macro role}
