@@ -5,4 +5,5 @@ export 'criteria.dart';
 export 'research.dart';
 export 'review.dart';
 export 'role.dart';
+export 'sub_criteria.dart';
 export 'user.dart';
