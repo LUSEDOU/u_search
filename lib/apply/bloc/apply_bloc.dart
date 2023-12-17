@@ -69,6 +69,7 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
             researcher: event.researcher,
             length: await event.file.length(),
             title: event.file.path.split('/').last,
+            uuid: '',
           ),
           status: ApplyStatus.success,
         ),
