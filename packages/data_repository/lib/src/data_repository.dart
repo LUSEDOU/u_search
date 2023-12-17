@@ -22,14 +22,14 @@ class DataRepository {
 
   /// Returns a Stream of [Role]s.
   Stream<Role> get role => _client.roleChanges().map((role) {
-        final newRole = role ?? Role.empty;
+        final newRole = role ?? const Unknown();
         _cache.write(key: _keys.roleCacheKey, value: newRole);
         return newRole;
       });
 
   /// Returns the current [Role] from the cache.
   Role get currentRole =>
-      _cache.read<Role>(key: _keys.roleCacheKey) ?? Role.empty;
+      _cache.read<Role>(key: _keys.roleCacheKey) ?? const Unknown();
 
   /// Adds a [user] and returns it.
   Future<User> addUser(User user) => _client.addUser(user);

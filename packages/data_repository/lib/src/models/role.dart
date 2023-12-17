@@ -1,31 +1,30 @@
 import 'package:data_repository/data_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'role.freezed.dart';
 part 'role.g.dart';
+part 'roles.dart';
 
 /// {@template role_type}
 /// A type of a role.
 /// {@endtemplate}
+@JsonEnum(valueField: 'id')
 enum RoleType {
   /// Researcher
-  @JsonValue(0)
   researcher._('Researcher', id: 0),
 
   /// Reviewer
-  @JsonValue(1)
   reviewer._('Reviewer', id: 1),
 
   /// Admin
-  @JsonValue(2)
   admin._('Admin', id: 2),
 
   /// Unknown
-  unknown._('Unknown', id: -1);
+  unknown._('Unknown');
 
   const RoleType._(
     this.name, {
-    required this.id,
+    this.id = -1,
   });
 
   /// Role name
@@ -68,54 +67,30 @@ extension RoleTypeX on RoleType {
 /// {@template role}
 /// A role for a user.
 /// {@endtemplate}
-@freezed
-class Role with _$Role {
+@JsonSerializable()
+class Role extends Equatable {
   /// {@macro role}
-  const factory Role({
-    /// Role id
-    required int id,
+  const Role({
+    required this.id,
+    this.type = RoleType.unknown,
+    this.user = User.empty,
+  });
 
-    /// Role type
-    @Default(RoleType.unknown) RoleType type,
+  /// Role id
+  final int id;
 
-    /// User role
-    @JsonKey(required: true) @Default(User.empty) User user,
-  }) = _Role;
+  /// Role type
+  final RoleType type;
 
-  /// {@macro role}
-  factory Role.fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
+  /// User role
+  final User user;
 
-  /// {@macro role}
-  const Role._();
+  ///
+  static Role fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
 
-  /// Empty role
-  static const empty = Role(
-    id: -1,
-  );
-}
+  /// Converts a Role to a json map
+  Map<String, dynamic> toJson() => _$RoleToJson(this);
 
-/// {@template role_x}
-/// Extension for [Role]
-/// {@endtemplate}
-extension RoleX on Role {
-  /// Role is empty
-  bool get isEmpty => this == Role.empty;
-
-  /// Role is not empty
-  bool get isNotEmpty => this != Role.empty;
-
-  /// Role belongs to user
-  bool get isCreated => id != -1;
-
-  /// Role is unknown
-  bool get isUnknown => type == RoleType.unknown;
-
-  /// Role is researcher
-  bool get isResearcher => type == RoleType.researcher;
-
-  /// Role is reviewer
-  bool get isReviewer => type == RoleType.reviewer;
-
-  /// Role is admin
-  bool get isAdmin => type == RoleType.admin;
+  @override
+  List<Object> get props => [id, type, user];
 }
