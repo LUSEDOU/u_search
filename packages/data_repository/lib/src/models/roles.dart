@@ -104,8 +104,9 @@ final class Admin extends Role {
 /// {@endtemplate}
 final class Unknown extends Role {
   /// {@macro unknown_role}
-  const Unknown()
-      : super(
+  const Unknown({
+    super.user,
+  }) : super(
           id: -1,
           type: RoleType.unknown,
         );

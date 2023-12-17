@@ -3,30 +3,26 @@ part of 'app_bloc.dart';
 enum AppStatus { authenticated, unauthenticated }
 
 class AppState extends Equatable {
-  const AppState({
+  const AppState._({
     this.status = AppStatus.unauthenticated,
     this.role = const Unknown(),
-    this.user = User.empty,
   });
+
+  const AppState.unknown() : this._();
+
+  const AppState.authenticated({
+    required this.role,
+  }) : status = AppStatus.authenticated;
+
+  const AppState.unauthenticated({
+    required this.role,
+  }) : status = AppStatus.unauthenticated;
 
   final AppStatus status;
   final Role role;
-  final User user;
-
-  AppState copyWith({
-    AppStatus? status,
-    Role? role,
-    User? user,
-  }) {
-    return AppState(
-      status: status ?? this.status,
-      role: role ?? this.role,
-      user: user ?? this.user,
-    );
-  }
 
   @override
-  List<Object> get props => [status, role, user];
+  List<Object> get props => [status, role];
 }
 
 extension AppStateX on AppState {
