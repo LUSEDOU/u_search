@@ -81,7 +81,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       final user = await _authenticationRepository.getUser();
 
       final userModel = await _dataRepository.addUser(
-        user.toModel().copyWith(name: state.name.value),
+        user.toModel(name: state.name.value),
       );
 
       if (!_dataRepository.currentRole.isCreated) {

@@ -5,7 +5,7 @@ enum AppStatus { authenticated, unauthenticated }
 class AppState extends Equatable {
   const AppState({
     this.status = AppStatus.unauthenticated,
-    this.role = Role.empty,
+    this.role = const Unknown(),
     this.user = User.empty,
   });
 

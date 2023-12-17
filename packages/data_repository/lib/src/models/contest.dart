@@ -1,30 +1,54 @@
 import 'package:data_repository/data_repository.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'contest.freezed.dart';
 part 'contest.g.dart';
 
 /// {@template contest}
-/// A model representing a contest for an financial aid.
+/// A model representing a contest for financial aid.
 /// {@endtemplate}
-@freezed
-class Contest with _$Contest {
+@JsonSerializable()
+class Contest extends Equatable {
   /// {@macro contest}
-  const factory Contest({
-    /// The id of the contest
-    @JsonKey(required: true) required int id,
-
-    /// The name of the contest
-    @JsonKey(required: true) required String name,
-
-    /// The description of the contest
-    @JsonKey(required: true) required String description,
-
-    /// The criterias of the contest
-    @JsonKey(required: true) required List<Criteria> criterias,
-  }) = _Contest;
+  const Contest({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.criterias,
+  });
 
   /// Converts a Contest from a json map
-  factory Contest.fromJson(Map<String, dynamic> json) =>
-      _$ContestFromJson(json);
+  static Contest fromJson(Map<String, dynamic> json) => _$ContestFromJson(json);
+
+  /// The id of the contest
+  final int id;
+
+  /// The name of the contest
+  final String name;
+
+  /// The description of the contest
+  final String description;
+
+  /// The criterias of the contest
+  final List<Criteria> criterias;
+
+  /// Converts a [Contest] instance into a [Map<String, dynamic>].
+  Map<String, dynamic> toJson() => _$ContestToJson(this);
+
+  /// Creates a copy of this [Contest] but with the given fields replaced with
+  static const Contest empty = Contest(
+    id: -1,
+    name: '',
+    description: '',
+    criterias: [],
+  );
+
+  /// Returns true if this [Contest] is empty
+  bool get isEmpty => this == Contest.empty;
+
+  /// Returns true if this [Contest] is created
+  bool get isCreated => id != -1;
+
+  @override
+  List<Object> get props => [id, name, description, criterias];
 }
