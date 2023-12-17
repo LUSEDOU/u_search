@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/router.dart';
 
-
 class App extends StatelessWidget {
   const App({
     required AuthenticationRepository authenticationRepository,
@@ -31,7 +30,6 @@ class App extends StatelessWidget {
       ],
       child: BlocProvider(
         create: (_) => AppBloc(
-          authenticationRepository: _authenticationRepository,
           dataRepository: _dataRepository,
         ),
         child: const AppView(),
@@ -50,7 +48,7 @@ class AppView extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      routerConfig: router(context.read<AppBloc>()),
+      routerConfig: router,
     );
   }
 }
