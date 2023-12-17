@@ -14,7 +14,7 @@ class Apply extends Equatable {
   const Apply({
     required this.contest,
     required this.research,
-    this.id,
+    required this.id,
     this.reviewer,
     this.review,
   });
@@ -29,11 +29,10 @@ class Apply extends Equatable {
   final Research research;
 
   /// The id of the apply
-  @JsonKey(required: true)
-  final int? id;
+  final int id;
 
   /// The evaluator
-  final Role? reviewer;
+  final Reviewer? reviewer;
 
   /// An optional review of the apply
   final Review? review;
@@ -47,7 +46,7 @@ class Apply extends Equatable {
     Contest? contest,
     Research? research,
     int? id,
-    Role? reviewer,
+    Reviewer? reviewer,
     Review? review,
   }) {
     return Apply(
@@ -59,7 +58,22 @@ class Apply extends Equatable {
     );
   }
 
+  /// Creates an empty [Apply] instance.
+  static const Apply empty = Apply(
+    contest: Contest.empty,
+    research: Research.empty,
+    id: -1,
+  );
+
+  /// Returns true if this [Apply] is empty
+  bool get isEmpty => this == Apply.empty;
+
+  /// Returns true if this [Apply] is reviewed
+  bool get isReviewed => review != null;
+
+  /// Returns true if this [Apply] is created
+  bool get isCreated => id != -1;
+
   @override
   List<Object?> get props => [contest, research, id, reviewer, review];
 }
-

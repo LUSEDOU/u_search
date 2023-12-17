@@ -14,7 +14,7 @@ class Calification extends Equatable {
     required this.subCriteria,
     required this.score,
     required this.comment,
-    this.id,
+    required this.id,
   });
 
   /// Converts a Calification from a json map
@@ -25,16 +25,13 @@ class Calification extends Equatable {
   final SubCriteria subCriteria;
 
   /// The id of the Calification
-  @JsonKey(required: true)
-  final int? id;
+  final int id;
 
   /// The score of the Calification
-  @JsonKey(required: true)
-  final double? score;
+  final double score;
 
   /// The comment of the Calification
-  @JsonKey(required: true)
-  final String? comment;
+  final String comment;
 
   /// Converts a [Calification] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$CalificationToJson(this);
@@ -42,4 +39,3 @@ class Calification extends Equatable {
   @override
   List<Object?> get props => [subCriteria, id, score, comment];
 }
-

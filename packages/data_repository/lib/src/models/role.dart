@@ -41,29 +41,6 @@ enum RoleType {
   ];
 }
 
-/// {@template role_type_x}
-/// Extension for [RoleType]
-/// {@endtemplate}
-extension RoleTypeX on RoleType {
-  /// Role is researcher
-  bool get isResearcher => this == RoleType.researcher;
-
-  /// Role is reviewer
-  bool get isReviewer => this == RoleType.reviewer;
-
-  /// Role is admin
-  bool get isAdmin => this == RoleType.admin;
-
-  /// Role is unknown
-  bool get isUnknown => this == RoleType.unknown;
-
-  /// Role is permitted
-  bool get isPermitted => RoleType.permitted.contains(this);
-
-  /// Role is not permitted
-  bool get isNotPermitted => !isPermitted;
-}
-
 /// {@template role}
 /// A role for a user.
 /// {@endtemplate}
@@ -87,6 +64,22 @@ class Role extends Equatable {
 
   ///
   static Role fromJson(Map<String, dynamic> json) => _$RoleFromJson(json);
+
+  /// Makes a copy of a Role
+  Role copyWith({
+    int? id,
+    RoleType? type,
+    User? user,
+  }) {
+    return Role(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      user: user ?? this.user,
+    );
+  }
+
+  /// Returns true if this [Role] is empty
+  bool get isCreated => id != -1;
 
   /// Converts a Role to a json map
   Map<String, dynamic> toJson() => _$RoleToJson(this);

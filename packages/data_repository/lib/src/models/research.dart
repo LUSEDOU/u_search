@@ -9,21 +9,21 @@ part 'research.g.dart';
 /// {@endtemplate}
 @JsonSerializable()
 class Research extends Equatable {
-
   /// Creates an instance of [Research].
   const Research({
     required this.researcher,
     required this.length,
     required this.title,
     required this.uuid,
-    this.id,
+    required this.id,
   });
 
   /// Converts a Research from a json map
   factory Research.fromJson(Map<String, dynamic> json) =>
       _$ResearchFromJson(json);
+
   /// The id of the applicant
-  final Role researcher;
+  final Researcher researcher;
 
   /// The length of the research in bytes
   final int length;
@@ -35,14 +35,14 @@ class Research extends Equatable {
   final String uuid;
 
   /// The id of the research
-  final int? id;
+  final int id;
 
   /// Converts a [Research] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$ResearchToJson(this);
 
   /// Creates a copy of [Research] with an optional parameter override.
   Research copyWith({
-    Role? researcher,
+    Researcher? researcher,
     int? length,
     String? title,
     String? uuid,
@@ -57,7 +57,21 @@ class Research extends Equatable {
     );
   }
 
+  /// Creates an empty [Research] instance.
+  static const Research empty = Research(
+    id: -1,
+    researcher: Researcher.empty,
+    length: -1,
+    title: '',
+    uuid: '',
+  );
+
+  /// Returns true if this [Research] is empty
+  bool get isEmpty => this == Research.empty;
+
+  /// Returns true if this [Research] is created
+  bool get isCreated => id != -1;
+
   @override
   List<Object?> get props => [researcher, length, title, uuid, id];
 }
-

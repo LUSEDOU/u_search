@@ -12,9 +12,9 @@ class Criteria extends Equatable {
   /// Creates an instance of [Criteria].
   const Criteria({
     required this.id,
-    this.name = '',
-    this.description = '',
-    this.subCriterias = const [],
+    required this.name,
+    required this.description,
+    required this.subCriterias,
     this.minScore,
     this.maxScore = 5,
     this.percent = 1.0,
@@ -47,6 +47,20 @@ class Criteria extends Equatable {
 
   /// Converts a [Criteria] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$CriteriaToJson(this);
+
+  /// Creates a copy of [Criteria] with an optional parameter override.
+  static const Criteria empty = Criteria(
+    id: -1,
+    name: '',
+    description: '',
+    subCriterias: [],
+  );
+
+  /// Returns true if this [Criteria] is empty
+  bool get isEmpty => this == Criteria.empty;
+
+  /// Returns true if this [Criteria] is created
+  bool get isCreated => id != -1;
 
   @override
   List<Object?> get props => [

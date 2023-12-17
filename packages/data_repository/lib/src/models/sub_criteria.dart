@@ -11,8 +11,8 @@ class SubCriteria extends Equatable {
   /// Creates an instance of [SubCriteria].
   const SubCriteria({
     required this.id,
-    this.name = '',
-    this.description = '',
+    required this.name,
+    required this.description,
     this.maxScore = 5,
     this.percent = 1.0,
     this.minScore,
@@ -42,6 +42,19 @@ class SubCriteria extends Equatable {
 
   /// Converts a [SubCriteria] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$SubCriteriaToJson(this);
+
+  /// Creates a copy of [SubCriteria] with an optional parameter override.
+  static const SubCriteria empty = SubCriteria(
+    id: -1,
+    name: '',
+    description: '',
+  );
+
+  /// Returns true if this [SubCriteria] is empty
+  bool get isEmpty => this == SubCriteria.empty;
+
+  /// Returns true if this [SubCriteria] is created
+  bool get isCreated => id != -1;
 
   @override
   List<Object?> get props => [

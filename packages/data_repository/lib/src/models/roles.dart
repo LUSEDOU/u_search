@@ -30,7 +30,7 @@ final class Researcher extends Role {
   RoleType get type => RoleType.researcher;
 
   /// Returns an empty researcher
-  static Researcher empty = const Researcher(id: 0);
+  static const Researcher empty = Researcher(id: 0);
 }
 
 /// {@template reviewer}
@@ -63,7 +63,7 @@ final class Reviewer extends Role {
   RoleType get type => RoleType.reviewer;
 
   /// Returns an empty reviewer
-  static Reviewer empty = const Reviewer(id: 0);
+  static const Reviewer empty = Reviewer(id: -1);
 }
 
 /// {@template admin}
@@ -96,7 +96,7 @@ final class Admin extends Role {
   RoleType get type => RoleType.admin;
 
   /// Returns an empty admin
-  static Admin empty = const Admin(id: 0);
+  static const Admin empty = Admin(id: 0);
 }
 
 /// {@template unknown_role}

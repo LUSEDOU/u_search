@@ -1,4 +1,5 @@
 import 'package:data_repository/data_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'contest.g.dart';
@@ -7,36 +8,47 @@ part 'contest.g.dart';
 /// A model representing a contest for financial aid.
 /// {@endtemplate}
 @JsonSerializable()
-class Contest {
-  /// Creates an instance of [Contest].
+class Contest extends Equatable {
+  /// {@macro contest}
   const Contest({
     required this.id,
-    this.name = '',
-    this.description = '',
-    this.criterias = const [],
+    required this.name,
+    required this.description,
+    required this.criterias,
   });
 
   /// Converts a Contest from a json map
-  factory Contest.fromJson(Map<String, dynamic> json) =>
-      _$ContestFromJson(json);
+  static Contest fromJson(Map<String, dynamic> json) => _$ContestFromJson(json);
 
   /// The id of the contest
-  @JsonKey(required: true)
   final int id;
 
   /// The name of the contest
-  @JsonKey(required: true)
   final String name;
 
   /// The description of the contest
-  @JsonKey(required: true)
   final String description;
 
   /// The criterias of the contest
-  @JsonKey(required: true)
   final List<Criteria> criterias;
 
   /// Converts a [Contest] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$ContestToJson(this);
-}
 
+  /// Creates a copy of this [Contest] but with the given fields replaced with
+  static const Contest empty = Contest(
+    id: -1,
+    name: '',
+    description: '',
+    criterias: [],
+  );
+
+  /// Returns true if this [Contest] is empty
+  bool get isEmpty => this == Contest.empty;
+
+  /// Returns true if this [Contest] is created
+  bool get isCreated => id != -1;
+
+  @override
+  List<Object> get props => [id, name, description, criterias];
+}
