@@ -1,38 +1,37 @@
-// import 'package:equatable/equatable.dart';
-// import 'package:u_search_api/src/models/apply.dart';
-// import 'package:u_search_api/src/models/email.dart';
-// import 'package:u_search_api/src/models/password.dart';
-//
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'user.freezed.dart';
 part 'user.g.dart';
 
 /// {@template user}
-///  User model
+/// User model
 /// {@endtemplate}
-@freezed
-class User with _$User {
+@JsonSerializable()
+class User extends Equatable {
   /// {@macro user}
-  const factory User({
-    /// User email
-    required String email,
+  const User({
+    required this.email,
+    required this.name,
+    required this.id,
+  });
 
-    /// User's name
-    required String name,
-
-    /// User id
-    required String id,
-  }) = _User;
-
-  /// {@macro user}
+  /// Converts a User from a json map
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  /// {@macro user}
-  const User._();
+  /// User email
+  final String email;
+
+  /// User's name
+  final String name;
+
+  /// User id
+  final String id;
+
+  /// Converts a User to a json map
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 
   /// Empty user
-  static const empty = User(
+  static const User empty = User(
     email: '',
     name: '',
     id: '',
@@ -43,4 +42,8 @@ class User with _$User {
 
   /// User is not empty
   bool get isNotEmpty => this != User.empty;
+
+  @override
+  List<Object?> get props => [email, name, id];
 }
+
