@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:data_repository/data_repository.dart';
 import 'package:cache_client/cache_client.dart';
+import 'package:data_repository/data_repository.dart';
 
 /// {@template data_repository}
 /// A Very Good Project created by Very Good CLI.
@@ -28,8 +28,31 @@ class DataRepository {
       });
 
   /// Returns the current [Role] from the cache.
-  Role get currentRole =>
-      _cache.read<Role>(key: _keys.roleCacheKey) ?? const Unknown();
+  Role get currentRole {
+    final role = _cache.read<Role>(key: _keys.roleCacheKey);
+
+    if (role == null) {
+      return const Unknown();
+    }
+
+    return switch (role.type) {
+      RoleType.admin => Admin(
+          id: role.id,
+          user: role.user,
+        ),
+      RoleType.researcher => Researcher(
+          id: role.id,
+          user: role.user,
+        ),
+      RoleType.reviewer => Reviewer(
+          id: role.id,
+          user: role.user,
+        ),
+      RoleType.unknown => Unknown(
+          user: role.user,
+        ),
+    };
+  }
 
   /// Adds a [user] and returns it.
   Future<User> addUser(User user) => _client.addUser(user);

@@ -15,7 +15,7 @@ class Research extends Equatable {
     required this.length,
     required this.title,
     required this.uuid,
-    required this.id,
+    this.id = -1,
   });
 
   /// Converts a Research from a json map
@@ -59,7 +59,6 @@ class Research extends Equatable {
 
   /// Creates an empty [Research] instance.
   static const Research empty = Research(
-    id: -1,
     researcher: Researcher.empty,
     length: -1,
     title: '',

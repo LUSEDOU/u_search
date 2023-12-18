@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:u_search_flutter/utils/models_extensions.dart';
 
 part 'apply_overview_state.dart';
 part 'apply_overview_event.dart';
@@ -84,7 +85,7 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     emit(state.copyWith(status: ApplyOverviewStatus.loading));
     try {
       final apply = state.apply!.copyWith(
-        reviewer: state.reviewer,
+        reviewer: state.reviewer!.toReviewer(),
       );
       final updatedApply = await _dataRepository.updateApply(apply);
       emit(

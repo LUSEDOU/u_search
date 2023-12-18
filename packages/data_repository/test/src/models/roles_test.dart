@@ -52,6 +52,14 @@ void main() {
           expect(admin, Admin.fromJson(admin.toJson()));
         });
       });
+
+      group('empty', () {
+        test('returns correct empty Admin', () {
+          expect(Admin.empty.id, -1);
+          expect(Admin.empty.type, RoleType.admin);
+          expect(Admin.empty.user, User.empty);
+        });
+      });
     });
   });
 }

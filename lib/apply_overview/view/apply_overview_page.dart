@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
+import 'package:u_search_flutter/utils/models_extensions.dart';
 
 import '../apply_overview.dart';
 

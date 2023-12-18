@@ -94,8 +94,8 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
       );
 
       final apply = await _dataRepository.addApply(
-        Apply(
-          contest: state.selectedContest!,
+        Apply.empty.copyWith(
+          contest: state.selectedContest,
           research: research,
         ),
       );

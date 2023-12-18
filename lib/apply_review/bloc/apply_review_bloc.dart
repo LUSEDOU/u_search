@@ -119,15 +119,21 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     );
 
     try {
-      final review = Review(
-        apply: state.apply,
-        califications: state.califications.map((e) => e.model).toList(),
+      final review = await _dataRepository.addReview(
+        (state.initialReview ?? Review.empty).copyWith(
+          califications: state.califications.map((e) => e.model).toList(),
+        ),
       );
 
-      await _dataRepository.addReview(review);
+      final apply = await _dataRepository.updateApply(
+        state.apply.copyWith(
+          review: review,
+        ),
+      );
 
       emit(
         state.copyWith(
+          apply: apply,
           initialReview: review,
           status: ApplyReviewStatus.success,
         ),

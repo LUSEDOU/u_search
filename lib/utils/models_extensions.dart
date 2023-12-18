@@ -53,4 +53,19 @@ extension RoleX on Role {
 
   /// Role is created
   bool get isCreated => id != -1;
+
+  Admin toAdmin() => Admin(
+        id: id,
+        user: user,
+      );
+
+  Reviewer toReviewer() => Reviewer(
+        id: id,
+        user: user,
+      );
+
+  Researcher toResearcher() => Researcher(
+        id: id,
+        user: user,
+      );
 }
