@@ -54,19 +54,26 @@ class RoleSelectorCubit extends Cubit<RoleSelectorState> {
         return;
       }
 
-      var role = state.role.copyWith(type: state.type);
+      final role = switch (state.type) {
+        RoleType.admin => state.role.toAdmin(),
+        RoleType.researcher => state.role.toResearcher(),
+        RoleType.reviewer => state.role.toReviewer(),
+        RoleType.unknown => state.role,
+      };
+
+      late final Role newRole;
 
       if (_authenticationRepository.currentUser.isNotEmpty) {
-        role = await _dataRepository.addRoleToUser(
+        newRole = await _dataRepository.addRoleToUser(
           role,
           user: _authenticationRepository.currentUser.toModel(),
         );
       } else {
-        _dataRepository.updateRole(role);
+        newRole = _dataRepository.updateRole(role);
       }
       emit(
         state.copyWith(
-          role: role,
+          role: newRole,
           status: RoleSelectorStatus.success,
         ),
       );
