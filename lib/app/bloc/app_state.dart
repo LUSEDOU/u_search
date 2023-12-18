@@ -33,4 +33,12 @@ extension AppStateX on AppState {
   bool get isReviewer => role.isReviewer;
   bool get isUnknown => role.isUnknown;
   bool get isAdmin => role.isAdmin;
+
+  T getRole<T extends Role>() {
+    if (role is T) {
+      return role as T;
+    } else {
+      throw Exception('Role is not of type $T');
+    }
+  }
 }
