@@ -52,12 +52,15 @@ class CalificationForm extends Equatable {
   final bool? isValid;
 
   Calification get model => Calification(
+        id: -1,
         subCriteria: SubCriteria(
+          name: '',
+          description: '',
           id: id,
           percent: percent,
           maxScore: score.maxScore ?? 5,
         ),
-        score: double.tryParse(score.value),
+        score: double.tryParse(score.value) ?? 0,
         comment: comment.value,
       );
 

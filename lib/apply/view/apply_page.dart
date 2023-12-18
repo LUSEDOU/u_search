@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/apply/apply.dart';
+import 'package:u_search_flutter/utils/models_extensions.dart';
 
 class ApplyPage extends StatelessWidget {
   const ApplyPage({super.key});
@@ -108,6 +109,8 @@ class SubmitView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ApplyBloc, ApplyState>(
       builder: (context, state) {
+        final researcher = context.read<AppBloc>().state.getRole<Researcher>();
+
         return Column(
           children: [
             if (state.research != null)
@@ -124,11 +127,11 @@ class SubmitView extends StatelessWidget {
                   allowedExtensions: ['pdf'],
                 ).then(
                   (value) {
-                    if (value != null) return;
+                    if (value == null) return;
                     context.read<ApplyBloc>().add(
                           ApplyUploadResearch(
-                            file: File(value!.files.single.path!),
-                            researcher: context.read<AppBloc>().state.role,
+                            file: File(value.files.single.path!),
+                            researcher: researcher,
                           ),
                         );
                   },

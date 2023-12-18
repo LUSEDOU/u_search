@@ -78,6 +78,12 @@ class Role extends Equatable {
     );
   }
 
+  /// Returns an empty role
+  static const Role empty = Role(id: -1);
+
+  /// Returns true if this [Role] is empty
+  bool get isEmpty => this == Role.empty;
+
   /// Returns true if this [Role] is empty
   bool get isCreated => id != -1;
 

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/role_selector/role_selector.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
+import 'package:u_search_flutter/utils/models_extensions.dart';
 
 class RoleSelectorPage extends StatelessWidget {
   const RoleSelectorPage({

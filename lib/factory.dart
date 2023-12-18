@@ -118,10 +118,9 @@ Research researchFactory(
       id: index,
       length: 50,
       title: 'Research $index',
-      researcher: Role(
+      researcher: Researcher(
         id: index,
         user: userFactory(),
-        type: RoleType.researcher,
       ),
       uuid: '123',
     );

@@ -7,6 +7,7 @@ import 'package:u_search_flutter/app/app.dart';
 
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/utils/dart_extensions.dart';
+import 'package:u_search_flutter/utils/models_extensions.dart';
 
 class AppliesOverviewPage extends StatelessWidget {
   const AppliesOverviewPage({super.key});
@@ -109,7 +110,7 @@ class WelcomeText extends StatelessWidget {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
         return Text(
-          'Hi! ${state.user.email}',
+          'Hi! ${state.role.user.email}',
           style: theme.textTheme.titleLarge,
         );
       },

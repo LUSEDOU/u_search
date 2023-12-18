@@ -4,7 +4,10 @@ import 'package:u_search_flutter/apply_review/models/calification_form.dart';
 
 extension CalificationFormConversion on CalificationForm {
   Calification get model => Calification(
+        id: -1,
         subCriteria: SubCriteria(
+          name: '',
+          description: '',
           id: id,
           percent: percent,
           maxScore: score.maxScore ?? 5,

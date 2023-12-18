@@ -27,7 +27,7 @@ final class ApplyUploadResearch extends ApplyEvent {
   });
 
   final File file;
-  final Role researcher;
+  final Researcher researcher;
 
   @override
   List<Object> get props => [file, researcher];
