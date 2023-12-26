@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:data_repository/data_repository.dart';
 
 abstract class ApiClient {
+  const ApiClient();
+
   Future<List<Contest>> getContests();
 
   Future<Stream<List<Apply>>> getApplies({required Role role});

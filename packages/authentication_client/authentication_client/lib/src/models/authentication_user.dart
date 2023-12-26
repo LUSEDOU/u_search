@@ -27,7 +27,7 @@ class AuthenticationUser extends Equatable {
   final bool isNewUser;
 
   /// Whether the current user is anonymous.
-  bool get isAnonymous => id.isEmpty;
+  bool get isAnonymous => this == anonymous;
 
   /// Empty user which represents an unauthenticated user.
   static const anonymous = AuthenticationUser(id: '');
