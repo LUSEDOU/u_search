@@ -1,0 +1,19 @@
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:{{repository.snakeCase()}}/{{repository.snakeCase()}}.dart';
+
+part '{{name.snakeCase()}}_event.dart';
+part '{{name.snakeCase()}}_state.dart';
+
+class {{name.pascalCase()}}Bloc extends Bloc<{{name.pascalCase()}}Event, {{name.pascalCase()}}State> {
+  {{name.pascalCase()}}Bloc({
+    required {{repository.pascalCase()}}Repository {{repository.camelCase()}}Repository,
+  })  : _{{repository.camelCase()}}Repository = {{repository.camelCase()}}Repository,
+        super(const {{name.pascalCase()}}State()) {
+    on<{{name.pascalCase()}}Event>((event, emit) {
+      // TODO: implement event handler
+    });
+  }
+
+  final {{repository.pascalCase()}}Repository _{{repository.camelCase()}}Repository;
+}

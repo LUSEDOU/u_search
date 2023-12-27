@@ -12,3 +12,12 @@ vars:
     description: The name of the bloc class.
     default: counter
     prompt: What is the bloc name?
+  repository:
+    type: string
+    description: The repository name.
+    prompt: What is the repository name?
+  use_status:
+    type: boolean
+    description: Whether to use the status package.
+    default: false
+    prompt: Would you like to use status for your state?

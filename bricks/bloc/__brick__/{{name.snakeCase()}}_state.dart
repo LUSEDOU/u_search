@@ -1,1 +1,0 @@
-{{> equatable_state }}
