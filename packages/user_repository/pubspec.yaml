@@ -13,6 +13,8 @@ dependencies:
     path: ../../api
   equatable: ^2.0.5
   rxdart: ^0.27.7
+  storage:
+    path: ../storage/storage
 
 dev_dependencies:
   mocktail: ^1.0.0
