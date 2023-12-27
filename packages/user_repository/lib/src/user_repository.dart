@@ -93,7 +93,10 @@ class UserRepository {
       final value = await fetchAppOpenedCount();
       await _storage.setAppOpenedCount(count: value + 1);
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(UserFailure(error), stackTrace);
+      Error.throwWithStackTrace(
+        IncrementAppOpenedCountFailure(error),
+        stackTrace,
+      );
     }
   }
 
