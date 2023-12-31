@@ -29,10 +29,16 @@ class User extends AuthenticationUser {
 
   /// Whether the current user is anonymous.
   @override
-  bool get isAnonymous => this == anonymous;
+  bool get isAnonymous => id.isEmpty;
+
+  /// Whether the current user is empty.
+  bool get isEmpty => this == User.empty;
+
+  /// Whether the current user has a role.
+  bool get hasRole => role != RoleType.none;
 
   /// Anonymous user which represents an unauthenticated user.
-  static const User anonymous = User(
+  static const User empty = User(
     id: '',
     role: RoleType.none,
   );
