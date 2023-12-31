@@ -34,7 +34,7 @@ packages:
     source: hosted
     version: "2.11.0"
   authentication_client:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "packages/authentication_client/authentication_client"
       relative: true

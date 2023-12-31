@@ -8,6 +8,8 @@ environment:
   sdk: '>=3.1.5 <4.0.0'
 
 dependencies:
+  authentication_client:
+    path: ./packages/authentication_client/authentication_client
   authentication_repository:
     path: ./packages/authentication_repository
   bloc: ^8.1.2
