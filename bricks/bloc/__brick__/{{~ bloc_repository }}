@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:{{repository.snakeCase()}}/{{repository.snakeCase()}}.dart';
+import 'package:{{repository.snakeCase()}}_repository/{{repository.snakeCase()}}_repository.dart';
 
 part '{{name.snakeCase()}}_event.dart';
 part '{{name.snakeCase()}}_state.dart';
