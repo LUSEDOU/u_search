@@ -1,9 +1,9 @@
-part 'deep_link_client.dart';
+part of 'deep_link_client.dart';
 
 /// {@template deep_link_exception}
 /// Exception from the deep link client.
 /// {@endtemplate}
-abstract class DeepLinkFailure implements Exception {
+class DeepLinkFailure implements Exception {
   /// {@macro deep_link_exception}
   const DeepLinkFailure(this.error);
 

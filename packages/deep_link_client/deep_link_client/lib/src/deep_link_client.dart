@@ -1,4 +1,4 @@
-part of 'deep_link_exception.dart';
+part 'deep_link_exception.dart';
 
 /// A generic Deep Link Client Interface.
 abstract class DeepLinkClient {
