@@ -1,4 +1,5 @@
 import 'package:authentication_client/authentication_client.dart';
+import 'package:deep_link_client/deep_link_client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:u_search_api/client.dart';
@@ -15,11 +16,14 @@ class UserRepository {
   UserRepository({
     required AuthenticationClient authenticationClient,
     required UserStorage storage,
+    required DeepLinkClient deepLinkClient,
   })  : _authenticationClient = authenticationClient,
+        _deepLinkClient = deepLinkClient,
         _storage = storage;
 
   final AuthenticationClient _authenticationClient;
   final UserStorage _storage;
+  final DeepLinkClient _deepLinkClient;
 
   /// Stream of [User] which will emit the current user when
   /// the authentication state or the role changes.
@@ -35,6 +39,17 @@ class UserRepository {
 
   final BehaviorSubject<RoleType> _currentRoleTypeSubject =
       BehaviorSubject.seeded(RoleType.none);
+
+  /// A stream of incoming email links used to authenticate the user.
+  ///
+  /// Emits when a new email link is emmited on [DeepLinkClient.deepLinkStream],
+  /// which is validated using [AuthenticationClient.isLogInWithEmailLink].
+  Stream<Uri> get incomingEmailLinks =>
+      _deepLinkClient.deepLinkStream.where(
+        (deepLink) => _authenticationClient.isLogInWithEmailLink(
+          emailLink: deepLink.toString(),
+        ),
+      );
 
   /// Sends an authentication link to the provided [email].
   ///
