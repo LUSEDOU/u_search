@@ -229,6 +229,13 @@ packages:
       relative: true
     source: path
     version: "0.1.0+1"
+  deep_link_client:
+    dependency: "direct main"
+    description:
+      path: "packages/deep_link_client/deep_link_client"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   diff_match_patch:
     dependency: transitive
     description:
