@@ -11,6 +11,8 @@ dependencies:
     path: ../authentication_client/authentication_client
   u_search_api:
     path: ../../api
+  deep_link_client:
+    path: ../deep_link_client/deep_link_client
   equatable: ^2.0.5
   rxdart: ^0.27.7
   storage:
