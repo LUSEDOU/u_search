@@ -51,9 +51,8 @@ class UserRepository {
         ),
       );
 
-  /// Sends an authentication link to the provided [email].
-  ///
-  /// Throws a [SendLoginEmailLinkFailure] if an exception occurs.
+  /// Sends an authentication link to the provided [email]. Throws a
+  /// [SendLoginEmailLinkFailure] if an exception occurs.
   Future<void> sendLoginEmailLink({
     required String email,
   }) async {
@@ -89,7 +88,7 @@ class UserRepository {
   }
 
   /// Signs out the current user which will emit
-  /// [User.anonymous] from the [user] stream.
+  /// [User.empty] from the [user] stream.
   ///
   /// Throws a [LogOutFailure] if an exception occurs.
   Future<void> logOut() async {
