@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "435922298456",
+    "project_id": "usearch-5d952",
+    "storage_bucket": "usearch-5d952.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435922298456:android:a099d4af838fd1fb5b8c2d",
+        "android_client_info": {
+          "package_name": "com.example.u_search_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcnU1d6Db_OZ24ejnA0qorssi2BRqA0vg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

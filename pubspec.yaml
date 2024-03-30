@@ -36,6 +36,8 @@ dependencies:
   json_annotation: ^4.8.1
   logger: ^2.0.2+1
   mocktail: ^1.0.1
+  package_info_client:
+    path: ./packages/package_info_client
   persistent_storage:
     path: ./packages/storage/persistent_storage
   rxdart: ^0.27.7
