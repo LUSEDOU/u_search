@@ -1,8 +1,7 @@
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:data_repository/data_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:u_search_flutter/login/login.dart';
+import 'package:user_repository/user_repository.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -14,9 +13,8 @@ class LoginPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8),
         child: BlocProvider(
-          create: (_) => LoginCubit(
-            authenticationRepository: context.read<AuthenticationRepository>(),
-            dataRepository: context.read<DataRepository>(),
+          create: (_) => LoginBloc(
+            userRepository: context.read<UserRepository>(),
           ),
           child: const LoginForm(),
         ),

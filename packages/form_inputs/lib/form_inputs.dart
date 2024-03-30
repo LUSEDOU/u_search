@@ -1,5 +1,3 @@
-/// A Very Good Project created by Very Good CLI.
-library form_inputs;
+export 'package:formz/formz.dart';
 
-export 'src/form_inputs.dart';
-export 'src/models/models.dart';
+export 'src/models.dart';

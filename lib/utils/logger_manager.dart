@@ -1,28 +1,46 @@
+import 'dart:developer';
+
 import 'package:logger/logger.dart';
 
 class LoggerManager {
-  static final LoggerManager _instance = LoggerManager._internal();
-
   factory LoggerManager() {
     return _instance;
   }
+
+  LoggerManager._internal() {
+    _logger = Logger(
+      level: Level.debug,
+      printer: PrettyPrinter(
+        methodCount: 0,
+        errorMethodCount: 10,
+        lineLength: 60,
+        printEmojis: false,
+      ),
+    );
+  }
+
+  static final _instance = LoggerManager._internal();
 
   late Logger _logger;
 
   Logger get logger => _logger;
 
-  LoggerManager._internal() {
-    // Initialize the logger with your desired configuration
-    _logger = Logger(
-      level: Level.debug, // Set the log level
-      printer: PrettyPrinter(
-        methodCount: 0, // number of method calls to be displayed
-        errorMethodCount: 10, // number of method calls if stacktrace is provided
-        lineLength: 60, // width of the output
-        colors: true, // Colorful log messages
-        printEmojis: false, // Print an emoji for each log message
-        printTime: false, // Should each log print contain a timestamp
-      ), // Use a different log printer
-    );
+  void i(dynamic message) {
+    log(message.toString());
+    _instance.logger.i(message);
+  }
+
+  void d(dynamic message) {
+    log(message.toString());
+    _instance.logger.d(message);
+  }
+
+  void e(
+    dynamic message, {
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
+    log(message.toString(), error: error, stackTrace: stackTrace);
+    _instance.logger.e(message, error: error, stackTrace: stackTrace);
   }
 }
