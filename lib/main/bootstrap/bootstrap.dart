@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:u_search_flutter/main/bootstrap/app_observer.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
-typedef AppBuilder = Future<Widget> Function();
+typedef AppBuilder = Future<Widget> Function(
+  SharedPreferences sharedPreferences,
+);
 
 Future<void> bootstrap(AppBuilder builder) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +17,8 @@ Future<void> bootstrap(AppBuilder builder) async {
 
   final appBlocObserver = AppBlocObserver();
   Bloc.observer = appBlocObserver;
+
+  final sharedPreferences = await SharedPreferences.getInstance();
 
   FlutterError.onError = (details) {
     LoggerManager().e(
@@ -23,7 +28,11 @@ Future<void> bootstrap(AppBuilder builder) async {
     );
   };
 
-  runApp(await builder());
+  runApp(
+    await builder(
+      sharedPreferences,
+    ),
+  );
 }
 
 // void bootstrap({

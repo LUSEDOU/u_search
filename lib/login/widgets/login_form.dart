@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:formz/formz.dart';
+import 'package:form_inputs/form_inputs.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/login/bloc/login_bloc.dart';
 import 'package:u_search_flutter/login/login.dart';

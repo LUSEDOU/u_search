@@ -14,25 +14,25 @@ import 'package:u_search_flutter/utils/logger_manager.dart';
 GoRouter router = GoRouter(
   initialLocation: '/applies',
   debugLogDiagnostics: true,
-  redirect: (context, state) async {
-    final logger = LoggerManager().logger;
-    final bloc = context.read<AppBloc>();
-    if (bloc.state.isUnknown) {
-      logger.i('From ${state.fullPath} To /');
-      return '/';
-    }
-    if (bloc.state.isUnauthenticated &&
-        !(state.fullPath?.startsWith('/auth') ?? false)) {
-      logger.i('From ${state.fullPath} To /auth/login');
-      return '/auth/login';
-    }
-    // logger.i('No redirect from ${state.fullPath}');
-    return null;
-  },
+  // redirect: (context, state) async {
+  //   final logger = LoggerManager().logger;
+  //   final bloc = context.read<AppBloc>();
+  //   if (bloc.state.isUnknown) {
+  //     logger.i('From ${state.fullPath} To /');
+  //     return '/';
+  //   }
+  //   if (bloc.state.isUnauthenticated &&
+  //       !(state.fullPath?.startsWith('/auth') ?? false)) {
+  //     logger.i('From ${state.fullPath} To /auth/login');
+  //     return '/auth/login';
+  //   }
+  //   // logger.i('No redirect from ${state.fullPath}');
+  //   return null;
+  // },
   routes: <GoRoute>[
     GoRoute(
       path: '/',
-      builder: (context, state) => const RoleSelectorPage(),
+      builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
       path: '/auth',
