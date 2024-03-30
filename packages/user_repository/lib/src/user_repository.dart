@@ -19,5 +19,11 @@ class UserRepository {
   final UserStorage _storage;
   final AuthenticationClient _authenticationClient;
 
-  Future<void> sendLoginiEmailLink(String email) async {}
+  Future<void> sendLoginEmailLink(String email) async {
+    try {
+      await _authenticationClient.sendLoginEmailLink(email: email);
+    } catch (error, stackTrace) {
+      //
+    }
+  }
 }
