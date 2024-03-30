@@ -4,7 +4,6 @@ part 'authentication_failure.dart';
 
 /// A generic Authentication Interface.
 abstract class AuthenticationClient {
-
   /// Sends an authentication link to the provided [email].
   ///
   /// Opening the link should redirect to the app with [appPackageName]

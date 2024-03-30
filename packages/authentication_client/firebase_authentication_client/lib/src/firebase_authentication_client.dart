@@ -1,5 +1,6 @@
 import 'package:authentication_client/authentication_client.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 part 'firebase_authentication_failure.dart';
 
@@ -8,12 +9,21 @@ part 'firebase_authentication_failure.dart';
 /// {@endtemplate}
 class FirebaseAuthenticationClient extends AuthenticationClient {
   /// {@macro firebase_authentication_client}
-  FirebaseAuthenticationClient();
+  FirebaseAuthenticationClient({
+    FirebaseAuth? firebaseAuth,
+  }) : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
+
+  final FirebaseAuth _firebaseAuth;
 
   @override
-  bool isLogInWithEmailLink({required String emailLink}) {
-    // TODO: implement isLogInWithEmailLink
-    throw UnimplementedError();
+  bool isLogInWithEmailLink({
+    required String emailLink,
+  }) {
+    try {
+      return _firebaseAuth.isSignInWithEmailLink(emailLink);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(IsLogInWithEmailLinkFailure(error), stackTrace);
+    }
   }
 
   @override
@@ -21,14 +31,23 @@ class FirebaseAuthenticationClient extends AuthenticationClient {
     required String email,
     required String emailLink,
   }) {
-    // TODO: implement logInWithEmailLink
-    throw UnimplementedError();
+    try {
+      return _firebaseAuth.signInWithEmailLink(
+        email: email,
+        emailLink: emailLink,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithEmailLinkFailure(error), stackTrace);
+    }
   }
 
   @override
   Future<void> logOut() {
-    // TODO: implement logOut
-    throw UnimplementedError();
+    try {
+      return _firebaseAuth.signOut();
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogOutFailure(error), stackTrace);
+    }
   }
 
   @override
@@ -36,7 +55,23 @@ class FirebaseAuthenticationClient extends AuthenticationClient {
     required String email,
     required String appPackageName,
   }) {
-    // TODO: implement sendLoginEmailLink
-    throw UnimplementedError();
+    try {
+      const url = 'http://localhost:44525/email_login';
+
+      final actionCodeSettings = ActionCodeSettings(
+        url: url,
+        handleCodeInApp: true,
+        androidPackageName: appPackageName,
+        androidInstallApp: true,
+        androidMinimumVersion: '12',
+        iOSBundleId: appPackageName,
+      );
+      return _firebaseAuth.sendSignInLinkToEmail(
+        email: email,
+        actionCodeSettings: actionCodeSettings,
+      );
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(SendLoginEmailLinkFailure(error), stackTrace);
+    }
   }
 }

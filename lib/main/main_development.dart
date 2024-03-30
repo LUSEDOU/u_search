@@ -12,9 +12,9 @@ void main() {
     (
       sharedPreferences,
     ) async {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
+      // await Firebase.initializeApp(
+      //   options: DefaultFirebaseOptions.currentPlatform,
+      // );
 
       const packageInfoClient = PackageInfoClient(
         appName: 'U Search [DEV]',
@@ -23,8 +23,8 @@ void main() {
       );
 
       final persistentStorage = PersistentStorage(
-          sharedPreferences: sharedPreferences,
-        );
+        sharedPreferences: sharedPreferences,
+      );
 
       final userRepository = UserRepository(
         storage: UserStorage(

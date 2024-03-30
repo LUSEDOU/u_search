@@ -12,7 +12,7 @@ import 'package:u_search_flutter/sign_up/sign_up.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
 GoRouter router = GoRouter(
-  initialLocation: '/applies',
+  // initialLocation: '/applies',
   debugLogDiagnostics: true,
   // redirect: (context, state) async {
   //   final logger = LoggerManager().logger;
@@ -34,62 +34,62 @@ GoRouter router = GoRouter(
       path: '/',
       builder: (context, state) => const LoginPage(),
     ),
-    GoRoute(
-      path: '/auth',
-      redirect: (context, state) async {
-        final logger = LoggerManager().logger;
-        if (context.read<AppBloc>().state.isAuthenticated) {
-          logger.i('From ${state.fullPath} To /applies');
-          return '/applies';
-        }
-        return null;
-      },
-      builder: (context, state) => const LoginPage(),
-      routes: [
-        GoRoute(
-          path: 'login',
-          builder: (context, state) => const LoginPage(),
-        ),
-        GoRoute(
-          path: 'sign_up',
-          builder: (context, state) => const SignUpPage(),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/applies/new',
-      builder: (context, state) => const ApplyPage(),
-    ),
-    GoRoute(
-      path: '/applies',
-      builder: (context, state) => const AppliesOverviewPage(),
-      routes: [
-        GoRoute(
-          path: ':applyId',
-          redirect: (context, state) async {
-            final logger = LoggerManager().logger;
-            final id = int.tryParse(state.pathParameters['applyId'].toString());
-            if (id == null) {
-              logger.i('From ${state.fullPath} To /applies/new');
-              return '/applies/new';
-            }
-            logger.i('To ${state.fullPath}');
-            return null;
-          },
-          builder: (context, state) => ApplyOverviewPage(
-            id: int.parse(state.pathParameters['applyId'].toString()),
-            apply: state.extra is Apply ? state.extra! as Apply : null,
-          ),
-          routes: [
-            GoRoute(
-              path: 'review',
-              builder: (context, state) => ApplyReviewPage(
-                apply: state.extra! as Apply,
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
+    // GoRoute(
+    //   path: '/auth',
+    //   redirect: (context, state) async {
+    //     final logger = LoggerManager().logger;
+    //     if (context.read<AppBloc>().state.isAuthenticated) {
+    //       logger.i('From ${state.fullPath} To /applies');
+    //       return '/applies';
+    //     }
+    //     return null;
+    //   },
+    //   builder: (context, state) => const LoginPage(),
+    //   routes: [
+    //     GoRoute(
+    //       path: 'login',
+    //       builder: (context, state) => const LoginPage(),
+    //     ),
+    //     GoRoute(
+    //       path: 'sign_up',
+    //       builder: (context, state) => const SignUpPage(),
+    //     ),
+    //   ],
+    // ),
+    // GoRoute(
+    //   path: '/applies/new',
+    //   builder: (context, state) => const ApplyPage(),
+    // ),
+    // GoRoute(
+    //   path: '/applies',
+    //   builder: (context, state) => const AppliesOverviewPage(),
+    //   routes: [
+    //     GoRoute(
+    //       path: ':applyId',
+    //       redirect: (context, state) async {
+    //         final logger = LoggerManager().logger;
+    //         final id = int.tryParse(state.pathParameters['applyId'].toString());
+    //         if (id == null) {
+    //           logger.i('From ${state.fullPath} To /applies/new');
+    //           return '/applies/new';
+    //         }
+    //         logger.i('To ${state.fullPath}');
+    //         return null;
+    //       },
+    //       builder: (context, state) => ApplyOverviewPage(
+    //         id: int.parse(state.pathParameters['applyId'].toString()),
+    //         apply: state.extra is Apply ? state.extra! as Apply : null,
+    //       ),
+    //       routes: [
+    //         GoRoute(
+    //           path: 'review',
+    //           builder: (context, state) => ApplyReviewPage(
+    //             apply: state.extra! as Apply,
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ],
+    // ),
   ],
 );
