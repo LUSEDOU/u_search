@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 import 'package:u_search_flutter/utils/models_extensions.dart';
 
 part 'role_selector_state.dart';
@@ -63,14 +64,19 @@ class RoleSelectorCubit extends Cubit<RoleSelectorState> {
 
       late final Role newRole;
 
-      if (_authenticationRepository.currentUser.isNotEmpty) {
-        newRole = await _dataRepository.addRoleToUser(
-          role,
-          user: _authenticationRepository.currentUser.toModel(),
-        );
-      } else {
-        newRole = _dataRepository.updateRole(role);
-      }
+      newRole = await _dataRepository.addRoleToUser(
+        role,
+        user: _authenticationRepository.currentUser.toModel(),
+      );
+      LoggerManager().logger.d('Role: $newRole');
+      // if (_authenticationRepository.currentUser.isNotEmpty) {
+      //   newRole = await _dataRepository.addRoleToUser(
+      //     role,
+      //     user: _authenticationRepository.currentUser.toModel(),
+      //   );
+      // } else {
+      //   newRole = _dataRepository.updateRole(role);
+      // }
       emit(
         state.copyWith(
           role: newRole,

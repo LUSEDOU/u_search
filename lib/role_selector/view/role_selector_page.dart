@@ -49,7 +49,8 @@ class RoleSelectorView extends StatelessWidget {
           BlocListener<AppBloc, AppState>(
             listenWhen: (previous, current) => previous.role != current.role,
             listener: (context, state) {
-              context.go('/applies');
+              context.go('/auth');
+              // context.go('/applies');
             },
           ),
         ],

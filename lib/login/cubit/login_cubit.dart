@@ -4,6 +4,7 @@ import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 import 'package:u_search_flutter/utils/models_extensions.dart';
 
 part 'login_state.dart';
@@ -47,14 +48,16 @@ class LoginCubit extends Cubit<LoginState> {
         email: state.email.value,
         password: state.password.value,
       );
-      final role = _dataRepository.currentRole;
-      if (!role.isCreated) {
-        final user = await _authenticationRepository.getUser();
-        await _dataRepository.addRoleToUser(
-          role,
-          user: user.toModel(),
-        );
-      }
+      final role = await _dataRepository.role.first;
+      LoggerManager().logger.d('Role: $role');
+      // if (!role.isCreated) {
+      final user = await _authenticationRepository.getUser();
+      LoggerManager().logger.d('User: $user');
+      await _dataRepository.addRoleToUser(
+        role,
+        user: user.toModel(),
+      );
+      // }
 
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } catch (_) {

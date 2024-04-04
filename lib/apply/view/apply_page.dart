@@ -109,7 +109,7 @@ class SubmitView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ApplyBloc, ApplyState>(
       builder: (context, state) {
-        final researcher = context.read<AppBloc>().state.getRole<Researcher>();
+        final researcher = context.read<AppBloc>().state.getRole<Role>();
 
         return Column(
           children: [
@@ -137,7 +137,7 @@ class SubmitView extends StatelessWidget {
                   },
                 ),
                 child: Text(
-                  'Submit',
+                  'Pick file',
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),

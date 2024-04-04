@@ -12,22 +12,22 @@ import 'package:u_search_flutter/sign_up/sign_up.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
 GoRouter router = GoRouter(
-  initialLocation: '/applies',
+  // initialLocation: '/applies',
   debugLogDiagnostics: true,
   redirect: (context, state) async {
-    final logger = LoggerManager().logger;
-    final bloc = context.read<AppBloc>();
-    if (bloc.state.isUnknown) {
-      logger.i('From ${state.fullPath} To /');
-      return '/';
-    }
-    if (bloc.state.isUnauthenticated &&
-        !(state.fullPath?.startsWith('/auth') ?? false)) {
-      logger.i('From ${state.fullPath} To /auth/login');
-      return '/auth/login';
-    }
-    // logger.i('No redirect from ${state.fullPath}');
-    return null;
+    // final logger = LoggerManager().logger;
+    // final bloc = context.read<AppBloc>();
+    // if (bloc.state.isUnknown) {
+    //   logger.i('From ${state.fullPath} To /');
+    //   return '/';
+    // }
+    // if (bloc.state.isUnauthenticated &&
+    //     !(state.fullPath?.startsWith('/auth') ?? false)) {
+    //   logger.i('From ${state.fullPath} To /auth/login');
+    //   return '/auth/login';
+    // }
+    // // logger.i('No redirect from ${state.fullPath}');
+    // return null;
   },
   routes: <GoRoute>[
     GoRoute(
@@ -36,14 +36,14 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/auth',
-      redirect: (context, state) async {
-        final logger = LoggerManager().logger;
-        if (context.read<AppBloc>().state.isAuthenticated) {
-          logger.i('From ${state.fullPath} To /applies');
-          return '/applies';
-        }
-        return null;
-      },
+      // redirect: (context, state) async {
+        // final logger = LoggerManager().logger;
+        // if (context.read<AppBloc>().state.isAuthenticated) {
+        //   logger.i('From ${state.fullPath} To /applies');
+        //   return '/applies';
+        // }
+        // return null;
+      // },
       builder: (context, state) => const LoginPage(),
       routes: [
         GoRoute(

@@ -11,13 +11,13 @@ part 'roles.dart';
 @JsonEnum(valueField: 'id')
 enum RoleType {
   /// Researcher
-  researcher._('Researcher', id: 0),
+  researcher._('Investigador', id: 0),
 
   /// Reviewer
-  reviewer._('Reviewer', id: 1),
+  reviewer._('Evaluador', id: 1),
 
   /// Admin
-  admin._('Admin', id: 2),
+  admin._('Administrador', id: 2),
 
   /// Unknown
   unknown._('Unknown');
@@ -37,7 +37,6 @@ enum RoleType {
   static const permitted = [
     RoleType.researcher,
     RoleType.reviewer,
-    RoleType.admin,
   ];
 }
 

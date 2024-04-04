@@ -23,7 +23,7 @@ class Research extends Equatable {
       _$ResearchFromJson(json);
 
   /// The id of the applicant
-  final Researcher researcher;
+  final Role researcher;
 
   /// The length of the research in bytes
   final int length;

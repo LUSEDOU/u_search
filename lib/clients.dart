@@ -7,6 +7,7 @@ import 'package:cache_client/cache_client.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:u_search_flutter/factory.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 
 class AuthClientTest implements auth.AuthClient {
   AuthClientTest() : super();
@@ -80,7 +81,10 @@ class CacheClientTest implements CacheClient {
 
 class ApiClientTest implements ApiClient {
   final _applyController = BehaviorSubject<List<Apply>>.seeded(
-    appliesListFactory(5),
+    [
+      ...appliesListFactory(5),
+      applyWithoutReviewFactory(8),
+    ],
   );
   final _roleController = BehaviorSubject<Role?>();
 
@@ -166,7 +170,9 @@ class ApiClientTest implements ApiClient {
         () {
           final newRole = role.copyWith(
             id: 1,
+            user: user,
           );
+          LoggerManager().logger.d('Role added: $newRole');
           _roleController.add(newRole);
           return newRole;
         },

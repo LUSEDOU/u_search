@@ -106,6 +106,18 @@ Apply applyFactory(
   );
 }
 
+Apply applyWithoutReviewFactory(
+  int index, {
+  int criteriasLength = 2,
+}) {
+  final contest = contestFactory(index, criteriasLength: criteriasLength);
+  return Apply(
+    id: index,
+    contest: contest,
+    research: researchFactory(index),
+  );
+}
+
 List<Apply> appliesListFactory(int length) => List.generate(
       length,
       applyFactory,
