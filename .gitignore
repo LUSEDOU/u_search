@@ -125,3 +125,5 @@ mason-lock.json
 **/macos/Flutter/flutter_export_environment.sh
 **/macos/Flutter/version_number
 
+# FVM Version Cache
+.fvm/
