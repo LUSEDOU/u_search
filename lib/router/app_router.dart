@@ -10,6 +10,7 @@ import 'package:u_search_flutter/login/login.dart';
 import 'package:u_search_flutter/role_selector/role_selector.dart';
 import 'package:u_search_flutter/sign_up/sign_up.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
+import 'package:u_search_flutter/welcome/views/welcome_page.dart';
 
 GoRouter router = GoRouter(
   // initialLocation: '/applies',
@@ -32,7 +33,7 @@ GoRouter router = GoRouter(
   routes: <GoRoute>[
     GoRoute(
       path: '/',
-      builder: (context, state) => const LoginPage(),
+      builder: WelcomePage.routeBuilder,
     ),
     // GoRoute(
     //   path: '/auth',
