@@ -3,7 +3,7 @@ import 'dart:io';
 
 // import 'package:u_search_api/client.dart';
 import 'package:http/http.dart' as http;
-import 'package:u_search_api/src/models/login_response/login_response.dart';
+import 'package:u_search_api/api.dart';
 
 /// {@template u_search_api_malformed_response}
 /// An exception thrown when there is a problem decoded the response body.
@@ -171,6 +171,37 @@ class USearchApiClient {
     }
 
     return LoginResponse.fromJson(body);
+  }
+
+  /// POST /api/v1/subscribe
+  /// Send a subscription request to the server.
+  ///
+  /// Supported parameters:
+  /// * [email] - The email to subscribe with.
+  Future<SubscribeResponse> subscribe({
+    required String email,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/subscribe');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(
+        <String, String>{
+          'email': email,
+        },
+      ),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return SubscribeResponse.fromJson(body);
   }
 
   Future<Map<String, String>> _getRequestHeaders() async {
