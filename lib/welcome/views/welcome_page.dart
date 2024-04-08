@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_inputs/form_inputs.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/welcome/welcome.dart';
+import 'package:user_repository/user_repository.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -14,7 +15,9 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => WelcomeCubit(),
+      create: (_) => WelcomeCubit(
+        userRepository: context.read<UserRepository>(),
+      ),
       child: const WelcomeView(),
     );
   }

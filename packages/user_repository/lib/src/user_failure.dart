@@ -14,6 +14,14 @@ abstract class UserFailure with EquatableMixin implements Exception {
   List<Object> get props => [error];
 }
 
+/// {@template subscribe_failure}
+/// A failure when requesting to subscribe.
+/// {@endtemplate}
+class SubscribeFailure extends UserFailure {
+  /// {@macro subscribe_failure}
+  const SubscribeFailure(super.error);
+}
+
 /// {@template send_login_email_link_failure}
 /// A failure when sending a login email link.
 /// {@endtemplate}

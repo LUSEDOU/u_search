@@ -1,36 +1,31 @@
+import 'package:package_info_client/package_info_client.dart';
+import 'package:u_search_api/client.dart';
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/main/bootstrap/bootstrap.dart';
+import 'package:user_repository/user_repository.dart';
 
 void main() {
   bootstrap(
     (
       sharedPreferences,
     ) async {
-      // await Firebase.initializeApp(
-      //   options: DefaultFirebaseOptions.currentPlatform,
-      // );
+      const packageInfoClient = PackageInfoClient(
+        appName: 'U Search [DEV]',
+        packageName: 'pe.edu.usil.u_search_flutter.dev',
+        packageVersion: '0.2.1',
+      );
 
-      // const packageInfoClient = PackageInfoClient(
-      //   appName: 'U Search [DEV]',
-      //   packageName: 'com.example.u_search_flutter',
-      //   packageVersion: '0.2.1',
-      // );
-      //
-      // final persistentStorage = PersistentStorage(
-      //   sharedPreferences: sharedPreferences,
-      // );
-      //
-      // final userRepository = UserRepository(
-      //   storage: UserStorage(
-      //     storage: persistentStorage,
-      //   ),
-      //   authenticationClient: FirebaseAuthenticationClient(),
-      //   packageInfoClient: packageInfoClient,
-      // );
+      Future<String> tokenProvider() async => packageInfoClient.packageName;
 
-      return const App(
-          // userRepository: userRepository,
-          );
+      final userRepository = UserRepository(
+        apiClient: USearchApiClient(
+          tokenProvider: tokenProvider,
+        ),
+      );
+
+      return App(
+        userRepository: userRepository,
+      );
     },
   );
 }

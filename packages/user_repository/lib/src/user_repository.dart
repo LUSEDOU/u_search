@@ -1,7 +1,6 @@
-import 'package:authentication_client/authentication_client.dart';
 import 'package:equatable/equatable.dart';
-import 'package:package_info_client/package_info_client.dart';
 import 'package:storage/storage.dart';
+import 'package:u_search_api/client.dart';
 
 part 'user_failure.dart';
 part 'user_storage.dart';
@@ -11,7 +10,24 @@ part 'user_storage.dart';
 /// {@endtemplate}
 class UserRepository {
   /// {@macro user_repository}
-  const UserRepository();
+  const UserRepository({
+    required USearchApiClient apiClient,
+  }) : _apiClient = apiClient;
+
+  final USearchApiClient _apiClient;
+
+  Future<void> subscribe({required String email}) async {
+    try {
+      final response = await _apiClient.subscribe(email: email);
+      if (!response.success) {
+        throw const SubscribeFailure('Failed to subscribe');
+      }
+    } on SubscribeFailure {
+      rethrow;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(SubscribeFailure(error), stackTrace);
+    }
+  }
   // const UserRepository({
   //   required UserStorage storage,
   //   required AuthenticationClient authenticationClient,
