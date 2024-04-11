@@ -2,18 +2,22 @@ import 'dart:convert';
 import 'dart:io';
 
 // import 'package:u_search_api/client.dart';
+import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'package:u_search_api/api.dart';
 
 /// {@template u_search_api_malformed_response}
 /// An exception thrown when there is a problem decoded the response body.
 /// {@endtemplate}
-class USearchApiMalformedResponse implements Exception {
+class USearchApiMalformedResponse with EquatableMixin implements Exception {
   /// {@macro u_search_api_malformed_response}
   const USearchApiMalformedResponse({required this.error});
 
   /// The associated error.
   final Object error;
+
+  @override
+  List<Object?> get props => [error];
 }
 
 /// {@template u_search_api_request_failure}
