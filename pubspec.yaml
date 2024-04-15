@@ -10,6 +10,8 @@ environment:
 dependencies:
   app_ui:
     path: ./packages/app_ui
+  application_repository:
+    path: ./packages/application_repository
   authentication_repository:
     path: ./packages/authentication_repository
   bloc: ^8.1.2

@@ -1,17 +1,17 @@
 # TODO
 
 ## Enhancement
-* [ ] Welcome Page (Send a mail to the admin only if it's the accepted domain)
+* [x] Welcome Page (Send a mail to the admin only if it's the accepted domain)
 
 ## Development
-* [ ] Refactor to email link signup
-* [ ] Enable pseudo deeplink
+* [x] Refactor to email link signup
+* [x] Enable pseudo deeplink
 
 ## Fixes
-* [ ] Fix the authentication issue
+* [x] Fix the authentication issue
 
 ## Compatibility
-* [ ] Firebase compatibility with linux/windows
+* [x] Firebase compatibility with linux/windows
 
 ## Release
 

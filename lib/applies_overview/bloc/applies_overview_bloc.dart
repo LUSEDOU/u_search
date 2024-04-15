@@ -1,7 +1,8 @@
+import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:u_search_flutter/utils/logger_manager.dart';
+import 'package:u_search_api/api.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'applies_overview_event.dart';
 part 'applies_overview_state.dart';
@@ -9,34 +10,45 @@ part 'applies_overview_state.dart';
 class AppliesOverviewBloc
     extends Bloc<AppliesOverviewEvent, AppliesOverviewState> {
   AppliesOverviewBloc({
-    required DataRepository dataRepository,
-  })  : _dataRepository = dataRepository,
+    required ApplicationRepository applicationRepository,
+    required UserRepository userRepository,
+  })  : _userRepository = userRepository,
+        _applicationRepository = applicationRepository,
         super(const AppliesOverviewState()) {
     on<AppliesOverviewSubscriptionRequested>(_onSubscriptionRequested);
+    on<AppliesOverviewFetchRequested>(_onFetchRequested);
   }
 
-  final DataRepository _dataRepository;
+  final UserRepository _userRepository;
+  final ApplicationRepository _applicationRepository;
 
   Future<void> _onSubscriptionRequested(
     AppliesOverviewSubscriptionRequested event,
     Emitter<AppliesOverviewState> emit,
   ) async {
-    emit(state.copyWith(status: AppliesOverviewStatus.loading));
-
     await emit.forEach<List<Apply>>(
-      await _dataRepository.getApplies(role: event.role),
+      _applicationRepository.applications,
       onData: (applies) => state.copyWith(
         status: AppliesOverviewStatus.success,
         applies: applies,
       ),
       onError: (error, stackTrace) {
-        LoggerManager().logger
-          ..e(error)
-          ..e(stackTrace);
         return state.copyWith(status: AppliesOverviewStatus.failure);
       },
     );
+    add(AppliesOverviewFetchRequested(user: await _userRepository.user.first));
+  }
 
-    emit(state.copyWith(status: AppliesOverviewStatus.success));
+  Future<void> _onFetchRequested(
+    AppliesOverviewFetchRequested event,
+    Emitter<AppliesOverviewState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: AppliesOverviewStatus.loading));
+      await _applicationRepository.fetchApplications();
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: AppliesOverviewStatus.failure));
+    }
   }
 }

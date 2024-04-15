@@ -33,8 +33,7 @@ class ApplicationRepository {
   /// Throws an [ApplicationFailure] if an error occurs.
   Future<void> fetchApplications() async {
     try {
-      // final response = await _apiClient.fetchApplications();
-      final response = <Apply>[];
+      final response = await _apiClient.getApplies();
       _applicationController.add(response);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ApplicationFetchFailure(error), stackTrace);
@@ -48,7 +47,12 @@ class ApplicationRepository {
     try {
       final current = [..._applicationController.value];
       if (apply.isCreated) {
-        // final response = await _apiClient.sendApplication(apply);
+        final response = await _apiClient.apply(
+          // check the user in the api
+          researcher: 0,
+          contest: apply.contest.id,
+          research: apply.research,
+        );
         final index = current.indexWhere((element) => element.id == apply.id);
         current[index] = apply;
         _applicationController.add(current);
