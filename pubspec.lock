@@ -40,6 +40,13 @@ packages:
       relative: true
     source: path
     version: "0.1.0+1"
+  application_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/application_repository"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   args:
     dependency: transitive
     description:
