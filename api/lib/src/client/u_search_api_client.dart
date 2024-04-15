@@ -212,6 +212,80 @@ class USearchApiClient {
     }
   }
 
+  /// GET /api/v1/applies
+  /// Requests all applies.
+  ///
+  /// Supported parameters:
+  /// * [reviewer] - The reviewer id to filter by.
+  /// * [researcher] - The researcher id to filter by.
+  /// * [limit] - The number of results to return.
+  /// * [offset] - The (zero-based) offset of the first item
+  /// in the collection to return.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<List<Apply>> getApplies({
+    int? reviewer,
+    int? researcher,
+    int? limit,
+    int? offset,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/applies').replace(
+      queryParameters: <String, String>{
+        if (reviewer != null) 'reviewer': '$reviewer',
+        if (researcher != null) 'researcher': '$researcher',
+        if (limit != null) 'limit': '$limit',
+        if (offset != null) 'offset': '$offset',
+      },
+    );
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
+  /// POST /api/v1/applies
+  /// Apply to a contest.
+  ///
+  /// Required parameters:
+  /// * [researcher] - The researcher id to apply with.
+  /// * [contest] - The contest id to apply to.
+  /// * [research] - The research to apply with.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<void> apply({
+    required int researcher,
+    required int contest,
+    required Research research,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/applies');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(
+        <String, int>{
+          'researcher': researcher,
+          'contest': contest,
+        },
+      ),
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: response.json(),
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
   Future<Map<String, String>> _getRequestHeaders() async {
     final token = await _tokenProvider();
     return <String, String>{
