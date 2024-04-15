@@ -1,59 +1,47 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:u_search_flutter/utils/models_extensions.dart';
+import 'package:u_search_api/api.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'app_event.dart';
 part 'app_state.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
   AppBloc({
-    required DataRepository dataRepository,
-  })  : _dataRepository = dataRepository,
+    required UserRepository userRepository,
+    required User user,
+  })  : _userRepository = userRepository,
         super(
-          dataRepository.currentRole.isCreated
-              ? AppState.authenticated(role: dataRepository.currentRole)
-              : AppState.unauthenticated(role: dataRepository.currentRole),
+          user.isAnonymous
+              ? const AppState.unauthenticated()
+              : const AppState.authenticated(),
         ) {
-    on<_AppLogoutRequested>(_onLogoutRequested);
-    on<_AppRoleChanged>(_onRoleChanged);
-    _roleSubscription = _dataRepository.role.listen(
-      (role) => add(_AppRoleChanged(role)),
+    on<_AppUserChanged>(_onUserChanged);
+    _userSubscription = _userRepository.user.listen(_userChanged);
+  }
+
+  final UserRepository _userRepository;
+  late StreamSubscription<User> _userSubscription;
+
+  void _userChanged(User user) => add(_AppUserChanged(user));
+
+  Future<void> _onUserChanged(
+    _AppUserChanged event,
+    Emitter<AppState> emit,
+  ) async {
+    emit(
+      event.user.isAnonymous
+          ? const AppState.unauthenticated()
+          : const AppState.authenticated(),
     );
-  }
-
-  final DataRepository _dataRepository;
-  late final StreamSubscription<Role> _roleSubscription;
-
-  void _onRoleChanged(
-    _AppRoleChanged event,
-    Emitter<AppState> emit,
-  ) {
-    if (event.role.isCreated) {
-      emit(
-        AppState.authenticated(role: event.role),
-      );
-    } else {
-      emit(
-        AppState.unauthenticated(role: event.role),
-      );
-    }
-  }
-
-  void _onLogoutRequested(
-    _AppLogoutRequested event,
-    Emitter<AppState> emit,
-  ) {
-    _dataRepository.logOut();
-    notifyListeners();
   }
 
   @override
   Future<void> close() {
-    _roleSubscription.cancel();
+    _userSubscription.cancel();
     return super.close();
   }
 }

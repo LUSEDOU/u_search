@@ -1,4 +1,5 @@
 import 'package:package_info_client/package_info_client.dart';
+import 'package:token_storage/token_storage.dart';
 import 'package:u_search_api/client.dart';
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/main/bootstrap/bootstrap.dart';
@@ -15,16 +16,21 @@ void main() {
         packageVersion: '0.2.1',
       );
 
-      Future<String> tokenProvider() async => packageInfoClient.packageName;
+      final tokenStorage = CacheTokenStorage(
+        anonymousToken: packageInfoClient.packageName,
+        preferences: sharedPreferences,
+      );
 
       final userRepository = UserRepository(
-        apiClient: USearchApiClient(
-          tokenProvider: tokenProvider,
+        tokenStorage: tokenStorage,
+        apiClient: USearchApiClient.localhost(
+          tokenProvider: tokenStorage.readToken,
         ),
       );
 
       return App(
         userRepository: userRepository,
+        user: await userRepository.user.first,
       );
     },
   );

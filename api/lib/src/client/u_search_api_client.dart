@@ -121,62 +121,6 @@ class USearchApiClient {
   //   return ArticleResponse.fromJson(body);
   // }
 
-  /// POST /api/v1/login
-  /// Sends a email link to the user to login.
-  ///
-  /// Supported parameters:
-  /// * [email] - The email to login with.
-  Future<void> sendLoginEmail({
-    required String email,
-  }) async {
-    final uri = Uri.parse('$_baseUrl/api/v1/auth');
-
-    final response = await _httpClient.post(
-      uri,
-      headers: await _getRequestHeaders(),
-      body: jsonEncode(<String, String>{
-        'email': email,
-      }),
-    );
-
-    if (response.statusCode != HttpStatus.ok) {
-      throw USearchApiRequestFailure(
-        body: response.json(),
-        statusCode: response.statusCode,
-      );
-    }
-  }
-
-  /// POST /api/v1/login
-  /// Logs in the user with the provided email and token.
-  ///
-  /// Supported parameters:
-  Future<LoginResponse> login({
-    required String email,
-    required String token,
-  }) async {
-    final uri = Uri.parse('$_baseUrl/api/v1/login');
-
-    final response = await _httpClient.post(
-      uri,
-      headers: await _getRequestHeaders(),
-      body: jsonEncode(<String, String>{
-        'email': email,
-        'token': token,
-      }),
-    );
-    final body = response.json();
-
-    if (response.statusCode != HttpStatus.ok) {
-      throw USearchApiRequestFailure(
-        body: response.json(),
-        statusCode: response.statusCode,
-      );
-    }
-
-    return LoginResponse.fromJson(body);
-  }
-
   /// POST /api/v1/subscribe
   /// Send a subscription request to the server.
   ///
@@ -206,6 +150,66 @@ class USearchApiClient {
     }
 
     return SubscribeResponse.fromJson(body);
+  }
+
+  /// POST /api/v1/login
+  ///
+  /// Supported parameters:
+  /// * [token] - The token to login with.
+  ///
+  /// Logs in the user with the provided token.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<LoginResponse> loginWithEmailLink({
+    required String token,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/login');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(<String, String>{
+        'token': token,
+      }),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return LoginResponse.fromJson(body);
+  }
+
+  /// POST /api/v1/auth
+  /// Sends a login email link to the user.
+  ///
+  /// Supported parameters:
+  /// * [email] - The email to send the login link to.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<void> sendLoginEmailLink({
+    required String email,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/auth');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(<String, String>{
+        'email': email,
+      }),
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: response.json(),
+        statusCode: response.statusCode,
+      );
+    }
   }
 
   Future<Map<String, String>> _getRequestHeaders() async {

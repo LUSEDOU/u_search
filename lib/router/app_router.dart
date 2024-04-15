@@ -1,19 +1,20 @@
-import 'package:data_repository/data_repository.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:data_repository/data_repository.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:u_search_flutter/app/app.dart';
-import 'package:u_search_flutter/applies_overview/view/view.dart';
-import 'package:u_search_flutter/apply/apply.dart';
-import 'package:u_search_flutter/apply_overview/apply_overview.dart';
-import 'package:u_search_flutter/apply_review/apply_review.dart';
-import 'package:u_search_flutter/login/login.dart';
-import 'package:u_search_flutter/role_selector/role_selector.dart';
-import 'package:u_search_flutter/sign_up/sign_up.dart';
-import 'package:u_search_flutter/utils/logger_manager.dart';
+import 'package:u_search_flutter/auth/views/auth_page.dart';
+// import 'package:u_search_flutter/app/app.dart';
+// import 'package:u_search_flutter/applies_overview/view/view.dart';
+// import 'package:u_search_flutter/apply/apply.dart';
+// import 'package:u_search_flutter/apply_overview/apply_overview.dart';
+// import 'package:u_search_flutter/apply_review/apply_review.dart';
+// import 'package:u_search_flutter/login/login.dart';
+// import 'package:u_search_flutter/role_selector/role_selector.dart';
+// import 'package:u_search_flutter/sign_up/sign_up.dart';
+// import 'package:u_search_flutter/utils/logger_manager.dart';
 import 'package:u_search_flutter/welcome/views/welcome_page.dart';
 
 GoRouter router = GoRouter(
-  // initialLocation: '/applies',
+  initialLocation: '/auth',
   debugLogDiagnostics: true,
   // redirect: (context, state) async {
   //   final logger = LoggerManager().logger;
@@ -35,35 +36,22 @@ GoRouter router = GoRouter(
       path: '/',
       builder: WelcomePage.routeBuilder,
     ),
-    // GoRoute(
-    //   path: '/auth',
-    //   redirect: (context, state) async {
-    //     final logger = LoggerManager().logger;
-    //     if (context.read<AppBloc>().state.isAuthenticated) {
-    //       logger.i('From ${state.fullPath} To /applies');
-    //       return '/applies';
-    //     }
-    //     return null;
-    //   },
-    //   builder: (context, state) => const LoginPage(),
-    //   routes: [
-    //     GoRoute(
-    //       path: 'login',
-    //       builder: (context, state) => const LoginPage(),
-    //     ),
-    //     GoRoute(
-    //       path: 'sign_up',
-    //       builder: (context, state) => const SignUpPage(),
-    //     ),
-    //   ],
-    // ),
+    GoRoute(
+      path: '/auth',
+      builder: (context, state) => const AuthPage(token: 'token'),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: AuthPage.routeBuilder,
+    ),
     // GoRoute(
     //   path: '/applies/new',
     //   builder: (context, state) => const ApplyPage(),
     // ),
-    // GoRoute(
-    //   path: '/applies',
-    //   builder: (context, state) => const AppliesOverviewPage(),
+    GoRoute(
+      path: '/applies',
+      builder: (context, state) => const AppliesOverviewPage(),
+    ),
     //   routes: [
     //     GoRoute(
     //       path: ':applyId',

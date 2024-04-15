@@ -5,40 +5,25 @@ enum AppStatus { authenticated, unauthenticated }
 class AppState extends Equatable {
   const AppState._({
     this.status = AppStatus.unauthenticated,
-    this.role = const Unknown(),
   });
-
-  const AppState.unknown() : this._();
-
-  const AppState.authenticated({
-    required this.role,
-  }) : status = AppStatus.authenticated;
-
-  const AppState.unauthenticated({
-    required this.role,
-  }) : status = AppStatus.unauthenticated;
+  const AppState.authenticated() : this._(status: AppStatus.authenticated);
+  const AppState.unauthenticated() : this._();
 
   final AppStatus status;
-  final Role role;
+
+  AppState copyWith({
+    AppStatus? status,
+  }) {
+    return AppState._(
+      status: status ?? this.status,
+    );
+  }
 
   @override
-  List<Object> get props => [status, role];
+  List<Object> get props => [status];
 }
 
 extension AppStateX on AppState {
   bool get isAuthenticated => status == AppStatus.authenticated;
   bool get isUnauthenticated => status == AppStatus.unauthenticated;
-
-  bool get isResearcher => role.isResearcher;
-  bool get isReviewer => role.isReviewer;
-  bool get isUnknown => role.isUnknown;
-  bool get isAdmin => role.isAdmin;
-
-  T getRole<T extends Role>() {
-    if (role is T) {
-      return role as T;
-    } else {
-      throw Exception('Role is not of type $T');
-    }
-  }
 }

@@ -44,6 +44,8 @@ dependencies:
     path: ./packages/storage/persistent_storage
   rxdart: ^0.27.7
   shared_preferences: ^2.2.2
+  token_storage:
+    path: ./packages/token_storage
   user_repository:
     path: ./packages/user_repository
   u_search_api:

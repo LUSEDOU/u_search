@@ -31,9 +31,40 @@ class User extends Equatable {
   /// The current user's email.
   final String email;
 
+  /// Whether the user is anonymous.
+  bool get isAnonymous => User.anonymous == this;
+
+  /// An anonymous user.
+  static const User anonymous = User(
+    id: 0,
+    name: '',
+    lastName: '',
+    email: '',
+  );
+
   /// Converts a `User` instance to a `Map<String, dynamic>`.
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
+  /// Creates a new [User] with the provided fields.
+  User copyWith({
+    int? id,
+    String? name,
+    String? email,
+    String? lastName,
+  }) {
+    return User(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      lastName: lastName ?? this.lastName,
+    );
+  }
+
   @override
-  List<Object> get props => [id, name, email, lastName];
+  List<Object> get props => [
+        id,
+        name,
+        email,
+        lastName,
+      ];
 }

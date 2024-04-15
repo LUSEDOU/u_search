@@ -4,10 +4,10 @@ import 'package:u_search_api/api.dart';
 
 part 'login_response.g.dart';
 
+@JsonSerializable()
 /// {@template login_response}
 /// Response from the login endpoint.
 /// {@endtemplate}
-@JsonSerializable()
 class LoginResponse extends Equatable {
   /// {@macro login_response}
   const LoginResponse({

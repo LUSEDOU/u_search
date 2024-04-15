@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:storage/storage.dart';
+import 'package:token_storage/token_storage.dart';
 import 'package:u_search_api/client.dart';
 
 part 'user_failure.dart';
@@ -10,12 +12,26 @@ part 'user_storage.dart';
 /// {@endtemplate}
 class UserRepository {
   /// {@macro user_repository}
-  const UserRepository({
+  UserRepository({
+    required TokenStorage tokenStorage,
     required USearchApiClient apiClient,
-  }) : _apiClient = apiClient;
+    User user = User.anonymous,
+  })  : _apiClient = apiClient,
+        _tokenStorage = tokenStorage,
+        _userController = BehaviorSubject<User>.seeded(user);
 
   final USearchApiClient _apiClient;
+  final TokenStorage _tokenStorage;
 
+  /// Stream of [User] which will emit the current user when the user changes.
+  /// The initial value is [User.anonymous].
+
+  Stream<User> get user => _userController.stream;
+  final BehaviorSubject<User> _userController;
+
+  /// Sends a subscription request to the API.
+  ///
+  /// Throws a [SubscribeFailure] if an exception occurs.
   Future<void> subscribe({required String email}) async {
     try {
       final response = await _apiClient.subscribe(email: email);
@@ -28,6 +44,43 @@ class UserRepository {
       Error.throwWithStackTrace(SubscribeFailure(error), stackTrace);
     }
   }
+
+  /// Sends a login email link to the provided [email].
+  Future<void> sendLoginEmailLink({required String email}) async {
+    try {
+      await _apiClient.sendLoginEmailLink(email: email);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(SendLoginEmailLinkFailure(error), stackTrace);
+    }
+  }
+
+  /// Logs in with an email link.
+  ///
+  /// Throws a [LogInWithEmailLinkFailure] if an exception occurs.
+  Future<void> logInWithEmailLink({
+    required String token,
+  }) async {
+    try {
+      final response = await _apiClient.loginWithEmailLink(token: token);
+      await _tokenStorage.saveToken(response.token);
+      _userController.add(response.user);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogInWithEmailLinkFailure(error), stackTrace);
+    }
+  }
+
+  /// Logs out.
+  ///
+  /// Throws a [LogOutFailure] if an exception occurs.
+  Future<void> logOut() async {
+    try {
+      await _tokenStorage.clearToken();
+      _userController.add(User.anonymous);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(LogOutFailure(error), stackTrace);
+    }
+  }
+
   // const UserRepository({
   //   required UserStorage storage,
   //   required AuthenticationClient authenticationClient,

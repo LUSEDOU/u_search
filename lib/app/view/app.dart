@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:u_search_api/api.dart';
+import 'package:u_search_flutter/app/app.dart';
 
 import 'package:u_search_flutter/router/app_router.dart';
 import 'package:user_repository/user_repository.dart';
@@ -7,10 +9,13 @@ import 'package:user_repository/user_repository.dart';
 class App extends StatelessWidget {
   const App({
     required UserRepository userRepository,
+    required User user,
     super.key,
-  }) : _userRepository = userRepository;
+  })  : _userRepository = userRepository,
+        _user = user;
 
   final UserRepository _userRepository;
+  final User _user;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +23,13 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: _userRepository),
       ],
-      // child: BlocProvider(
-      //   create: (_) => AppBloc(),
-      child: const AppView(),
-      // ),
+      child: BlocProvider(
+        create: (_) => AppBloc(
+          userRepository: _userRepository,
+          user: _user,
+        ),
+        child: const AppView(),
+      ),
     );
   }
 }

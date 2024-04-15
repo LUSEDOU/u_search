@@ -18,19 +18,3 @@ final class _AppUserChanged extends AppEvent {
   @override
   List<Object> get props => [user];
 }
-
-final class _AppRoleTypeChanged extends AppEvent {
-  const _AppRoleTypeChanged(this.type);
-  final RoleType type;
-
-  @override
-  List<Object> get props => [type];
-}
-
-final class _AppRoleChanged extends AppEvent {
-  const _AppRoleChanged(this.role);
-  final Role role;
-
-  @override
-  List<Object> get props => [role];
-}
