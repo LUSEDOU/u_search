@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'apply_event.dart';
 part 'apply_state.dart';
 
 class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ApplyBloc({
-    required DataRepository dataRepository,
-  })  : _dataRepository = dataRepository,
+    required UserRepository userRepository,
+  })  : _userRepository = userRepository,
         super(const ApplyState()) {
     on<ApplyFetchContests>(_onFetchContests);
     on<ApplySelectContest>(_onSelectContest);
@@ -18,7 +18,7 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
     on<ApplySubmitApplication>(_onSubmitApplication);
   }
 
-  final DataRepository _dataRepository;
+  final UserRepository _userRepository;
 
   Future<void> _onFetchContests(
     ApplyFetchContests event,
@@ -26,7 +26,7 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ) async {
     emit(state.copyWith(status: ApplyStatus.loading));
     try {
-      final contests = await _dataRepository.getContests();
+      final contests = await _userRepository.getContests();
       emit(
         state.copyWith(
           contests: contests,
@@ -85,15 +85,15 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ) async {
     emit(state.copyWith(status: ApplyStatus.loading));
     try {
-      final uuid = await _dataRepository.uploadResearchFile(
+      final uuid = await _userRepository.uploadResearchFile(
         research: state.file!,
       );
 
-      final research = await _dataRepository.addResearch(
+      final research = await _userRepository.addResearch(
         state.research!.copyWith(uuid: uuid),
       );
 
-      final apply = await _dataRepository.addApply(
+      final apply = await _userRepository.addApply(
         Apply.empty.copyWith(
           contest: state.selectedContest,
           research: research,
