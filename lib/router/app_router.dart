@@ -1,6 +1,8 @@
 // import 'package:data_repository/data_repository.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_flutter/applies_overview/applies_overview.dart';
+import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/auth/views/auth_page.dart';
 // import 'package:u_search_flutter/app/app.dart';
 // import 'package:u_search_flutter/applies_overview/view/view.dart';
@@ -50,7 +52,17 @@ GoRouter router = GoRouter(
     // ),
     GoRoute(
       path: '/applies',
-      builder: (context, state) => const AppliesOverviewPage(),
+      builder: AppliesOverviewPage.routeBuilder,
+      routes: [
+        GoRoute(
+          path: ':applyId',
+          builder: ApplyOverviewPage.routeBuilder,
+          redirect: (context, state) {
+            final id = int.tryParse(state.pathParameters['applyId']!);
+            return id == null ? '/applies' : null;
+          },
+        ),
+      ],
     ),
     //   routes: [
     //     GoRoute(

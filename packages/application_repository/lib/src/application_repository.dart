@@ -46,21 +46,14 @@ class ApplicationRepository {
   Future<void> sendApplication(Apply apply) async {
     try {
       final current = [..._applicationController.value];
-      if (apply.isCreated) {
-        final response = await _apiClient.apply(
-          // check the user in the api
-          researcher: 0,
-          contest: apply.contest.id,
-          research: apply.research,
-        );
-        final index = current.indexWhere((element) => element.id == apply.id);
-        current[index] = apply;
-        _applicationController.add(current);
-      } else {
-        // final response = await _apiClient.sendApplication(apply);
-        final response = apply.copyWith(id: 1);
-        _applicationController.add([...current, response]);
-      }
+      final response = await _apiClient.apply(
+        // check the user in the api
+        contest: apply.contest.id,
+        research: apply.research,
+      );
+      final index = current.indexWhere((element) => element.id == apply.id);
+      current[index] = apply;
+      _applicationController.add(current);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ApplicationSendApplyFailure(error), stackTrace);
     }

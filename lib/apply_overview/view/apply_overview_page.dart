@@ -1,12 +1,10 @@
-import 'package:data_repository/data_repository.dart';
+import 'package:application_repository/application_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:u_search_flutter/app/app.dart';
-import 'package:u_search_flutter/utils/logger_manager.dart';
-import 'package:u_search_flutter/utils/models_extensions.dart';
+import 'package:u_search_api/api.dart';
 
 import '../apply_overview.dart';
 
@@ -18,19 +16,15 @@ class ApplyOverviewPage extends StatelessWidget {
   })  : _apply = apply,
         _id = id;
 
-  factory ApplyOverviewPage.routeBuilder(
-    BuildContext context,
-    GoRouterState state,
-  ) {
+  factory ApplyOverviewPage.routeBuilder(_, GoRouterState state) {
     final data = state.extra as ApplyOverviewData?;
-    final id = int.tryParse(state.pathParameters['applyId'] ?? '');
+    final id = int.parse(state.pathParameters['applyId']!);
 
-    if (id == null) {
-      context.go('/applies');
-      throw Exception('Invalid apply id');
-    }
-
-    return ApplyOverviewPage(id: id, apply: data?.apply);
+    return ApplyOverviewPage(
+      id: id,
+      apply: data?.apply,
+      key: const Key('applyOverview'),
+    );
   }
 
   final Apply? _apply;
@@ -39,16 +33,14 @@ class ApplyOverviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) {
+      create: (context) {
+        final applicationRepository = context.read<ApplicationRepository>();
         final bloc = ApplyOverviewBloc(
-          dataRepository: context.read<DataRepository>(),
-          apply: _apply,
+          applicationRepository: applicationRepository,
+          apply: _apply ?? Apply.empty,
         );
         if (_apply == null) {
-          bloc.add(ApplyOverviewFetchApply(id: _id));
-        }
-        if (context.read<AppBloc>().state.role.isAdmin) {
-          bloc.add(const ApplyOverviewFetchEvaluators());
+          bloc.add(ApplyOverviewRequested(id: _id));
         }
         return bloc;
       },

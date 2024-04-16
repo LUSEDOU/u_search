@@ -9,7 +9,7 @@ import 'package:user_repository/user_repository.dart';
 class AppliesOverviewPage extends StatelessWidget {
   const AppliesOverviewPage({super.key});
 
-  factory AppliesOverviewPage.routeBuilder(_) {
+  factory AppliesOverviewPage.routeBuilder(_, __) {
     return const AppliesOverviewPage(
       key: Key('appliesOverview'),
     );

@@ -1,34 +1,35 @@
-import 'package:data_repository/data_repository.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
+import 'package:u_search_flutter/apply_overview/bloc/apply_overview_bloc.dart';
 
 class ApplyOverviewView extends StatelessWidget {
   const ApplyOverviewView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final role = context.read<AppBloc>().state.role;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Apply Overview'),
       ),
       floatingActionButton: BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
+        buildWhen: (previous, current) => previous.apply != current.apply,
         builder: (context, state) {
-          if (state.apply == null) {
-            return const SizedBox.shrink();
-          }
-
-          return FloatingActionButton(
-            onPressed: () => context.go(
-              '/applies/${state.apply!.id}/review',
-              extra: state.apply,
+          final apply = state.apply;
+          return Visibility(
+            visible: !apply.isEmpty && !apply.isReviewed,
+            child: FloatingActionButton(
+              onPressed: () => context.go(
+                '/applies/${apply.id}/review',
+                extra: state.apply,
+              ),
+              child: const Icon(Icons.edit),
             ),
-            child: const Icon(Icons.edit),
           );
         },
       ),
@@ -48,33 +49,42 @@ class ApplyOverviewView extends StatelessWidget {
         ],
         child: BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
           builder: (context, state) {
-            if (state.apply == null) {
-              if (state.status == ApplyOverviewStatus.loading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state.status != ApplyOverviewStatus.success) {
-                return const SizedBox.shrink();
-              } else {
-                return Center(
-                  child: Text('No apply with id ${state.apply?.id ?? 'null'}'),
-                );
-              }
+            final apply = context.select(
+              (ApplyOverviewBloc bloc) => bloc.state.apply,
+            );
+
+            if (apply.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
             }
+
             return CupertinoScrollbar(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Text('id: ${state.apply!.id}'),
+                    Text('id: ${apply.id}'),
                     const SizedBox(height: 8),
-                    ContestTile(contest: state.apply!.contest),
+                    ContestTile(contest: apply.contest),
                     const SizedBox(height: 8),
-                    if (state.reviewer != null)
-                      EvaluatorTile(
-                        reviewer: state.reviewer!,
-                      )
-                    else
-                      const EvaluatorList(),
+                    AppButton.blueDress(
+                      child: const Text('Select Evaluator'),
+                      onPressed: () async {
+                        final evaluator = await EvaluatorsDialog.show(context);
+                        if (!context.mounted) return;
+
+                        context
+                            .read<ApplyOverviewBloc>()
+                            .add(ApplyOverviewReviewerChanged(evaluator));
+                      },
+                    ),
                     const SizedBox(height: 8),
-                    ResearchTile(research: state.apply!.research!),
+                    ResearchTile(research: apply.research),
+                    const SizedBox(height: 8),
+                    AppButton.blueDress(
+                      child: const Text('Download'),
+                      onPressed: () => context
+                          .read<ApplyOverviewBloc>()
+                          .add(const ApplyOverviewDownloadRequested()),
+                    ),
                   ],
                 ),
               ),
@@ -105,11 +115,11 @@ class ContestTile extends StatelessWidget {
 
 class EvaluatorTile extends StatelessWidget {
   const EvaluatorTile({
-    required Role reviewer,
+    required User reviewer,
     super.key,
   }) : _evaluator = reviewer;
 
-  final Role _evaluator;
+  final User _evaluator;
 
   @override
   Widget build(BuildContext context) {
@@ -162,9 +172,6 @@ class DownloadButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
       builder: (context, state) {
-        if (state.apply == null) {
-          return const SizedBox.shrink();
-        }
         return ElevatedButton(
           onPressed: () {},
           child: state.status.isLoading
@@ -172,51 +179,6 @@ class DownloadButton extends StatelessWidget {
               : const CircularProgressIndicator(),
         );
       },
-    );
-  }
-}
-
-class EvaluatorList extends StatelessWidget {
-  const EvaluatorList({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
-      builder: (context, state) {
-        if (state.evaluators.isEmpty) {
-          return const SizedBox.shrink();
-        }
-
-        return CupertinoScrollbar(
-          child: SingleChildScrollView(
-            child: Row(
-              children: [
-                for (final evaluator in state.evaluators)
-                  EvaluatorCard(evaluator: evaluator),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class EvaluatorCard extends StatelessWidget {
-  const EvaluatorCard({
-    required this.evaluator,
-    super.key,
-  });
-
-  final Role evaluator;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(evaluator.user.name),
-        subtitle: Text(evaluator.user.email),
-      ),
     );
   }
 }

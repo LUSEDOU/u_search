@@ -231,7 +231,7 @@ class USearchApiClient {
   /// in the collection to return.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
-  Future<List<Apply>> getApplies({
+  Future<ApplicationsResponse> getApplies({
     int? reviewer,
     int? researcher,
     int? limit,
@@ -257,6 +257,8 @@ class USearchApiClient {
         statusCode: response.statusCode,
       );
     }
+
+    return ApplicationsResponse.fromJson(body);
   }
 
   /// POST /api/v1/applies
@@ -269,7 +271,6 @@ class USearchApiClient {
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
   Future<void> apply({
-    required int researcher,
     required int contest,
     required Research research,
   }) async {
@@ -280,7 +281,6 @@ class USearchApiClient {
       headers: await _getRequestHeaders(),
       body: jsonEncode(
         <String, int>{
-          'researcher': researcher,
           'contest': contest,
         },
       ),
@@ -293,6 +293,32 @@ class USearchApiClient {
       );
     }
   }
+
+  /// POST /api/v1/research
+  /// Submit the research PDF file to the server.
+  ///
+  /// Required parameters:
+  /// * [research] - The research PDF file to submit.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<void> submitResearch({
+    required File research,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/research');
+
+    final request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(await _getRequestHeaders())
+      ..files.add(
+        http.MultipartFile.fromBytes(
+          'research',
+          await research.readAsBytes(),
+          filename: research.path.split(Platform.pathSeparator).last,
+        ),
+      );
+
+    final response = await _httpClient.send(request);
+  }
+
 
   Future<Map<String, String>> _getRequestHeaders() async {
     final token = await _tokenProvider();
