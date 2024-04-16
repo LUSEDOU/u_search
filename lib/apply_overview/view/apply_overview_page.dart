@@ -1,4 +1,5 @@
 import 'package:data_repository/data_repository.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +17,21 @@ class ApplyOverviewPage extends StatelessWidget {
     super.key,
   })  : _apply = apply,
         _id = id;
+
+  factory ApplyOverviewPage.routeBuilder(
+    BuildContext context,
+    GoRouterState state,
+  ) {
+    final data = state.extra as ApplyOverviewData?;
+    final id = int.tryParse(state.pathParameters['applyId'] ?? '');
+
+    if (id == null) {
+      context.go('/applies');
+      throw Exception('Invalid apply id');
+    }
+
+    return ApplyOverviewPage(id: id, apply: data?.apply);
+  }
 
   final Apply? _apply;
   final int _id;
@@ -39,4 +55,15 @@ class ApplyOverviewPage extends StatelessWidget {
       child: const ApplyOverviewView(),
     );
   }
+}
+
+class ApplyOverviewData extends Equatable {
+  const ApplyOverviewData({
+    required this.apply,
+  });
+
+  final Apply apply;
+
+  @override
+  List<Object> get props => [apply];
 }

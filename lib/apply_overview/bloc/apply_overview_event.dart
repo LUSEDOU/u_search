@@ -4,6 +4,14 @@ sealed class ApplyOverviewEvent extends Equatable {
   const ApplyOverviewEvent();
 }
 
+final class ApplyOverviewRequested extends ApplyOverviewEvent {
+  const ApplyOverviewRequested({required this.id});
+  final int id;
+
+  @override
+  List<Object> get props => [id];
+}
+
 final class ApplyOverviewFetchApply extends ApplyOverviewEvent {
   const ApplyOverviewFetchApply({
     required this.id,

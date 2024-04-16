@@ -45,3 +45,11 @@ class ApplicationSelectReviewerFailure extends ApplicationFailure {
   /// {@macro application_select_reviewer_failure}
   const ApplicationSelectReviewerFailure(super.error);
 }
+
+/// {@template application_fetch_apply_failure}
+/// A failure when fetching an application.
+/// {@endtemplate}
+class ApplicationFetchApplyFailure extends ApplicationFailure {
+  /// {@macro application_fetch_apply_failure}
+  const ApplicationFetchApplyFailure(super.error);
+}

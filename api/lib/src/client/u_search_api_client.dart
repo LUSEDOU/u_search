@@ -37,6 +37,14 @@ class USearchApiRequestFailure implements Exception {
   final Map<String, dynamic> body;
 }
 
+/// {@template u_search_api_unauthorized_request_failure}
+/// An exception thrown when an unauthorized request is made.
+/// {@endtemplate}
+class USearchApiUnauthorizedRequestFailure implements Exception {
+  /// {@macro u_search_api_unauthorized_request_failure}
+  const USearchApiUnauthorizedRequestFailure();
+}
+
 /// Signature for the authentication token provider.
 typedef TokenProvider = Future<String?> Function();
 

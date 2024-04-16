@@ -65,4 +65,21 @@ class ApplicationRepository {
       Error.throwWithStackTrace(ApplicationSendApplyFailure(error), stackTrace);
     }
   }
+
+  /// Fetches an [Apply] from the repository.
+  ///
+  /// Throws an [ApplicationFetchApplyFailure] if an error occurs.
+  Future<Apply> fetchApply({
+    required int id,
+  }) async {
+    try {
+      final response = await _apiClient.getApply(id);
+      return response;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchApplyFailure(error),
+        stackTrace,
+      );
+    }
+  }
 }

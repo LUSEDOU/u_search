@@ -1,16 +1,18 @@
+import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:u_search_flutter/utils/models_extensions.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'apply_overview_state.dart';
 part 'apply_overview_event.dart';
 
 class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
   ApplyOverviewBloc({
-    required DataRepository dataRepository,
+    required ApplicationRepository applicationRepository,
     Apply? apply,
-  })  : _dataRepository = dataRepository,
+  })  : _applicationRepository = applicationRepository,
         super(
           ApplyOverviewState(
             apply: apply,
@@ -24,7 +26,19 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     on<ApplyOverviewDeleteEvaluator>(_onDeleteEvaluator);
   }
 
-  final DataRepository _dataRepository;
+  final ApplicationRepository _applicationRepository;
+
+  Future<void> _onRequested(
+    ApplyOverviewRequested event,
+    Emitter<ApplyOverviewState> emit,
+  ) async {
+    emit(state.copyWith(status: ApplyOverviewStatus.loading));
+    try {
+      await _applicationRepository.getApply(event.id);
+    } on Exception {
+      emit(state.copyWith(status: ApplyOverviewStatus.failure));
+    }
+  }
 
   Future<void> _onFetchApply(
     ApplyOverviewFetchApply event,
@@ -78,8 +92,8 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     Emitter<ApplyOverviewState> emit,
   ) async {
     if (state.reviewer == null) {
-        emit(state.copyWith(status: ApplyOverviewStatus.failure));
-        return;
+      emit(state.copyWith(status: ApplyOverviewStatus.failure));
+      return;
     }
 
     emit(state.copyWith(status: ApplyOverviewStatus.loading));
