@@ -1,113 +1,49 @@
 import 'dart:io';
 
+import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:user_repository/user_repository.dart';
 
 part 'apply_event.dart';
 part 'apply_state.dart';
 
 class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ApplyBloc({
-    required DataRepository dataRepository,
-  })  : _dataRepository = dataRepository,
+    required int contest,
+    required ApplicationRepository applicationRepository,
+  })  : _contest = contest,
+        _applicationRepository = applicationRepository,
         super(const ApplyState()) {
-    on<ApplyFetchContests>(_onFetchContests);
-    on<ApplySelectContest>(_onSelectContest);
-    on<ApplyUploadResearch>(_onUploadResearch);
-    on<ApplySubmitApplication>(_onSubmitApplication);
+    on<ApplyLoadFile>(_onLoadFile);
+    on<ApplySubmissionRequested>(_onSubmissionRequested);
   }
 
-  final DataRepository _dataRepository;
+  final int _contest;
+  final ApplicationRepository _applicationRepository;
 
-  Future<void> _onFetchContests(
-    ApplyFetchContests event,
+  void _onLoadFile(
+    ApplyLoadFile event,
+    Emitter<ApplyState> emit,
+  ) {
+    emit(state.copyWith(file: event.file, status: ApplyStatus.success));
+  }
+
+  Future<void> _onSubmissionRequested(
+    ApplySubmissionRequested event,
     Emitter<ApplyState> emit,
   ) async {
     emit(state.copyWith(status: ApplyStatus.loading));
     try {
-      final contests = await _dataRepository.getContests();
-      emit(
-        state.copyWith(
-          contests: contests,
-          status: ApplyStatus.success,
-        ),
+      final file = File(state.file!.path!);
+      await _applicationRepository.apply(
+        research: file,
+        contest: _contest,
       );
-    } on Exception {
-      emit(state.copyWith(status: ApplyStatus.failure));
-    }
-  }
-
-  Future<void> _onSelectContest(
-    ApplySelectContest event,
-    Emitter<ApplyState> emit,
-  ) async {
-    emit(state.copyWith(status: ApplyStatus.loading));
-    try {
-      emit(
-        state.copyWith(
-          selectedContest: event.contest,
-          status: ApplyStatus.success,
-          step: ApplyStep.research,
-        ),
-      );
-    } on Exception {
-      emit(state.copyWith(status: ApplyStatus.failure));
-    }
-  }
-
-  Future<void> _onUploadResearch(
-    ApplyUploadResearch event,
-    Emitter<ApplyState> emit,
-  ) async {
-    emit(state.copyWith(status: ApplyStatus.loading));
-    try {
-      emit(
-        state.copyWith(
-          file: event.file,
-          research: Research(
-            researcher: event.researcher,
-            length: await event.file.length(),
-            title: event.file.path.split('/').last,
-            uuid: '',
-          ),
-          status: ApplyStatus.success,
-        ),
-      );
-    } on Exception {
-      emit(state.copyWith(status: ApplyStatus.failure));
-    }
-  }
-
-  Future<void> _onSubmitApplication(
-    ApplySubmitApplication event,
-    Emitter<ApplyState> emit,
-  ) async {
-    emit(state.copyWith(status: ApplyStatus.loading));
-    try {
-      final uuid = await _dataRepository.uploadResearchFile(
-        research: state.file!,
-      );
-
-      final research = await _dataRepository.addResearch(
-        state.research!.copyWith(uuid: uuid),
-      );
-
-      final apply = await _dataRepository.addApply(
-        Apply.empty.copyWith(
-          contest: state.selectedContest,
-          research: research,
-        ),
-      );
-
-      emit(
-        state.copyWith(
-          research: research,
-          apply: apply,
-          status: ApplyStatus.success,
-        ),
-      );
-    } on Exception {
+      emit(state.copyWith(status: ApplyStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
       emit(state.copyWith(status: ApplyStatus.failure));
     }
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:rxdart/rxdart.dart';
@@ -34,35 +35,125 @@ class ApplicationRepository {
   Future<void> fetchApplications() async {
     try {
       final response = await _apiClient.getApplies();
-      _applicationController.add(response);
+      _applicationController.add(response.applications);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ApplicationFetchFailure(error), stackTrace);
     }
   }
 
-  /// Adds an [Apply] to the repository.
+  /// Fetches an [Apply] from the repository.
   ///
-  /// Throws an [ApplicationSendApplyFailure] if an error occurs.
-  Future<void> sendApplication(Apply apply) async {
+  /// Throws an [ApplicationFetchFailure] if an error occurs.
+  Future<Apply> fetchApplication(int id) async {
     try {
+      final response = await _apiClient.getApply(id: id);
       final current = [..._applicationController.value];
-      if (apply.isCreated) {
-        final response = await _apiClient.apply(
-          // check the user in the api
-          researcher: 0,
-          contest: apply.contest.id,
-          research: apply.research,
-        );
-        final index = current.indexWhere((element) => element.id == apply.id);
-        current[index] = apply;
-        _applicationController.add(current);
-      } else {
-        // final response = await _apiClient.sendApplication(apply);
-        final response = apply.copyWith(id: 1);
+
+      final index = current.indexWhere((element) => element.id == id);
+      if (index == -1) {
         _applicationController.add([...current, response]);
+      } else {
+        current[index] = response;
+        _applicationController.add(current);
       }
+
+      return response;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(ApplicationSendApplyFailure(error), stackTrace);
+      Error.throwWithStackTrace(ApplicationFetchFailure(error), stackTrace);
+    }
+  }
+
+  /// Apply a reasearch paper to a contest.
+  ///
+  /// Throws an [ApplicationApplyFailure] if an error occurs.
+  Future<Apply> apply({
+    required int contest,
+    required File research,
+  }) async {
+    try {
+      final researchResponse =
+          await _apiClient.submitResearch(research: research);
+
+      final researchId = researchResponse.id;
+
+      final apply = await _apiClient.apply(
+        contest: contest,
+        research: researchId,
+      );
+      _applicationController.add([..._applicationController.value, apply]);
+
+      return apply;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(ApplicationApplyFailure(error), stackTrace);
+    }
+  }
+
+  /// Update an [Apply] with a selected reviewer.
+  ///
+  /// Throws an [ApplicationSelectReviewerFailure] if an error occurs.
+  Future<Apply> selectReviewer({
+    required Apply apply,
+    required User reviewer,
+  }) async {
+    try {
+      await _apiClient.selectReviewer(apply: apply.id, reviewer: reviewer.id);
+      final updated = apply.copyWith(reviewer: reviewer);
+      final current = [..._applicationController.value];
+
+      final index = current.indexWhere((element) => element.id == apply.id);
+      current[index] = updated;
+      _applicationController.add(current);
+      return updated;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationSelectReviewerFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Fetches all [Contest]s from the repository.
+  ///
+  /// Throws an [ApplicationFetchContestsFailure] if an error occurs.
+  Future<List<Contest>> fetchContests() async {
+    try {
+      final response = await _apiClient.getContests();
+      return response.contests;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchContestsFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Fetches a [Contest] from the repository.
+  ///
+  /// Throws an [ApplicationFetchContestsFailure] if an error occurs.
+  Future<Contest> fetchContest(int id) async {
+    try {
+      final response = await _apiClient.getContest(id: id);
+      return response;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchContestFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Fetches all [User]s that are reviewers.
+  ///
+  /// Throws an [ApplicationFetchReviewersFailure] if an error occurs.
+  Future<List<User>> fetchReviewers() async {
+    try {
+      final response = await _apiClient.getReviewers();
+      return response.reviewers;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchReviewersFailure(error),
+        stackTrace,
+      );
     }
   }
 }

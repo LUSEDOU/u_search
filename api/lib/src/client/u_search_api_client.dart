@@ -37,6 +37,14 @@ class USearchApiRequestFailure implements Exception {
   final Map<String, dynamic> body;
 }
 
+/// {@template u_search_api_unauthorized_request_failure}
+/// An exception thrown when an unauthorized request is made.
+/// {@endtemplate}
+class USearchApiUnauthorizedFailure implements Exception {
+  /// {@macro u_search_api_unauthorized_request_failure}
+  const USearchApiUnauthorizedFailure();
+}
+
 /// Signature for the authentication token provider.
 typedef TokenProvider = Future<String?> Function();
 
@@ -223,7 +231,7 @@ class USearchApiClient {
   /// in the collection to return.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
-  Future<List<Apply>> getApplies({
+  Future<ApplicationsResponse> getApplies({
     int? reviewer,
     int? researcher,
     int? limit,
@@ -249,21 +257,21 @@ class USearchApiClient {
         statusCode: response.statusCode,
       );
     }
+
+    return ApplicationsResponse.fromJson(body);
   }
 
   /// POST /api/v1/applies
   /// Apply to a contest.
   ///
   /// Required parameters:
-  /// * [researcher] - The researcher id to apply with.
   /// * [contest] - The contest id to apply to.
   /// * [research] - The research to apply with.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
-  Future<void> apply({
-    required int researcher,
+  Future<Apply> apply({
     required int contest,
-    required Research research,
+    required int research,
   }) async {
     final uri = Uri.parse('$_baseUrl/api/v1/applies');
 
@@ -272,10 +280,72 @@ class USearchApiClient {
       headers: await _getRequestHeaders(),
       body: jsonEncode(
         <String, int>{
-          'researcher': researcher,
           'contest': contest,
+          'research': research,
         },
       ),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+    return Apply.fromJson(body);
+  }
+
+  /// GET /api/v1/applies/<id>
+  ///
+  /// Required parameters:
+  /// * [id] - The apply id to fetch.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  /// Throws a [USearchApiUnauthorizedFailure] if the request is unauthorized.
+  Future<Apply> getApply({
+    required int id,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/applies/$id');
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+    final body = response.json();
+
+    switch (response.statusCode) {
+      case HttpStatus.unauthorized:
+        throw const USearchApiUnauthorizedFailure();
+      case HttpStatus.ok:
+        return Apply.fromJson(body);
+      case _:
+        throw USearchApiRequestFailure(
+          body: body,
+          statusCode: response.statusCode,
+        );
+    }
+  }
+
+  /// POST /api/v1/applies/<apply>/reviewer
+  /// Select a reviewer for an apply.
+  ///
+  /// Required parameters:
+  /// * [apply] - The apply id to select a reviewer for.
+  /// * [reviewer] - The reviewer id to select.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<void> selectReviewer({
+    required int apply,
+    required int reviewer,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/applies/$apply/reviewer');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(<String, int>{
+        'reviewer': reviewer,
+      }),
     );
 
     if (response.statusCode != HttpStatus.ok) {
@@ -284,6 +354,113 @@ class USearchApiClient {
         statusCode: response.statusCode,
       );
     }
+  }
+
+  /// POST /api/v1/research
+  /// Submit the research PDF file to the server.
+  ///
+  /// Required parameters:
+  /// * [research] - The research PDF file to submit.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<Research> submitResearch({
+    required File research,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/research');
+
+    final encodedFile = base64Encode(await research.readAsBytes());
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(
+        <String, String>{
+          'research': encodedFile,
+        },
+      ),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+    return Research.fromJson(body);
+  }
+
+  /// GET /api/v1/contests
+  /// Requests all contests.
+  ///
+  /// Supported parameters:
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<ContestResponse> getContests() async {
+    final uri = Uri.parse('$_baseUrl/api/v1/contests');
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return ContestResponse.fromJson(body);
+  }
+
+  /// GET /api/v1/contests/<id>
+  /// Requests a contest.
+  ///
+  /// Required parameters:
+  /// * [id] - The contest id to fetch.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<Contest> getContest({
+    required int id,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/contests/$id');
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return Contest.fromJson(body);
+  }
+
+  /// GET /api/v1/reviewers
+  /// Requests all reviewers.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<ReviewerResponse> getReviewers() async {
+    final uri = Uri.parse('$_baseUrl/api/v1/reviewers');
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return ReviewerResponse.fromJson(body);
   }
 
   Future<Map<String, String>> _getRequestHeaders() async {

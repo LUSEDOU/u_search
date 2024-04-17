@@ -1,112 +1,90 @@
+import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:u_search_flutter/utils/models_extensions.dart';
+import 'package:u_search_api/api.dart';
 
 part 'apply_overview_state.dart';
 part 'apply_overview_event.dart';
 
 class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
   ApplyOverviewBloc({
-    required DataRepository dataRepository,
-    Apply? apply,
-  })  : _dataRepository = dataRepository,
-        super(
-          ApplyOverviewState(
-            apply: apply,
-            reviewer: apply?.reviewer,
-          ),
-        ) {
-    on<ApplyOverviewFetchApply>(_onFetchApply);
-    on<ApplyOverviewFetchEvaluators>(_onFetchEvaluaators);
-    on<ApplyOverviewSelectEvaluator>(_onSelectEvaluator);
+    required ApplicationRepository applicationRepository,
+    required Apply apply,
+  })  : _applicationRepository = applicationRepository,
+        super(ApplyOverviewState(apply: apply)) {
+    on<ApplyOverviewRequested>(_onRequested);
+    on<ApplyOverviewReviewerChanged>(_onReviewerChanged);
+    on<ApplyOverviewDownloadRequested>(_onDownloadRequested);
     on<ApplyOverviewSubmit>(_onSubmit);
-    on<ApplyOverviewDeleteEvaluator>(_onDeleteEvaluator);
   }
 
-  final DataRepository _dataRepository;
+  final ApplicationRepository _applicationRepository;
 
-  Future<void> _onFetchApply(
-    ApplyOverviewFetchApply event,
+  Future<void> _onRequested(
+    ApplyOverviewRequested event,
     Emitter<ApplyOverviewState> emit,
   ) async {
     emit(state.copyWith(status: ApplyOverviewStatus.loading));
     try {
-      final apply = await _dataRepository.getApply(event.id);
+      final apply = await _applicationRepository.fetchApplication(event.id);
       emit(
         state.copyWith(
-          status: ApplyOverviewStatus.success,
           apply: apply,
-        ),
-      );
-    } on Exception {
-      emit(state.copyWith(status: ApplyOverviewStatus.failure));
-    }
-  }
-
-  Future<void> _onFetchEvaluaators(
-    ApplyOverviewFetchEvaluators event,
-    Emitter<ApplyOverviewState> emit,
-  ) async {
-    emit(state.copyWith(status: ApplyOverviewStatus.loading));
-    try {
-      final evaluators = await _dataRepository.getEvaluators();
-      emit(
-        state.copyWith(
           status: ApplyOverviewStatus.success,
-          evaluators: evaluators,
         ),
       );
-    } on Exception {
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
       emit(state.copyWith(status: ApplyOverviewStatus.failure));
     }
   }
 
-  void _onSelectEvaluator(
-    ApplyOverviewSelectEvaluator event,
+  void _onReviewerChanged(
+    ApplyOverviewReviewerChanged event,
     Emitter<ApplyOverviewState> emit,
   ) {
-    emit(
-      state.copyWith(
-        reviewer: () => event.reviewer,
-      ),
-    );
+    emit(state.copyWith(reviewer: () => event.reviewer));
+  }
+
+  void _onDownloadRequested(
+    ApplyOverviewDownloadRequested event,
+    Emitter<ApplyOverviewState> emit,
+  ) {
+    try {
+      emit(state.copyWith(status: ApplyOverviewStatus.loading));
+      emit(state.copyWith(status: ApplyOverviewStatus.success));
+    } catch (error, stackTrace) {
+      emit(state.copyWith(status: ApplyOverviewStatus.failure));
+      addError(error, stackTrace);
+    }
   }
 
   Future<void> _onSubmit(
     ApplyOverviewSubmit event,
     Emitter<ApplyOverviewState> emit,
   ) async {
-    if (state.reviewer == null) {
-        emit(state.copyWith(status: ApplyOverviewStatus.failure));
-        return;
+    final reviewer = state.reviewer;
+    if (reviewer == null) {
+      emit(state.copyWith(status: ApplyOverviewStatus.failure));
+      return;
     }
 
     emit(state.copyWith(status: ApplyOverviewStatus.loading));
     try {
-      final apply = state.apply!.copyWith(
-        reviewer: state.reviewer!.toReviewer(),
+      final apply = state.apply.copyWith(reviewer: reviewer);
+      final updatedApply = await _applicationRepository.selectReviewer(
+        apply: apply,
+        reviewer: reviewer,
       );
-      final updatedApply = await _dataRepository.updateApply(apply);
       emit(
         state.copyWith(
-          status: ApplyOverviewStatus.success,
           apply: updatedApply,
+          status: ApplyOverviewStatus.success,
         ),
       );
-    } on Exception {
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
       emit(state.copyWith(status: ApplyOverviewStatus.failure));
     }
-  }
-
-  void _onDeleteEvaluator(
-    ApplyOverviewDeleteEvaluator event,
-    Emitter<ApplyOverviewState> emit,
-  ) {
-    emit(
-      state.copyWith(
-        reviewer: () => null,
-      ),
-    );
   }
 }

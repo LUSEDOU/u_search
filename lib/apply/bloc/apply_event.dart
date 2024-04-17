@@ -7,32 +7,17 @@ sealed class ApplyEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class ApplyFetchContests extends ApplyEvent {
-  const ApplyFetchContests();
-}
-
-final class ApplySelectContest extends ApplyEvent {
-  const ApplySelectContest(this.contest);
-
-  final Contest contest;
-
-  @override
-  List<Object> get props => [contest];
-}
-
-final class ApplyUploadResearch extends ApplyEvent {
-  const ApplyUploadResearch({
+final class ApplyLoadFile extends ApplyEvent {
+  const ApplyLoadFile({
     required this.file,
-    required this.researcher,
   });
 
-  final File file;
-  final Researcher researcher;
+  final PlatformFile file;
 
   @override
-  List<Object> get props => [file, researcher];
+  List<Object> get props => [file];
 }
 
-final class ApplySubmitApplication extends ApplyEvent {
-  const ApplySubmitApplication();
+final class ApplySubmissionRequested extends ApplyEvent {
+  const ApplySubmissionRequested();
 }
