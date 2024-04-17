@@ -2,6 +2,7 @@
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
+import 'package:u_search_flutter/apply/apply.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/auth/views/auth_page.dart';
 // import 'package:u_search_flutter/app/app.dart';
@@ -61,6 +62,20 @@ GoRouter router = GoRouter(
             final id = int.tryParse(state.pathParameters['applyId']!);
             return id == null ? '/applies' : null;
           },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/contests',
+      routes: [
+        GoRoute(
+          path: ':contestId',
+          routes: [
+            GoRoute(
+              path: 'apply',
+              builder: ApplyPage.routeBuilder,
+            ),
+          ],
         ),
       ],
     ),

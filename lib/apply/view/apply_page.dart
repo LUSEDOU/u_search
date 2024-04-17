@@ -5,37 +5,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
-
 import 'package:u_search_flutter/apply/apply.dart';
+
 import 'package:user_repository/user_repository.dart';
 
 class ApplyPage extends StatelessWidget {
   const ApplyPage({
-    required this.applyId,
-    this.apply,
+    required this.contestId,
+    this.contest,
     super.key,
   });
 
   factory ApplyPage.routeBuilder(_, GoRouterState state) {
     final data = state.extra as ApplyPageData?;
-    final apply = data?.apply;
-    final id = state.pathParameters['applyId']!;
+    final contest = data?.contest;
+
+    final contestId =
+        contest?.id ?? int.parse(state.pathParameters['contestId']!);
+
     return ApplyPage(
-      applyId: apply?.id ?? int.parse(id),
-      apply: data?.apply,
+      contestId: contestId,
+      contest: contest,
+      key: const Key('apply'),
     );
   }
 
-  final int applyId;
-  final Apply? apply;
+  final int contestId;
+  final Contest? contest;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
         final userRepository = context.read<UserRepository>();
-        return ApplyBloc(userRepository: userRepository)
-          ..add(const ApplyFetchContests());
+        final bloc = ApplyBloc(userRepository: userRepository);
+
+        if (contest == null) {
+          bloc.add(ApplyRequested(contestId));
+        }
+
+        return bloc..add(const ApplyFetchContests());
       },
       child: const ApplyView(),
     );
@@ -44,11 +53,11 @@ class ApplyPage extends StatelessWidget {
 
 class ApplyPageData extends Equatable {
   const ApplyPageData({
-    required this.apply,
+    required this.contest,
   });
 
-  final Apply? apply;
+  final Contest? contest;
 
   @override
-  List<Object?> get props => [apply];
+  List<Object?> get props => [contest];
 }

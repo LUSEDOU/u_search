@@ -30,6 +30,14 @@ class ApplicationSendApplyFailure extends ApplicationFailure {
   const ApplicationSendApplyFailure(super.error);
 }
 
+/// {@template application_apply_failure}
+/// A failure when applying to a contest.
+/// {@endtemplate}
+class ApplicationApplyFailure extends ApplicationFailure {
+  /// {@macro application_apply_failure}
+  const ApplicationApplyFailure(super.error);
+}
+
 /// {@template application_review_failure}
 /// A failure when reviewing an application.
 /// {@endtemplate}
@@ -52,4 +60,12 @@ class ApplicationSelectReviewerFailure extends ApplicationFailure {
 class ApplicationFetchApplyFailure extends ApplicationFailure {
   /// {@macro application_fetch_apply_failure}
   const ApplicationFetchApplyFailure(super.error);
+}
+
+/// {@template application_fetch_contests_failure}
+/// A failure when fetching contests.
+/// {@endtemplate}
+class ApplicationFetchContestsFailure extends ApplicationFailure {
+  /// {@macro application_fetch_contests_failure}
+  const ApplicationFetchContestsFailure(super.error);
 }

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'package:u_search_api/api.dart';
+import 'package:u_search_api/src/models/apply_response.dart/apply_response.dart';
 
 /// {@template u_search_api_malformed_response}
 /// An exception thrown when there is a problem decoded the response body.
@@ -265,14 +266,13 @@ class USearchApiClient {
   /// Apply to a contest.
   ///
   /// Required parameters:
-  /// * [researcher] - The researcher id to apply with.
   /// * [contest] - The contest id to apply to.
   /// * [research] - The research to apply with.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
-  Future<void> apply({
+  Future<Apply> apply({
     required int contest,
-    required Research research,
+    required int research,
   }) async {
     final uri = Uri.parse('$_baseUrl/api/v1/applies');
 
@@ -282,16 +282,19 @@ class USearchApiClient {
       body: jsonEncode(
         <String, int>{
           'contest': contest,
+          'research': research,
         },
       ),
     );
+    final body = response.json();
 
     if (response.statusCode != HttpStatus.ok) {
       throw USearchApiRequestFailure(
-        body: response.json(),
+        body: body,
         statusCode: response.statusCode,
       );
     }
+    return Apply.fromJson(body);
   }
 
   /// POST /api/v1/research
@@ -301,24 +304,32 @@ class USearchApiClient {
   /// * [research] - The research PDF file to submit.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
-  Future<void> submitResearch({
+  Future<Research> submitResearch({
     required File research,
   }) async {
     final uri = Uri.parse('$_baseUrl/api/v1/research');
 
-    final request = http.MultipartRequest('POST', uri)
-      ..headers.addAll(await _getRequestHeaders())
-      ..files.add(
-        http.MultipartFile.fromBytes(
-          'research',
-          await research.readAsBytes(),
-          filename: research.path.split(Platform.pathSeparator).last,
-        ),
+    final encodedFile = base64Encode(await research.readAsBytes());
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(
+        <String, String>{
+          'research': encodedFile,
+        },
+      ),
+    );
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
       );
-
-    final response = await _httpClient.send(request);
+    }
+    return Research.fromJson(body);
   }
-
 
   Future<Map<String, String>> _getRequestHeaders() async {
     final token = await _tokenProvider();

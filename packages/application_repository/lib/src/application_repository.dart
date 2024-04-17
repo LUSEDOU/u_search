@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:rxdart/rxdart.dart';
@@ -34,9 +35,34 @@ class ApplicationRepository {
   Future<void> fetchApplications() async {
     try {
       final response = await _apiClient.getApplies();
-      _applicationController.add(response);
+      _applicationController.add(response.applications);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ApplicationFetchFailure(error), stackTrace);
+    }
+  }
+
+  /// Apply a reasearch paper to a contest.
+  ///
+  /// Throws an [ApplicationApplyFailure] if an error occurs.
+  Future<Apply> apply({
+    required int contest,
+    required File research,
+  }) async {
+    try {
+      final researchResponse =
+          await _apiClient.submitResearch(research: research);
+
+      final researchId = researchResponse.id;
+
+      final apply = await _apiClient.apply(
+        contest: contest,
+        research: researchId,
+      );
+      _applicationController.add([..._applicationController.value, apply]);
+
+      return apply;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(ApplicationApplyFailure(error), stackTrace);
     }
   }
 
@@ -73,6 +99,18 @@ class ApplicationRepository {
         ApplicationFetchApplyFailure(error),
         stackTrace,
       );
+    }
+  }
+
+  /// Fetches all [Contest]s from the repository.
+  ///
+  /// Throws an [ApplicationFetchContestsFailure] if an error occurs.
+  Future<List<Contest>> fetchContests() async {
+    try {
+      final response = await _apiClient.getContests();
+      return response.contests;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(ApplicationFetchContestsFailure(error), stackTrace);
     }
   }
 }
