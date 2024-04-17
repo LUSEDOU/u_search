@@ -26,7 +26,7 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
   ) async {
     emit(state.copyWith(status: ApplyOverviewStatus.loading));
     try {
-      final apply = await _applicationRepository.fetchApply(id: event.id);
+      final apply = await _applicationRepository.fetchApplication(event.id);
       emit(
         state.copyWith(
           apply: apply,
@@ -72,7 +72,10 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     emit(state.copyWith(status: ApplyOverviewStatus.loading));
     try {
       final apply = state.apply.copyWith(reviewer: reviewer);
-      final updatedApply = await _applicationRepository.updateApply(apply);
+      final updatedApply = await _applicationRepository.selectReviewer(
+        apply: apply,
+        reviewer: reviewer,
+      );
       emit(
         state.copyWith(
           apply: updatedApply,

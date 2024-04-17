@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'apply_event.dart';
@@ -35,8 +36,9 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
   ) async {
     emit(state.copyWith(status: ApplyStatus.loading));
     try {
+      final file = File(state.file!.path!);
       await _applicationRepository.apply(
-        research: state.file!,
+        research: file,
         contest: _contest,
       );
       emit(state.copyWith(status: ApplyStatus.success));

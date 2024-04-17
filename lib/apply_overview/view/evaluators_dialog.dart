@@ -14,7 +14,7 @@ class EvaluatorsCubit extends Cubit<List<User>> {
 
   Future<void> loadEvaluators() async {
     try {
-      emit(await _repository.fetchEvaluators());
+      emit(await _repository.fetchReviewers());
     } catch (error, stackTrace) {
       addError(error, stackTrace);
     }

@@ -69,3 +69,19 @@ class ApplicationFetchContestsFailure extends ApplicationFailure {
   /// {@macro application_fetch_contests_failure}
   const ApplicationFetchContestsFailure(super.error);
 }
+
+/// {@template application_fetch_contest_failure}
+/// A failure when fetching a contest.
+/// {@endtemplate}
+class ApplicationFetchContestFailure extends ApplicationFailure {
+  /// {@macro application_fetch_contest_failure}
+  const ApplicationFetchContestFailure(super.error);
+}
+
+/// {@template application_fetch_reviewers_failure}
+/// A failure when fetching reviewers.
+/// {@endtemplate}
+class ApplicationFetchReviewersFailure extends ApplicationFailure {
+  /// {@macro application_fetch_reviewers_failure}
+  const ApplicationFetchReviewersFailure(super.error);
+}

@@ -9,11 +9,11 @@ class ApplyState extends Equatable {
   });
 
   final ApplyStatus status;
-  final File? file;
+  final PlatformFile? file;
 
   ApplyState copyWith({
     ApplyStatus? status,
-    File? file,
+    PlatformFile? file,
   }) {
     return ApplyState(
       status: status ?? this.status,

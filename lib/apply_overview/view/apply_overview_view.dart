@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
-import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
-import 'package:u_search_flutter/apply_overview/bloc/apply_overview_bloc.dart';
 
 class ApplyOverviewView extends StatelessWidget {
   const ApplyOverviewView({super.key});
@@ -124,16 +122,16 @@ class EvaluatorTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(_evaluator.user.name),
-      subtitle: Text(_evaluator.user.email),
-      trailing: context.read<AppBloc>().state.role.isAdmin
-          ? IconButton(
-              onPressed: () => context.read<ApplyOverviewBloc>().add(
-                    ApplyOverviewDeleteEvaluator(),
-                  ),
-              icon: const Icon(Icons.delete),
-            )
-          : null,
+      title: Text(_evaluator.name),
+      subtitle: Text(_evaluator.email),
+      trailing: Visibility(
+        child: IconButton(
+          onPressed: () => context
+              .read<ApplyOverviewBloc>()
+              .add(const ApplyOverviewReviewerChanged(null)),
+          icon: const Icon(Icons.delete),
+        ),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:application_repository/application_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:u_search_api/api.dart';
@@ -9,12 +10,15 @@ import 'package:user_repository/user_repository.dart';
 class App extends StatelessWidget {
   const App({
     required UserRepository userRepository,
+    required ApplicationRepository applicationRepository,
     required User user,
     super.key,
   })  : _userRepository = userRepository,
+        _applicationRepository = applicationRepository,
         _user = user;
 
   final UserRepository _userRepository;
+  final ApplicationRepository _applicationRepository;
   final User _user;
 
   @override
@@ -22,6 +26,7 @@ class App extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: _userRepository),
+        RepositoryProvider.value(value: _applicationRepository),
       ],
       child: BlocProvider(
         create: (_) => AppBloc(

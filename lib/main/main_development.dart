@@ -1,3 +1,4 @@
+import 'package:application_repository/application_repository.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:token_storage/token_storage.dart';
 import 'package:u_search_api/client.dart';
@@ -21,15 +22,21 @@ void main() {
         preferences: sharedPreferences,
       );
 
+      await tokenStorage.clearToken();
+
+      final apiClient = USearchApiClient.localhost(
+        tokenProvider: tokenStorage.readToken,
+      );
+
       final userRepository = UserRepository(
         tokenStorage: tokenStorage,
-        apiClient: USearchApiClient.localhost(
-          tokenProvider: tokenStorage.readToken,
-        ),
+        apiClient: apiClient,
       );
+      final applicationRepository = ApplicationRepository(apiClient: apiClient);
 
       return App(
         userRepository: userRepository,
+        applicationRepository: applicationRepository,
         user: await userRepository.user.first,
       );
     },

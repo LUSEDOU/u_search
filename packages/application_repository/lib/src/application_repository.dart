@@ -41,6 +41,28 @@ class ApplicationRepository {
     }
   }
 
+  /// Fetches an [Apply] from the repository.
+  ///
+  /// Throws an [ApplicationFetchFailure] if an error occurs.
+  Future<Apply> fetchApplication(int id) async {
+    try {
+      final response = await _apiClient.getApply(id: id);
+      final current = [..._applicationController.value];
+
+      final index = current.indexWhere((element) => element.id == id);
+      if (index == -1) {
+        _applicationController.add([...current, response]);
+      } else {
+        current[index] = response;
+        _applicationController.add(current);
+      }
+
+      return response;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(ApplicationFetchFailure(error), stackTrace);
+    }
+  }
+
   /// Apply a reasearch paper to a contest.
   ///
   /// Throws an [ApplicationApplyFailure] if an error occurs.
@@ -66,37 +88,25 @@ class ApplicationRepository {
     }
   }
 
-  /// Adds an [Apply] to the repository.
+  /// Update an [Apply] with a selected reviewer.
   ///
-  /// Throws an [ApplicationSendApplyFailure] if an error occurs.
-  Future<void> sendApplication(Apply apply) async {
-    try {
-      final current = [..._applicationController.value];
-      final response = await _apiClient.apply(
-        // check the user in the api
-        contest: apply.contest.id,
-        research: apply.research,
-      );
-      final index = current.indexWhere((element) => element.id == apply.id);
-      current[index] = apply;
-      _applicationController.add(current);
-    } catch (error, stackTrace) {
-      Error.throwWithStackTrace(ApplicationSendApplyFailure(error), stackTrace);
-    }
-  }
-
-  /// Fetches an [Apply] from the repository.
-  ///
-  /// Throws an [ApplicationFetchApplyFailure] if an error occurs.
-  Future<Apply> fetchApply({
-    required int id,
+  /// Throws an [ApplicationSelectReviewerFailure] if an error occurs.
+  Future<Apply> selectReviewer({
+    required Apply apply,
+    required User reviewer,
   }) async {
     try {
-      final response = await _apiClient.getApply(id);
-      return response;
+      await _apiClient.selectReviewer(apply: apply.id, reviewer: reviewer.id);
+      final updated = apply.copyWith(reviewer: reviewer);
+      final current = [..._applicationController.value];
+
+      final index = current.indexWhere((element) => element.id == apply.id);
+      current[index] = updated;
+      _applicationController.add(current);
+      return updated;
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(
-        ApplicationFetchApplyFailure(error),
+        ApplicationSelectReviewerFailure(error),
         stackTrace,
       );
     }
@@ -110,7 +120,40 @@ class ApplicationRepository {
       final response = await _apiClient.getContests();
       return response.contests;
     } catch (error, stackTrace) {
-      Error.throwWithStackTrace(ApplicationFetchContestsFailure(error), stackTrace);
+      Error.throwWithStackTrace(
+        ApplicationFetchContestsFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Fetches a [Contest] from the repository.
+  ///
+  /// Throws an [ApplicationFetchContestsFailure] if an error occurs.
+  Future<Contest> fetchContest(int id) async {
+    try {
+      final response = await _apiClient.getContest(id: id);
+      return response;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchContestFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Fetches all [User]s that are reviewers.
+  ///
+  /// Throws an [ApplicationFetchReviewersFailure] if an error occurs.
+  Future<List<User>> fetchReviewers() async {
+    try {
+      final response = await _apiClient.getReviewers();
+      return response.reviewers;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchReviewersFailure(error),
+        stackTrace,
+      );
     }
   }
 }

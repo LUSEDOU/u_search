@@ -1,10 +1,12 @@
 // import 'package:data_repository/data_repository.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/apply/apply.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/auth/views/auth_page.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 // import 'package:u_search_flutter/app/app.dart';
 // import 'package:u_search_flutter/applies_overview/view/view.dart';
 // import 'package:u_search_flutter/apply/apply.dart';
@@ -17,8 +19,9 @@ import 'package:u_search_flutter/auth/views/auth_page.dart';
 import 'package:u_search_flutter/welcome/views/welcome_page.dart';
 
 GoRouter router = GoRouter(
-  initialLocation: '/auth',
+  initialLocation: '/auth?token=token',
   debugLogDiagnostics: true,
+  observers: [LoggerObserver()],
   // redirect: (context, state) async {
   //   final logger = LoggerManager().logger;
   //   final bloc = context.read<AppBloc>();
@@ -41,7 +44,7 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/auth',
-      builder: (context, state) => const AuthPage(token: 'token'),
+      builder: AuthPage.routeBuilder,
     ),
     GoRoute(
       path: '/login',
@@ -65,20 +68,20 @@ GoRouter router = GoRouter(
         ),
       ],
     ),
-    GoRoute(
-      path: '/contests',
-      routes: [
-        GoRoute(
-          path: ':contestId',
-          routes: [
-            GoRoute(
-              path: 'apply',
-              builder: ApplyPage.routeBuilder,
-            ),
-          ],
-        ),
-      ],
-    ),
+    // GoRoute(
+    //   path: '/contests',
+    //   routes: [
+    //     GoRoute(
+    //       path: ':contestId',
+    //       routes: [
+    //         GoRoute(
+    //           path: 'apply',
+    //           builder: ApplyPage.routeBuilder,
+    //         ),
+    //       ],
+    //     ),
+    //   ],
+    // ),
     //   routes: [
     //     GoRoute(
     //       path: ':applyId',
@@ -109,3 +112,29 @@ GoRouter router = GoRouter(
     // ),
   ],
 );
+
+class LoggerObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    LoggerManager().logger.i('didPush: ${route.settings.name}');
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    LoggerManager().logger.i('didPop: ${route.settings.name}');
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didRemove(route, previousRoute);
+    LoggerManager().logger.i('didRemove: ${route.settings.name}');
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    LoggerManager().logger.i('didReplace: ${newRoute!.settings.name}');
+  }
+}

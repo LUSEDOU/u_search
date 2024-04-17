@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:data_repository/data_repository.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -25,71 +26,21 @@ class ApplyView extends StatelessWidget {
             listenWhen: (previous, current) =>
                 previous.status != current.status,
             listener: (context, state) {
-              if (state.status == ApplyStatus.failure) {
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    const SnackBar(content: Text('Apply Failure')),
-                  );
-              }
-            },
-          ),
-          BlocListener<ApplyBloc, ApplyState>(
-            listenWhen: (previous, current) => previous.apply != current.apply,
-            listener: (context, state) {
-              if (state.apply != null) {
-                context.go('/applies/${state.apply!.id}');
+              switch (state.status) {
+                case ApplyStatus.failure:
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      const SnackBar(content: Text('Apply Failure')),
+                    );
+                case ApplyStatus.success:
+                  return context.go('/applies');
+                case _:
               }
             },
           ),
         ],
-        child: const ApplyContent(),
-      ),
-    );
-  }
-}
-
-class ApplyContent extends StatelessWidget {
-  const ApplyContent({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<ApplyBloc, ApplyState>(
-        builder: (context, state) {
-          switch (state.step) {
-            case ApplyStep.contest:
-              return const ContestsView();
-            case ApplyStep.research:
-              return const SubmitView();
-          }
-        },
-      ),
-    );
-  }
-}
-
-class ContestsView extends StatelessWidget {
-  const ContestsView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoScrollbar(
-      child: BlocBuilder<ApplyBloc, ApplyState>(
-        builder: (context, state) {
-          return ListView(
-            children: [
-              for (final contest in state.contests)
-                ListTile(
-                  title: Text(contest.name),
-                  subtitle: Text(contest.description),
-                  onTap: () => context.read<ApplyBloc>().add(
-                        ApplySelectContest(contest),
-                      ),
-                ),
-            ],
-          );
-        },
+        child: const SubmitView(),
       ),
     );
   }
@@ -100,53 +51,50 @@ class SubmitView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final submitButton = AppButton.darkAqua(
+      child: const Text('Pick a file'),
+      onPressed: () async {
+        final result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowedExtensions: ['pdf'],
+        );
+        final document = result?.files.firstOrNull;
+
+        if (!context.mounted || document == null) return;
+
+        context.read<ApplyBloc>().add(ApplyLoadFile(file: document));
+      },
+    );
     return BlocBuilder<ApplyBloc, ApplyState>(
       builder: (context, state) {
-        final researcher = context.read<AppBloc>().state.getRole<Researcher>();
+        final file = state.file;
+
+        if (file == null) {
+          return Center(
+            child: submitButton,
+          );
+        }
 
         return Column(
           children: [
-            if (state.research != null)
-              ListTile(
-                title: Text(state.research!.title),
-                subtitle: Text(
-                  state.research!.length.toString(),
-                ),
-              ),
-            Center(
-              child: TextButton(
-                onPressed: () => FilePicker.platform.pickFiles(
-                  type: FileType.custom,
-                  allowedExtensions: ['pdf'],
-                ).then(
-                  (value) {
-                    if (value == null) return;
-                    context.read<ApplyBloc>().add(
-                          ApplyUploadResearch(
-                            file: File(value.files.single.path!),
-                            researcher: researcher,
-                          ),
-                        );
-                  },
-                ),
-                child: Text(
-                  'Submit',
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-              ),
+            Text(
+              file.name,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
-            if (state.file != null)
-              Center(
-                child: TextButton(
-                  onPressed: () => context.read<ApplyBloc>().add(
-                        const ApplySubmitApplication(),
-                      ),
-                  child: Text(
-                    'Submit',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ),
-              ),
+            const SizedBox(height: 8),
+            Text(
+              file.size.toString(),
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 8),
+            Center(child: submitButton),
+            const SizedBox(height: 8),
+            AppButton.darkAqua(
+              child: const Text('Submit'),
+              onPressed: () {
+                context.read<ApplyBloc>().add(const ApplySubmissionRequested());
+              },
+            ),
           ],
         );
       },

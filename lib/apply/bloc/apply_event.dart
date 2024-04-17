@@ -12,7 +12,7 @@ final class ApplyLoadFile extends ApplyEvent {
     required this.file,
   });
 
-  final File file;
+  final PlatformFile file;
 
   @override
   List<Object> get props => [file];
