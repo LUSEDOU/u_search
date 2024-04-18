@@ -13,13 +13,13 @@ class ContestsPage extends StatelessWidget {
     this.redirectToApply,
   });
 
-  final bool? redirectToApply;
-
   factory ContestsPage.routeBuilder(_, __) {
     return const ContestsPage(
       key: Key('contests'),
     );
   }
+
+  final bool? redirectToApply;
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +30,20 @@ class ContestsPage extends StatelessWidget {
           applicationRepository: applicationRepository,
         )..add(const ContestsRequested());
       },
-      child: const ContestsView(),
+      child: ContestsView(
+        redirectToApply: redirectToApply,
+      ),
     );
   }
 }
 
 class ContestsView extends StatelessWidget {
-  const ContestsView({super.key});
+  const ContestsView({
+    super.key,
+    this.redirectToApply,
+  });
+
+  final bool? redirectToApply;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +65,9 @@ class ContestsView extends StatelessWidget {
                 subtitle: Text(contest.description),
                 onTap: () {
                   context.go(
-                    '/contests/${contest.id}/apply',
+                    (redirectToApply ?? false)
+                        ? '/contests/${contest.id}/apply'
+                        : '/contests/${contest.id}',
                   );
                 },
               );

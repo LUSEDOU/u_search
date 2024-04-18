@@ -2,6 +2,7 @@ import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:u_search_api/api.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 
 part 'apply_overview_state.dart';
 part 'apply_overview_event.dart';
@@ -11,7 +12,7 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     required ApplicationRepository applicationRepository,
     required Apply apply,
   })  : _applicationRepository = applicationRepository,
-        super(ApplyOverviewState(apply: apply)) {
+        super(ApplyOverviewState(apply: apply, reviewer: apply.reviewer)) {
     on<ApplyOverviewRequested>(_onRequested);
     on<ApplyOverviewReviewerChanged>(_onReviewerChanged);
     on<ApplyOverviewDownloadRequested>(_onDownloadRequested);
@@ -43,6 +44,7 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     ApplyOverviewReviewerChanged event,
     Emitter<ApplyOverviewState> emit,
   ) {
+    LoggerManager().d(event.reviewer);
     emit(state.copyWith(reviewer: () => event.reviewer));
   }
 

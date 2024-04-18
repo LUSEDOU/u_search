@@ -53,8 +53,9 @@ class EvaluatorsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final evaluators = context.select((List<User> evaluators) => evaluators);
+    final evaluators = context.select((EvaluatorsCubit cubit) => cubit.state);
     return ListView.builder(
+      itemCount: evaluators.length,
       itemBuilder: (context, index) {
         final evaluator = evaluators[index];
         return ListTile(

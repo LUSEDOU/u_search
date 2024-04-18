@@ -17,6 +17,7 @@ class AppliesOverviewBloc
         super(const AppliesOverviewState()) {
     on<AppliesOverviewSubscriptionRequested>(_onSubscriptionRequested);
     on<AppliesOverviewFetchRequested>(_onFetchRequested);
+
   }
 
   final UserRepository _userRepository;
@@ -26,6 +27,9 @@ class AppliesOverviewBloc
     AppliesOverviewSubscriptionRequested event,
     Emitter<AppliesOverviewState> emit,
   ) async {
+    emit(state.copyWith(status: AppliesOverviewStatus.loading));
+    await _applicationRepository.fetchApplications();
+
     await emit.forEach<List<Apply>>(
       _applicationRepository.applications,
       onData: (applies) => state.copyWith(
@@ -36,7 +40,6 @@ class AppliesOverviewBloc
         return state.copyWith(status: AppliesOverviewStatus.failure);
       },
     );
-    add(AppliesOverviewFetchRequested(user: await _userRepository.user.first));
   }
 
   Future<void> _onFetchRequested(

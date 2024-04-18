@@ -14,6 +14,7 @@ class User extends Equatable {
     required this.name,
     required this.email,
     required this.lastName,
+    this.role = Role.none,
   });
 
   /// Converts a `Map<String, dynamic>` to a `User` instance.
@@ -30,6 +31,9 @@ class User extends Equatable {
 
   /// The current user's email.
   final String email;
+
+  /// The current user's role.
+  final Role role;
 
   /// Whether the user is anonymous.
   bool get isAnonymous => User.anonymous == this;
@@ -51,12 +55,14 @@ class User extends Equatable {
     String? name,
     String? email,
     String? lastName,
+    Role? role,
   }) {
     return User(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       lastName: lastName ?? this.lastName,
+      role: role ?? this.role,
     );
   }
 
@@ -67,4 +73,25 @@ class User extends Equatable {
         email,
         lastName,
       ];
+}
+
+/// An enum representing the role of a user.
+@JsonEnum(valueField: 'value')
+enum Role {
+  /// A user with no role.
+  none._(-1),
+
+  /// A reviewer user.
+  reviewer._(0),
+
+  /// A researcher user.
+  researcher._(1),
+
+  /// An admin user.
+  admin._(2);
+
+  const Role._(this.value);
+
+  /// The value of the enum
+  final int value;
 }

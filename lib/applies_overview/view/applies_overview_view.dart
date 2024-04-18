@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
 
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
+import 'package:u_search_flutter/apply_overview/apply_overview.dart';
+import 'package:u_search_flutter/contests/view/view.dart';
 import 'package:u_search_flutter/utils/dart_extensions.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -18,7 +20,10 @@ class AppliesOverviewView extends StatelessWidget {
         title: const Text('Applies Overview'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/applies/new'),
+        onPressed: () => context.go(
+          '/contests',
+          extra: const ContestsData(redirectToApply: true),
+        ),
         child: const Icon(Icons.add),
       ),
       body: BlocConsumer<AppliesOverviewBloc, AppliesOverviewState>(
@@ -58,17 +63,20 @@ class AppliesOverviewView extends StatelessWidget {
             child: Column(
               children: [
                 const WelcomeText(),
-                ListView.builder(
-                  itemBuilder: (context, index) {
-                    final apply = state.applies[index];
-                    return ApplyTile(
-                      apply: apply,
-                      onTap: () => context.go(
-                        '/applies/${apply.id}',
-                        extra: apply,
-                      ),
-                    );
-                  },
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: state.applies.length,
+                    itemBuilder: (context, index) {
+                      final apply = state.applies[index];
+                      return ApplyTile(
+                        apply: apply,
+                        onTap: () => context.go(
+                          '/applies/${apply.id}',
+                          extra: ApplyOverviewData(apply: apply),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -94,7 +102,7 @@ class WelcomeText extends StatelessWidget {
         return Visibility(
           visible: snapshot.hasData,
           child: Text(
-            'Hi! ${snapshot.data!.email}',
+            'Hi! ${snapshot.data?.email ?? ''}',
             style: theme.textTheme.titleLarge,
           ),
         );

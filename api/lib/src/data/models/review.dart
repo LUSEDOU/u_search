@@ -12,13 +12,13 @@ part 'review.g.dart';
 class Review extends Equatable {
   /// {@macro review}
   const Review({
-    required this.id,
     required this.califications,
     required this.criterias,
+    this.id,
   });
 
   /// The id of the review
-  final int id;
+  final int? id;
 
   /// The schema of the review
   final List<Criterium> criterias;
@@ -31,7 +31,6 @@ class Review extends Equatable {
 
   /// Creates an empty [Review] instance.
   static const Review empty = Review(
-    id: -1,
     califications: [],
     criterias: [],
   );
@@ -40,7 +39,7 @@ class Review extends Equatable {
   bool get isEmpty => this == Review.empty;
 
   /// Returns true if this [Review] is created
-  bool get isCreated => id != -1;
+  bool get isCreated => id == null;
 
   /// Converts a [Review] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$ReviewToJson(this);
@@ -59,5 +58,5 @@ class Review extends Equatable {
   }
 
   @override
-  List<Object> get props => [id, califications, criterias];
+  List<Object?> get props => [id, califications, criterias];
 }

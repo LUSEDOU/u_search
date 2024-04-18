@@ -23,7 +23,7 @@ class Research extends Equatable {
       _$ResearchFromJson(json);
 
   /// The id of the applicant
-  final User researcher;
+  final int researcher;
 
   /// The length of the research in bytes
   final int length;
@@ -42,7 +42,7 @@ class Research extends Equatable {
 
   /// Creates a copy of [Research] with an optional parameter override.
   Research copyWith({
-    User? researcher,
+    int? researcher,
     int? length,
     String? title,
     String? uuid,
@@ -59,7 +59,7 @@ class Research extends Equatable {
 
   /// Creates an empty [Research] instance.
   static const Research empty = Research(
-    researcher: User.anonymous,
+    researcher: -1,
     length: -1,
     title: '',
     uuid: '',

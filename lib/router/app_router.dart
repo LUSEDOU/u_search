@@ -1,11 +1,15 @@
 // import 'package:data_repository/data_repository.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_flutter/app/bloc/app_bloc.dart';
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/apply/apply.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
+import 'package:u_search_flutter/apply_review/apply_review.dart';
 import 'package:u_search_flutter/auth/views/auth_page.dart';
+import 'package:u_search_flutter/contests/contests.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 // import 'package:u_search_flutter/app/app.dart';
 // import 'package:u_search_flutter/applies_overview/view/view.dart';
@@ -41,14 +45,32 @@ GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       builder: WelcomePage.routeBuilder,
+      redirect: (context, _) {
+        if (context.read<AppBloc>().state.isAuthenticated) {
+          return '/applies';
+        }
+        return null;
+      },
     ),
     GoRoute(
       path: '/auth',
       builder: AuthPage.routeBuilder,
+      redirect: (context, _) {
+        if (context.read<AppBloc>().state.isAuthenticated) {
+          return '/applies';
+        }
+        return null;
+      },
     ),
     GoRoute(
       path: '/login',
       builder: AuthPage.routeBuilder,
+      redirect: (context, _) {
+        if (context.read<AppBloc>().state.isAuthenticated) {
+          return '/applies';
+        }
+        return null;
+      },
     ),
     // GoRoute(
     //   path: '/applies/new',
@@ -65,23 +87,29 @@ GoRouter router = GoRouter(
             final id = int.tryParse(state.pathParameters['applyId']!);
             return id == null ? '/applies' : null;
           },
+          routes: [
+            GoRoute(
+              path: 'review',
+              builder: ApplyReviewPage.routeBuilder,
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'new',
+          builder: ApplyPage.routeBuilder,
         ),
       ],
     ),
-    // GoRoute(
-    //   path: '/contests',
-    //   routes: [
-    //     GoRoute(
-    //       path: ':contestId',
-    //       routes: [
-    //         GoRoute(
-    //           path: 'apply',
-    //           builder: ApplyPage.routeBuilder,
-    //         ),
-    //       ],
-    //     ),
-    //   ],
-    // ),
+    GoRoute(
+      path: '/contests',
+      builder: ContestsPage.routeBuilder,
+      routes: [
+        GoRoute(
+          path: ':contestId/apply',
+          builder: ApplyPage.routeBuilder,
+        ),
+      ],
+    ),
     //   routes: [
     //     GoRoute(
     //       path: ':applyId',

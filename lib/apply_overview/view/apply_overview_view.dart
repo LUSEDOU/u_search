@@ -63,17 +63,7 @@ class ApplyOverviewView extends StatelessWidget {
                     const SizedBox(height: 8),
                     ContestTile(contest: apply.contest),
                     const SizedBox(height: 8),
-                    AppButton.blueDress(
-                      child: const Text('Select Evaluator'),
-                      onPressed: () async {
-                        final evaluator = await EvaluatorsDialog.show(context);
-                        if (!context.mounted) return;
-
-                        context
-                            .read<ApplyOverviewBloc>()
-                            .add(ApplyOverviewReviewerChanged(evaluator));
-                      },
-                    ),
+                    const ReviewerTile(),
                     const SizedBox(height: 8),
                     ResearchTile(research: apply.research),
                     const SizedBox(height: 8),
@@ -83,6 +73,8 @@ class ApplyOverviewView extends StatelessWidget {
                           .read<ApplyOverviewBloc>()
                           .add(const ApplyOverviewDownloadRequested()),
                     ),
+                    const SizedBox(height: 8),
+                    const SelectReviewerButton(),
                   ],
                 ),
               ),
@@ -175,6 +167,57 @@ class DownloadButton extends StatelessWidget {
           child: state.status.isLoading
               ? const Text('Download')
               : const CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+}
+
+class ReviewerTile extends StatelessWidget {
+  const ReviewerTile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final reviewer = context.select(
+      (ApplyOverviewBloc bloc) => bloc.state.reviewer,
+    );
+
+    if (reviewer?.isAnonymous ?? true) {
+      return AppButton.blueDress(
+        child: const Text('Select Evaluator'),
+        onPressed: () async {
+          final evaluator = await EvaluatorsDialog.show(context);
+          if (!context.mounted) return;
+
+          context
+              .read<ApplyOverviewBloc>()
+              .add(ApplyOverviewReviewerChanged(evaluator));
+        },
+      );
+    }
+
+    return EvaluatorTile(reviewer: reviewer!);
+  }
+}
+
+class SelectReviewerButton extends StatelessWidget {
+  const SelectReviewerButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
+      buildWhen: (previous, current) => previous.reviewer != current.reviewer,
+      builder: (context, state) {
+        final reviewer = state.reviewer;
+
+        return Visibility(
+          visible: !(reviewer?.isAnonymous ?? true),
+          child: AppButton.blueDress(
+            child: const Text('Guardar'),
+            onPressed: () => context
+                .read<ApplyOverviewBloc>()
+                .add(const ApplyOverviewSubmit()),
+          ),
         );
       },
     );

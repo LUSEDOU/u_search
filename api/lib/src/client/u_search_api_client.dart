@@ -356,26 +356,85 @@ class USearchApiClient {
     }
   }
 
-  /// POST /api/v1/research
+  /// GET /api/v1/applies/<apply>/review
+  /// Get the review of an apply.
+  ///
+  /// Required parameters:
+  /// * [apply] - The apply id to select a reviewer for.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<Review> getReview({
+    required int apply,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/applies/$apply/review');
+
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return Review.fromJson(body);
+  }
+
+  /// POST /api/v1/applies/<apply>/review
+  /// Submit a review for an apply.
+  ///
+  /// Required parameters:
+  /// * [apply] - The apply id to select a reviewer for.
+  ///
+  /// Throws a [USearchApiRequestFailure] if an exception occurs.
+  Future<void> submitReview({
+    required int apply,
+    required Review review,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/applies/$apply/review');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(review.toJson()),
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: response.json(),
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
+  /// POST /api/v1/researches
   /// Submit the research PDF file to the server.
   ///
   /// Required parameters:
-  /// * [research] - The research PDF file to submit.
+  /// * [file] - The PDF file to submit.
+  /// * [title] - The title of the research.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
   Future<Research> submitResearch({
-    required File research,
+    required File file,
+    required String title,
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/v1/research');
+    final uri = Uri.parse('$_baseUrl/api/v1/researches');
 
-    final encodedFile = base64Encode(await research.readAsBytes());
+    final encodedFile = base64Encode(await file.readAsBytes());
 
     final response = await _httpClient.post(
       uri,
       headers: await _getRequestHeaders(),
       body: jsonEncode(
         <String, String>{
-          'research': encodedFile,
+          'file': encodedFile,
+          'title': title,
         },
       ),
     );
@@ -441,12 +500,12 @@ class USearchApiClient {
     return Contest.fromJson(body);
   }
 
-  /// GET /api/v1/reviewers
+  /// GET /api/v1/users/reviewers
   /// Requests all reviewers.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
   Future<ReviewerResponse> getReviewers() async {
-    final uri = Uri.parse('$_baseUrl/api/v1/reviewers');
+    final uri = Uri.parse('$_baseUrl/api/v1/users/reviewers');
     final response = await _httpClient.get(
       uri,
       headers: await _getRequestHeaders(),
