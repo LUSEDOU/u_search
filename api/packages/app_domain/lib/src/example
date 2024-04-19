@@ -1,0 +1,41 @@
+Calification
+{
+    order: 1,
+    score:? 5
+    comment: "KYS"
+    subcalifications: <Calification>[...]
+}
+
+User
+id,name,email,lastname,role,token
+1,Luis,luis.dolorier@usil.pe,Dolorier,1,token
+
+EmailToken
+token,user_id,
+token,1
+
+Contest
+id,name, description,criterias
+1,Contest1,Description1,{...}
+
+Research
+id,researcher_id,length,uuid,title
+1,1,1024,uuid1,Title1
+
+Application
+id,research_id,reviewer_id,review_id,contest_id
+1,1,2,1,1
+
+Review
+id,criterias
+
+Criteria
+{
+    order: 1,
+    name: "Puntualidad",
+    description: "El participante llega a tiempo",
+    subcriterias: <Criteria>[...],
+    minScore: 1,
+    maxScore: 5
+    percentage: 0.1
+}

@@ -1,6 +1,6 @@
+import 'package:app_domain/app_domain.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_domain_api/app_domain.dart';
 
 part 'contest.g.dart';
 

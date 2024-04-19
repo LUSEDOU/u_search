@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_domain_api/app_domain.dart';
 
 part 'research.g.dart';
 
@@ -67,9 +66,6 @@ class Research extends Equatable {
 
   /// Returns true if this [Research] is empty
   bool get isEmpty => this == Research.empty;
-
-  /// Returns true if this [Research] is created
-  bool get isCreated => id != -1;
 
   @override
   List<Object?> get props => [researcher, length, title, uuid, id];

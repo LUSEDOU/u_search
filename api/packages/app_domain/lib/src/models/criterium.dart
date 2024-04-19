@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_domain_api/app_domain.dart';
 
 part 'criterium.g.dart';
 
@@ -11,21 +10,24 @@ part 'criterium.g.dart';
 class Criterium extends Equatable {
   /// Creates an instance of [Criterium].
   const Criterium({
-    required this.id,
+    required this.order,
     required this.name,
     required this.description,
-    required this.subCriterias,
-    this.minScore,
     this.maxScore = 5,
-    this.percent = 1.0,
-  });
+    this.percent = .0,
+    this.subCriterias,
+    this.minScore,
+  })  : assert(order >= 0, 'Order must be greater than or equal to 0'),
+        assert(maxScore >= 0, 'Max score must be greater than or equal to 0'),
+        assert(percent >= 0, 'Percent must be greater than or equal to 0'),
+        assert(percent <= 1, 'Percent must be less than or equal to 1');
 
   /// Converts a Criterium from a json map
   factory Criterium.fromJson(Map<String, dynamic> json) =>
       _$CriteriumFromJson(json);
 
-  /// The id of the criterium
-  final int id;
+  /// The order of the criterium
+  final int order;
 
   /// The name of the criterium
   final String name;
@@ -34,7 +36,7 @@ class Criterium extends Equatable {
   final String description;
 
   /// The sub criteriums of the criterium
-  final List<SubCriterium> subCriterias;
+  final List<Criterium>? subCriterias;
 
   /// The minimum score of the criterium
   final double? minScore;
@@ -50,21 +52,17 @@ class Criterium extends Equatable {
 
   /// Creates a copy of [Criterium] with an optional parameter override.
   static const Criterium empty = Criterium(
-    id: -1,
+    order: 0,
     name: '',
     description: '',
-    subCriterias: [],
   );
 
   /// Returns true if this [Criterium] is empty
   bool get isEmpty => this == Criterium.empty;
 
-  /// Returns true if this [Criterium] is created
-  bool get isCreated => id != -1;
-
   @override
   List<Object?> get props => [
-        id,
+        order,
         name,
         description,
         subCriterias,
