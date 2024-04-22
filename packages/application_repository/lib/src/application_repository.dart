@@ -69,10 +69,13 @@ class ApplicationRepository {
   Future<Apply> apply({
     required int contest,
     required File research,
+    required String title,
   }) async {
     try {
-      final researchResponse =
-          await _apiClient.submitResearch(research: research);
+      final researchResponse = await _apiClient.submitResearch(
+        title: title,
+        file: research,
+      );
 
       final researchId = researchResponse.id;
 
@@ -154,6 +157,29 @@ class ApplicationRepository {
         ApplicationFetchReviewersFailure(error),
         stackTrace,
       );
+    }
+  }
+
+  Future<Review> fetchReview(int applyId) async {
+    try {
+      final response = await _apiClient.getReview(apply: applyId);
+      return response;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchReviewFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  Future<void> review({
+    required int apply,
+    required Review review,
+  }) async {
+    try {
+      await _apiClient.submitReview(apply: apply, review: review);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(ApplicationReviewFailure(error), stackTrace);
     }
   }
 }

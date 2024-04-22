@@ -85,3 +85,11 @@ class ApplicationFetchReviewersFailure extends ApplicationFailure {
   /// {@macro application_fetch_reviewers_failure}
   const ApplicationFetchReviewersFailure(super.error);
 }
+
+/// {@template application_fetch_review_failure}
+/// A failure when fetching a review.
+/// {@endtemplate}
+class ApplicationFetchReviewFailure extends ApplicationFailure {
+  /// {@macro application_fetch_review_failure}
+  const ApplicationFetchReviewFailure(super.error);
+}

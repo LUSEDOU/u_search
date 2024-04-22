@@ -12,21 +12,13 @@ dependencies:
     path: ./packages/app_ui
   application_repository:
     path: ./packages/application_repository
-  authentication_repository:
-    path: ./packages/authentication_repository
   bloc: ^8.1.2
   bloc_test: ^9.1.5
-  cache_client:
-    path: ./packages/cache_client
   cupertino_icons: ^1.0.2
-  data_repository:
-    path: ./packages/data_repository
   equatable: ^2.0.5
   file_picker: ^6.1.1
   firebase_core: ^2.27.2
   firebase_auth: ^4.3.0
-  firebase_authentication_client:
-    path: ./packages/authentication_client/firebase_authentication_client
   firebase_dart_flutter: ^1.1.3
   firebase_crashlytics: ^3.4.20
   flutter:
