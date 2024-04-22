@@ -14,7 +14,7 @@ class Apply extends Equatable {
   const Apply({
     required this.contest,
     required this.research,
-    required this.id,
+    this.id = -1,
     this.reviewer,
     this.review,
   });

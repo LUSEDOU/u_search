@@ -1,55 +1,60 @@
 import 'package:app_domain/app_domain.dart';
-import 'package:postgres_client/postgres_client.dart';
+import 'package:my_sql_client/my_sql_client.dart';
 import 'package:u_search_api/api.dart' show Apply, DataSource;
 import 'package:uuid/v4.dart';
 
+/// {@template mysql_source}
+/// A [DataSource] that uses a MySQL database as its source.
+/// {@endtemplate}
 class MysqlSource implements DataSource {
+  /// {@macro mysql_source}
   const MysqlSource({
-    required PostgresClient client,
+    required MySqlClient client,
   }) : _client = client;
 
-  final PostgresClient _client;
+  final MySqlClient _client;
 
   @override
-  Future<int> addApplication(Apply apply) async {
-    return _client.upsert('applications', {
-      'id': apply.id,
-      'contest_id': apply.contest.id,
-      'research_id': apply.research.id,
-      'reviewer_id': null,
-    });
+  Future<int> addApplication(Application application) {
+    return _client.upsert('applications', application.toJson()..remove('id'));
   }
 
   @override
   Future<int> addContest(Contest contest) {
-    return _client.upsert('contests', contest.toJson());
+    return _client.upsert('contests', contest.toJson()..remove('id'));
   }
 
   @override
   Future<int> addResearch(Research research) {
-    return _client.upsert('researches', research.toJson());
+    return _client.upsert('researches', research.toJson()..remove('id'));
   }
 
   @override
   Future<int> addReview(Review review) {
-    return _client.upsert('reviews', review.toJson());
+    return _client.upsert('reviews', review.toJson()..remove('id'));
   }
 
   @override
   Future<int> addUser(User user) {
-    return _client.upsert('users', user.toJson());
+    return _client.upsert('users', user.toJson()..remove('id'));
   }
 
   @override
-  Future<Apply?> getApplication(int id) async {
+  Future<Application?> getApplicationRaw(int id) async {
     final result = await _client.selectOne(
       'applications',
       where: 'id = $id',
     );
 
     if (result == null) return null;
-    final apply = Application.fromJson(result);
-    return _getApplication(apply);
+    return Application.fromJson(result);
+  }
+
+  @override
+  Future<Apply?> getApplication(int id) async {
+    final application = await getApplicationRaw(id);
+    if (application == null) return null;
+    return _getApplication(application);
   }
 
   Future<Apply?> _getApplication(Application id) async {
@@ -71,8 +76,24 @@ class MysqlSource implements DataSource {
   }
 
   @override
-  Future<List<Apply>> getApplications() async {
-    final result = await _client.select('applications');
+  Future<List<Apply>> getApplications({
+    int? reviewerId,
+    int? researcherId,
+  }) async {
+    late final List<Map<String, dynamic>> result;
+
+    if (researcherId != null) {
+      result = await _client.select(
+        'applications',
+        where: 'reviewer_id = $reviewerId',
+        join: 'INNER JOIN researches r ON r.id = t.research',
+      );
+    } else if (reviewerId != null) {
+      result = await _client.select(
+        'applications',
+        where: 'reviewer = $reviewerId',
+      );
+    }
     final applications = result.map(Application.fromJson).toList();
 
     final applies = await Future.wait(
@@ -109,8 +130,14 @@ class MysqlSource implements DataSource {
   }
 
   @override
-  Future<List<Research>> getResearches() async {
-    final result = await _client.select('researches');
+  Future<List<Research>> getResearches({
+    int? researcherId,
+  }) async {
+    late final List<Map<String, dynamic>> result;
+    result = await _client.select(
+      'researches',
+      where: researcherId == null ? null : 'researcher_id = $researcherId',
+    );
     return result.map(Research.fromJson).toList();
   }
 
@@ -157,14 +184,10 @@ class MysqlSource implements DataSource {
   @override
   Future<String> generateToken(int userId) async {
     final token = const UuidV4().generate();
-    await _client.upsert(
-      'tokens',
-      {
-        'token': token,
-        'user_id': userId,
-      },
-      conflictColumn: 'user_id',
-    );
+    await _client.upsert('tokens', {
+      'token': token,
+      'user_id': userId,
+    });
     return token;
   }
 
@@ -183,20 +206,19 @@ class MysqlSource implements DataSource {
   @override
   Future<String> generateEmailToken(String email) async {
     final token = const UuidV4().generate();
-    await _client.upsert(
-      'email_token',
-      {
-        'token': token,
-        'email': email,
-      },
-      conflictColumn: 'email',
-    );
+    await _client.upsert('email_token', {
+      'token': token,
+      'email': email,
+    });
     return token;
   }
 
   @override
   Future<List<User>> getUsers({int? role}) async {
-    final result = await _client.select('users');
+    final result = await _client.select(
+      'users',
+      where: role == null ? null : 'role = $role',
+    );
     return result.map(User.fromJson).toList();
   }
 

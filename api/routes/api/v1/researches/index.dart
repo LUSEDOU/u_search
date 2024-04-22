@@ -34,14 +34,11 @@ FutureOr<Response> _createResearch(RequestContext context) async {
   final file = File('${temDir.path}/$uuid');
   await file.writeAsBytes(base64Decode(encodedFile));
 
-  final contests = await dataSource.getContests();
-
   final research = Research(
     uuid: uuid,
     title: title,
     length: await file.length(),
     researcher: context.read<User>().id,
-    id: contests.length,
   );
 
   // save the file in the www/u_search/api/public/researches directory
@@ -59,7 +56,7 @@ FutureOr<Response> _createResearch(RequestContext context) async {
       ),
     );
 
-  await dataSource.addResearch(research);
+  final id = await dataSource.addResearch(research);
 
-  return Response.json(body: research);
+  return Response.json(body: research.copyWith(id: id));
 }

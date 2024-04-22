@@ -15,7 +15,6 @@ FutureOr<Response> onRequest(RequestContext context) async {
 
 FutureOr<Response> _getReviewers(RequestContext context) async {
   final dataSource = context.read<DataSource>();
-
   final reviewers = await dataSource.getUsers(role: Role.reviewer.value);
 
   return Response.json(

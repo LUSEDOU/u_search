@@ -2,26 +2,49 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
 
-FutureOr<Response> onRequest(RequestContext context, int id) async {
+FutureOr<Response> onRequest(RequestContext context, int applyId) async {
   switch (context.request.method) {
-    case HttpMethod.get:
-      return _getApply(context, id);
+    case HttpMethod.post:
+      return _selectReviewer(context, applyId);
     // case HttpMethod.post:
-      // return _createApply(context, id);
+    // return _createApply(context, id);
     case _:
       return Response(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 
-FutureOr<Response> _getApply(RequestContext context, int id) async {
+FutureOr<Response> _selectReviewer(RequestContext context, int applyId) async {
   final dataSource = context.read<DataSource>();
-  final apply = await dataSource.getApplication(id);
-  if (apply == null) {
+  final apply = await dataSource.getApplicationRaw(applyId);
+  final body = await context.request.json() as Map<String, dynamic>;
+  final reviewerId = body['reviewerId'];
+
+  if (reviewerId is! int || apply == null) {
+    return Response(statusCode: HttpStatus.badRequest);
+  }
+
+  final reviewer = await dataSource.getUser(reviewerId);
+
+  if (reviewer == null || reviewer.role != Role.reviewer) {
     return Response(statusCode: HttpStatus.notFound);
   }
-  return Response.json(body: apply);
+
+  final updated = apply.copyWith(reviewer: reviewer.id);
+  await dataSource.updateApplication(updated);
+
+  await context.read<EmailService>().sendMailFromTemplate(
+        to: reviewer.email,
+        parser: ReviewerAssignedMailParser(
+          reviewer: reviewer,
+          application: apply,
+          link: 'localhost:8080/applications/${apply.id}',
+        ),
+      );
+
+  return Response.json(body: updated);
 }
 
 // FutureOr<Response> _createApply(RequestContext context, int id) async {

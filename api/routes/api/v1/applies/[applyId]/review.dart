@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
 
 FutureOr<Response> onRequest(RequestContext context, int applyId) async {
@@ -28,33 +29,49 @@ FutureOr<Response> _getReview(RequestContext context, int applyId) async {
     return Response.json(body: review);
   }
 
+  final contest = apply.contest;
+  final criterias = contest.criterias;
+
+  final calification = Calification(
+    order: 0,
+    score: -1,
+    subCalifications: criterias.map(Calification.fromCriteria).toList(),
+  );
+
   final emptyReview = Review(
     id: -1,
-    califications: const [],
-    criterias: apply.contest.criterias,
+    calification: calification,
+    criterias: criterias,
   );
 
   return Response.json(body: emptyReview);
 }
 
 FutureOr<Response> _createReview(RequestContext context, int applyId) async {
-  final apply = await context.read<DataSource>().getApplication(applyId);
+  final dataSource = context.read<DataSource>();
+  final apply = await dataSource.getApplicationRaw(applyId);
+  final researcher = await dataSource.getResearcherForApply(applyId);
 
-  if (apply == null) {
+  if (apply == null || researcher == null) {
     return Response(statusCode: HttpStatus.notFound);
   }
 
   final body = await context.request.json() as Map<String, dynamic>;
   final review = Review.fromJson(body);
 
-  final dataSource = context.read<DataSource>();
-  await dataSource.addReview(review);
+  final reviewId = await dataSource.addReview(review);
 
-  // await context.read<EmailService>().sendReviewedEmail(
-  //       reviewer: context.read<User>(),
-  //       researcher: apply.research.researcher,
-  //       apply: apply.id,
-  //     );
+  final emailService = context.read<EmailService>();
+  await emailService.sendMailFromTemplate(
+    to: researcher.email,
+    parser: ApplicationReviewedMailParser(
+      application: apply,
+      link: 'localhost:8080/applies/$applyId/review',
+    ),
+  );
+
+  final updatedApply = apply.copyWith(review: reviewId);
+  await dataSource.updateApplication(updatedApply);
 
   return Response.json(body: review);
 }

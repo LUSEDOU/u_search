@@ -16,8 +16,18 @@ FutureOr<Response> onRequest(RequestContext context) async {
 }
 
 FutureOr<Response> _getApplies(RequestContext context) async {
+  final user = context.read<User>();
+  if (user.role == Role.none) {
+    return Response(statusCode: HttpStatus.forbidden);
+  }
+
   final dataSource = context.read<DataSource>();
-  final applications = await dataSource.getApplications();
+  final applications = switch (user.role) {
+    Role.researcher => await dataSource.getApplications(researcherId: user.id),
+    Role.reviewer => await dataSource.getApplications(reviewerId: user.id),
+    _ => await dataSource.getApplications(),
+  };
+
   return Response.json(
     body: ApplicationsResponse(applications: applications),
   );
@@ -33,22 +43,18 @@ FutureOr<Response> _createApply(RequestContext context) async {
   }
 
   final dataSource = context.read<DataSource>();
-  final contest = await dataSource.getContest(contestId);
-  final research = await dataSource.getResearch(researchId);
 
-  if (contest == null || research == null) {
-    return Response(statusCode: HttpStatus.notFound);
-  }
-
-  final applies = await dataSource.getApplications();
-
-  final apply = Apply(
-    contest: contest,
-    research: research,
-    id: applies.length,
+  final application = Application(
+    contest: contestId,
+    research: researchId,
   );
+  await dataSource.addApplication(application);
 
-  await dataSource.addApplication(apply);
+  final apply = await dataSource.getApplication(application.id);
+
+  if (apply == null) {
+    return Response(statusCode: HttpStatus.internalServerError);
+  }
 
   return Response.json(body: apply);
 }

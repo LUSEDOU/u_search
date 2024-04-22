@@ -15,8 +15,8 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.1.3
   uuid: ^4.4.0
-  postgres_client:
-    path: packages/postgres_client
+  my_sql_client:
+    path: packages/my_sql_client
   email_service:
     path: packages/email_service
   app_domain:

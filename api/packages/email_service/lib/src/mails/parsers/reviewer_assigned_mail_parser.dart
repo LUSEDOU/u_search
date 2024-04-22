@@ -7,7 +7,6 @@ import 'package:email_service/email_service.dart';
 class ReviewerAssignedMailParser extends MailParser {
   /// {@macro reviewer_assigned_mail_parser}
   const ReviewerAssignedMailParser({
-    required this.review,
     required this.reviewer,
     required this.application,
     required this.link,
@@ -19,9 +18,6 @@ class ReviewerAssignedMailParser extends MailParser {
 
   /// The link to the review.
   final String link;
-
-  /// The review to be assigned.
-  final Review review;
 
   /// The reviewer to assign the review.
   final User reviewer;

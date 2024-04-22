@@ -4,42 +4,27 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:u_search_api/api.dart';
 
-FutureOr<Response> onRequest(RequestContext context, int id) async {
+FutureOr<Response> onRequest(RequestContext context, int applyId) async {
   switch (context.request.method) {
-    case HttpMethod.post:
-      return _selectReviewer(context, id);
+    case HttpMethod.get:
+      return _getApply(context, applyId);
     // case HttpMethod.post:
-    // return _createApply(context, id);
+      // return _createApply(context, applyId);
     case _:
       return Response(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 
-FutureOr<Response> _selectReviewer(RequestContext context, int id) async {
-  final body = await context.request.json() as Map<String, dynamic>;
-  final reviewerId = body['reviewerId'];
-
-  if (reviewerId is! int) {
-    return Response(statusCode: HttpStatus.badRequest);
-  }
-
+FutureOr<Response> _getApply(RequestContext context, int applyId) async {
   final dataSource = context.read<DataSource>();
-  final apply = await dataSource.getApplication(id);
-  final reviewer = await dataSource.getReviewer(reviewerId);
-
-  if (apply == null || reviewer == null) {
+  final apply = await dataSource.getApplication(applyId);
+  if (apply == null) {
     return Response(statusCode: HttpStatus.notFound);
   }
-
-  final updated = apply.copyWith(reviewer: reviewer);
-  await dataSource.updateApplication(updated);
-  // final sended = await
-  //     context.read<MailingService>().sendSelectedReviewerMail(reviewer.email);
-
-  return Response.json(body: updated);
+  return Response.json(body: apply);
 }
 
-// FutureOr<Response> _createApply(RequestContext context, int id) async {
+// FutureOr<Response> _createApply(RequestContext context, int applyId) async {
 //   final body = await context.request.json() as Map<String, dynamic>;
 //   final contestId = body['contestId'];
 //   final researchId = body['researchId'];
@@ -61,7 +46,7 @@ FutureOr<Response> _selectReviewer(RequestContext context, int id) async {
 //   final apply = Apply(
 //     contest: contest,
 //     research: research,
-//     id: applies.length,
+//     applyId: applies.length,
 //   );
 //
 //   await dataSource.addApplication(apply);

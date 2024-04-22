@@ -14,13 +14,14 @@ class Application extends Equatable {
   const Application({
     required this.contest,
     required this.research,
-    required this.id,
+    this.id = -1,
     this.reviewer,
     this.review,
   });
 
   /// Converts a [Map<String, dynamic>] into a [Application] instance.
-  factory Application.fromJson(Map<String, dynamic> json) => _$ApplicationFromJson(json);
+  factory Application.fromJson(Map<String, dynamic> json) =>
+      _$ApplicationFromJson(json);
 
   /// The contest of the application
   final int contest;
