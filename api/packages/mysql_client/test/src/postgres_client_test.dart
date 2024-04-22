@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:mocktail/mocktail.dart';
-import 'package:postgres/postgres.dart';
-import 'package:postgres_client/postgres_client.dart';
+import 'package:mysql/mysql.dart';
+import 'package:mysql_client/mysql_client.dart';
 import 'package:test/test.dart';
 
 class MockConnection extends Mock implements Connection {}

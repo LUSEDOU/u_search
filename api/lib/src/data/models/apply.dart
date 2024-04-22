@@ -1,10 +1,11 @@
+import 'package:app_domain/app_domain.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:u_search_api/api.dart';
 
 part 'apply.g.dart';
 
 @JsonSerializable()
+
 /// {@template apply}
 /// A model representing an apply for a contest.
 /// {@endtemplate}

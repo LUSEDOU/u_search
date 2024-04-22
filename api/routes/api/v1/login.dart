@@ -21,10 +21,19 @@ FutureOr<Response> _logIn(RequestContext context) async {
   }
 
   // checks if the user is already subscribed
-  final user = await _getUser(context, token: token);
+  final dataSource = context.read<DataSource>();
+  final email = await dataSource.getEmailToken(token);
+  if (email == null) {
+    return Response(statusCode: HttpStatus.unauthorized);
+  }
 
-  if (user == null) return Response(statusCode: HttpStatus.unauthorized);
-  final newToken = await _generateToken();
+  final user = await dataSource.getUserByEmail(email);
+
+  if (user == null) {
+    return Response(statusCode: HttpStatus.unauthorized);
+  }
+
+  final newToken = await dataSource.generateToken(user.id);
 
   return Response.json(
     body: LoginResponse(
@@ -32,17 +41,4 @@ FutureOr<Response> _logIn(RequestContext context) async {
       token: newToken,
     ),
   );
-}
-
-Future<User?> _getUser(RequestContext context, {required String token}) async {
-  return const User(
-    id: 1,
-    name: 'Luis',
-    email: 'luis@usil.pe',
-    lastName: 'Dolorier',
-  );
-}
-
-Future<String> _generateToken() async {
-  return 'token';
 }

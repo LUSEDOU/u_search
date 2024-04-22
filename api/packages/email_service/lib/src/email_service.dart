@@ -11,12 +11,11 @@ class EmailService {
   /// {@macro email_service}
   const EmailService({
     required SmtpServer smtp,
-    List<String> admins = const [],
-  })  : _smtp = smtp,
-        _admins = admins;
+    this.admins = const [],
+  }) : _smtp = smtp;
 
   final SmtpServer _smtp;
-  final List<String> _admins;
+  final List<String> admins;
 
   Future<void> _sendMail({
     required String from,
@@ -57,7 +56,7 @@ class EmailService {
         to: to,
         subject: subject,
         mailBody: mailBody,
-        cc: ccAdmins ? _admins : [],
+        cc: ccAdmins ? admins : [],
       );
 
       return true;

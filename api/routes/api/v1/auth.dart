@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
@@ -26,19 +27,18 @@ FutureOr<Response> _auth(RequestContext context) async {
 
   if (!regExp.hasMatch(email)) return Response();
 
-  final user = await _getUser(context, email: email);
+  if (!context.read<User>().isAnonymous) return Response();
 
+  final dataSource = context.read<DataSource>();
+  final user = await dataSource.getUserByEmail(email);
   if (user == null) return Response();
 
-  // send email to user
-  // final sended = context.read<EmailService>().sendLoginEmailLink(
-  //       email: email,
-  //       token: token,
-  //     );
-  await Future(() => true);
+  final token = await dataSource.generateEmailToken(email);
+  await context.read<EmailService>().sendMailFromTemplate(
+        to: email,
+        parser: LoginWithLinkMailParser(
+          link: 'localhost:8080/login?token=$token',
+        ),
+      );
   return Response();
-}
-
-Future<User?> _getUser(RequestContext context, {required String email}) async {
-  return User.anonymous;
 }

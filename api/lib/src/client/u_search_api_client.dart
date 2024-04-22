@@ -46,7 +46,7 @@ class USearchApiUnauthorizedFailure implements Exception {
 }
 
 /// Signature for the authentication token provider.
-typedef TokenProvider = Future<String?> Function();
+typedef TokenProvider = Future<String> Function();
 
 /// {@template u_search_api_client}
 /// A Dart API client for the Flutter News Example API.
@@ -527,7 +527,7 @@ class USearchApiClient {
     return <String, String>{
       HttpHeaders.contentTypeHeader: ContentType.json.value,
       HttpHeaders.acceptHeader: ContentType.json.value,
-      if (token != null) HttpHeaders.authorizationHeader: 'Bearer $token',
+      HttpHeaders.authorizationHeader: 'Bearer $token',
     };
   }
 }

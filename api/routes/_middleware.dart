@@ -7,5 +7,6 @@ Handler middleware(Handler handler) {
   return handler
       .use(requestLogger())
       .use(contentTypeHeader())
-      .use(provider<DataSource>((_) => dataSource));
+      .use(provider<DataSource>((_) => dataSource))
+      .use(userProvider);
 }

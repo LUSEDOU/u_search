@@ -13,7 +13,7 @@ A Very Good Project created by Very Good CLI.
 Install via `dart pub add`:
 
 ```sh
-dart pub add postgres_client
+dart pub add mysql_client
 ```
 
 ---

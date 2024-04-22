@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:logging/logging.dart';
-import 'package:postgres/postgres.dart';
+import 'package:mysql/mysql.dart';
 
-/// {@template postgres_client}
+/// {@template mysql_client}
 /// A Very Good Project created by Very Good CLI.
 /// {@endtemplate}
 class PostgresClient {
-  /// {@macro postgres_client}
+  /// {@macro mysql_client}
   const PostgresClient({
     required Connection connection,
     Logger? logger,
@@ -22,8 +22,16 @@ class PostgresClient {
     await _connection.close();
   }
 
-  Future<int> upsert(String table, Map<String, dynamic> value) async {
-    final statement = Helper.upsertStatement(table, value);
+  Future<int> upsert(
+    String table,
+    Map<String, dynamic> value, {
+    String conflictColumn = 'id',
+  }) async {
+    final statement = Helper.upsertStatement(
+      table,
+      value,
+      conflictColumn: conflictColumn,
+    );
     _logger?.info('Upserting: $statement');
 
     final result = await _connection.execute(statement);
@@ -57,6 +65,21 @@ class PostgresClient {
     final result = await _connection.execute(statement);
     _logger?.info('Selected: $result');
     return result.map((row) => row.toColumnMap()).toList();
+  }
+
+  Future<Map<String, dynamic>?> selectOne(
+    String table, {
+    String? where,
+    String? orderBy,
+  }) async {
+    final result = await select(
+      table,
+      where: where,
+      orderBy: orderBy,
+      limit: 1,
+    );
+
+    return result.isNotEmpty ? result.first : null;
   }
 }
 

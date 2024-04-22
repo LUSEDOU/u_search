@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
@@ -28,9 +29,9 @@ FutureOr<Response> _subscribe(RequestContext context) async {
   if (!regExp.hasMatch(email)) return Response();
 
   // checks if the user is already subscribed
-  final user = await _getUser(context, email: email);
+  final user = context.read<User>();
 
-  if (user != null) {
+  if (!user.isAnonymous) {
     final body = SubscribeResponse(
       success: true,
       user: user,
@@ -39,14 +40,17 @@ FutureOr<Response> _subscribe(RequestContext context) async {
   }
 
   // send email to user
-  // final sended = await _sendEmail(email);
-  final sended = await Future(() => true);
+  final emailService = context.read<EmailService>();
+  final to = emailService.admins.first;
+  final sended = await context.read<EmailService>().sendMailFromTemplate(
+        to: to,
+        parser: SubscribeMailParser(
+          email: email,
+          link: 'localhost:8080/users/new?email=$email',
+        ),
+      );
 
   final body = SubscribeResponse(success: sended);
 
   return Response.json(body: body);
-}
-
-Future<User?> _getUser(RequestContext context, {required String email}) async {
-  return null;
 }

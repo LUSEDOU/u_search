@@ -2,25 +2,34 @@
 import 'package:u_search_api/api.dart';
 
 abstract class DataSource {
-  Future<List<Apply>> getApplications();
+  Future<List<Apply>> getApplications({
+    int? userId,
+  });
   Future<Apply?> getApplication(int id);
-  Future<void> addApplication(Apply apply);
+  Future<int> addApplication(Apply apply);
   Future<void> updateApplication(Apply apply);
 
   Future<List<Contest>> getContests();
   Future<Contest?> getContest(int id);
-  Future<void> addContest(Contest contest);
+  Future<int> addContest(Contest contest);
 
   Future<List<Research>> getResearches();
   Future<Research?> getResearch(int id);
-  Future<void> addResearch(Research research);
+  Future<int> addResearch(Research research);
 
   Future<List<User>> getUsers({
     int? role,
   });
   Future<User?> getUser(int id);
-  Future<void> addUser(User reviewer);
+  Future<User?> getUserByEmail(String email);
+  Future<User?> getUserByToken(String token);
+  Future<int> addUser(User reviewer);
 
   Future<Review?> getReview(int id);
-  Future<void> addReview(Review review);
+  Future<int> addReview(Review review);
+
+  Future<String> generateToken(int userId);
+
+  Future<String?> getEmailToken(String email);
+  Future<String?> generateEmailToken(String email);
 }
