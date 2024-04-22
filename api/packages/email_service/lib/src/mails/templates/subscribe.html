@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Access Request Notification</title>
+  <style>
+    .info {
+      font-weight: bold;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    a.button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <p>Hi Admin,</p>
+  <p>A new access request has been submitted.</p>
+  <p><b>Requester Information:</b></p>
+  <ul>
+    <!-- <li>Name: {{name}}</li> -->
+    <li>Email: {{email}}</li>
+  </ul>
+  <p>Please review the request and take necessary actions.</p>
+  <div class="center">
+    <a href="{{link}}" class="button">Review Request</a>
+  </div>
+</body>
+</html>
+

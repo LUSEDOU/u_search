@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:email_service/email_service.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 
@@ -25,16 +26,21 @@ class EmailService {
     required String mailBody,
     List<String> cc = const [],
   }) async {
-    final message = Message()
-      ..from = Address(from, username)
-      ..recipients.add(to)
-      ..ccRecipients.addAll(cc.map(Address.new))
-      ..subject = subject
-      ..text = mailBody;
+    try {
+      final message = Message()
+        ..from = Address(from, username)
+        ..recipients.add(to)
+        ..ccRecipients.addAll(cc.map(Address.new))
+        ..subject = subject
+        ..text = mailBody;
 
-    await send(message, _smtp);
+      await send(message, _smtp);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(error, stackTrace);
+    }
   }
 
+  /// Sends a mail.
   FutureOr<bool> sendMail({
     required String to,
     required String subject,
@@ -44,13 +50,34 @@ class EmailService {
     final username = _smtp.username;
     if (username == null) return false;
 
-    await _sendMail(
-      from: username,
-      username: 'USIL Proyectos',
+    try {
+      await _sendMail(
+        from: username,
+        username: 'USIL Proyectos',
+        to: to,
+        subject: subject,
+        mailBody: mailBody,
+        cc: ccAdmins ? _admins : [],
+      );
+
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Sends a mail from a template.
+  FutureOr<bool> sendMailFromTemplate({
+    required String to,
+    required MailParser parser,
+  }) async {
+    final template = await parser.parseMail();
+
+    return sendMail(
       to: to,
-      subject: subject,
-      mailBody: mailBody,
-      cc: ccAdmins ? _admins : [],
+      subject: parser.subject,
+      mailBody: template,
+      ccAdmins: parser.toAdmins,
     );
   }
 }
