@@ -45,7 +45,3 @@ Node Save Score xyz
                         old = :Score * :Critera:percentage
                         new = ->Score * :Calification:percentage
                         -> old - new
-
-
-
-

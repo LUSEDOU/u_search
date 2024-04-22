@@ -29,6 +29,13 @@ class Review extends Equatable {
   /// The criterias of the review
   final List<Criterium> criterias;
 
+  static const empty = Review(
+    id: -1,
+    calification: Calification.empty,
+    criterias: [],
+  );
+
+  bool get isCreated => id != -1;
 
   /// Converts a [Review] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$ReviewToJson(this);

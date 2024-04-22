@@ -1,7 +1,9 @@
+import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:data_repository/data_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:form_inputs/form_inputs.dart';
 import 'package:formz/formz.dart';
+import 'package:u_search_api/client.dart';
 
 import 'package:u_search_flutter/apply_review/apply_review.dart';
 import 'package:u_search_flutter/utils/dart_extensions.dart';
@@ -10,24 +12,24 @@ import 'package:u_search_flutter/utils/logger_manager.dart';
 part 'apply_review_event.dart';
 part 'apply_review_state.dart';
 
+class Node {
+  const Node(this.parent, this.order);
+  final Node? parent;
+  final int order;
+}
+
 class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
   ApplyReviewBloc({
-    required DataRepository dataRepository,
-    required Apply apply,
-  })  : _dataRepository = dataRepository,
+    required ApplicationRepository applicationRepository,
+    required Review review,
+    required int applyId,
+  })  : _applicationRepository = applicationRepository,
+        _applyId = applyId,
         super(
           ApplyReviewState(
-            apply: apply,
-            initialReview: apply.review,
-            califications: apply.review?.califications
-                    .map(CalificationForm.fromModel)
-                    .toList() ??
-                List<CalificationForm>.from(
-                  apply.contest.criterias
-                      .expand((element) => element.subCriterias)
-                      .map(CalificationForm.fromSubCriteria),
-                ),
-            isValid: apply.review == null ? null : true,
+            review: review,
+            calification: review.calification,
+            isValid: review.isCreated,
           ),
         ) {
     on<ApplyReviewCommentChanged>(_onCommentChanged);
@@ -35,7 +37,42 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     on<ApplyReviewSubmit>(_onSubmit);
   }
 
-  final DataRepository _dataRepository;
+  final ApplicationRepository _applicationRepository;
+  final int _applyId;
+
+  void _onScoreChanged(
+    ApplyReviewScoreChanged event,
+    Emitter<ApplyReviewState> emit,
+  ) {
+    try {
+      Node? node = event.node;
+      final score = event.score;
+
+      final List<int> orders = [];
+      while (node != null) {
+        orders.add(node.order);
+        node = node.parent;
+      }
+
+      while (orders.isNotEmpty) {
+        final order = orders.removeLast();
+
+        emit(
+          state.copyWith(
+            calification: updatedCalification,
+            isValid: updatedCalification.isValid,
+          ),
+        );
+      }
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(
+        state.copyWith(
+          status: ApplyReviewStatus.failure,
+        ),
+      );
+    }
+  }
 
   void _onCommentChanged(
     ApplyReviewCommentChanged event,
@@ -119,13 +156,13 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     );
 
     try {
-      final review = await _dataRepository.addReview(
+      final review = await _applicationRepository.addReview(
         (state.initialReview ?? Review.empty).copyWith(
           califications: state.califications.map((e) => e.model).toList(),
         ),
       );
 
-      final apply = await _dataRepository.updateApply(
+      final apply = await _applicationRepository.updateApply(
         state.apply.copyWith(
           review: review,
         ),

@@ -62,6 +62,8 @@ class Calification extends Equatable {
     );
   }
 
+  static const empty = Calification(order: -1, score: -1);
+
   @override
   List<Object?> get props => [order, score, comment, subCalifications];
 }
