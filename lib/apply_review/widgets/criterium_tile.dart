@@ -1,16 +1,17 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:u_search_api/client.dart';
 import 'package:u_search_flutter/apply_review/apply_review.dart';
 
 class CriteriumTile extends StatelessWidget {
   const CriteriumTile({
     required this.node,
+    required this.isEditable,
     super.key,
   });
 
   final CalificationNode node;
+  final bool isEditable;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class CriteriumTile extends StatelessWidget {
 
                 return AppTextField(
                   initialValue: node.score.value,
-                  readOnly: node.isLeaf,
+                  readOnly: node.isLeaf || !isEditable,
                   onChanged: (value) => context.read<ApplyReviewBloc>().add(
                         ApplyReviewScoreChanged(
                           order: node.fullOrder,
@@ -53,8 +54,9 @@ class CriteriumTile extends StatelessWidget {
               return AppTextField(
                 initialValue: node.comment!.value,
                 errorText: comment.error?.message,
+                readOnly: !isEditable,
                 onChanged: (value) => context.read<ApplyReviewBloc>().add(
-                      ApplyReviewUpdateCalification(
+                      ApplyReviewCommentChanged(
                         order: node.fullOrder,
                         comment: value,
                       ),
@@ -64,7 +66,11 @@ class CriteriumTile extends StatelessWidget {
           ),
         ),
         if (!node.isLeaf)
-          for (final node in node.childrens!) CriteriumTile(node: node),
+          for (final node in node.children!)
+            CriteriumTile(
+              node: node,
+              isEditable: isEditable,
+            ),
       ],
     );
   }

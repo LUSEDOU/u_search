@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/client.dart';
 
-import '../apply_review.dart';
+import 'package:u_search_flutter/apply_review/apply_review.dart';
 
 class ApplyReviewPage extends StatelessWidget {
   const ApplyReviewPage({

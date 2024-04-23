@@ -4,6 +4,13 @@ sealed class ApplyReviewEvent extends Equatable {
   const ApplyReviewEvent();
 }
 
+final class ApplyReviewRequested extends ApplyReviewEvent {
+  const ApplyReviewRequested();
+
+  @override
+  List<Object> get props => [];
+}
+
 final class ApplyReviewScoreChanged extends ApplyReviewEvent {
   const ApplyReviewScoreChanged({
     required this.order,

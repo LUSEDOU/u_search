@@ -23,6 +23,7 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
             isValid: review.isCreated,
           ),
         ) {
+    on<ApplyReviewRequested>(_onRequested);
     on<ApplyReviewCommentChanged>(_onCommentChanged);
     on<ApplyReviewScoreChanged>(_onScoreChanged);
     on<ApplyReviewSubmit>(_onSubmit);
@@ -30,6 +31,27 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
 
   final ApplicationRepository _applicationRepository;
   final int _applyId;
+
+  Future<void> _onRequested(
+    ApplyReviewRequested event,
+    Emitter<ApplyReviewState> emit,
+  ) async {
+    emit(state.copyWith(status: ApplyReviewStatus.loading));
+    try {
+      final review = await _applicationRepository.fetchReview(_applyId);
+      emit(
+        state.copyWith(
+          review: review,
+          calification: CalificationNode.fromReview(review),
+          isValid: review.isCreated,
+          status: ApplyReviewStatus.initial,
+        ),
+      );
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: ApplyReviewStatus.failure));
+    }
+  }
 
   void _onScoreChanged(
     ApplyReviewScoreChanged event,
@@ -90,7 +112,7 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     emit(state.copyWith(status: ApplyReviewStatus.loading));
     try {
       final calification = state.calification.toModels();
-      final criterias = state.calification.childrens!;
+      final criterias = state.calification.children;
       await _applicationRepository.review(
         apply: _applyId,
         review: Review(

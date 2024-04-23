@@ -12,14 +12,14 @@ class CalificationNode extends Criterium {
     super.maxScore,
     super.subCriterias,
     super.minScore,
-    this.childrens,
+    this.children,
     this.comment,
   });
 
   factory CalificationNode.fromReview(Review review) {
     final calification = review.calification;
 
-    final childrens = <CalificationNode>[];
+    final children = <CalificationNode>[];
     for (final criterium in review.criterias) {
       final subCalification = calification.isCreated
           ? calification.subCalifications!
@@ -28,7 +28,7 @@ class CalificationNode extends Criterium {
 
       final node = criterium.toNode(subCalification);
 
-      childrens.add(node);
+      children.add(node);
     }
 
     return CalificationNode(
@@ -46,7 +46,7 @@ class CalificationNode extends Criterium {
   //   List<int> fullOrder = const [],
   // }) {
   //   final order = [...fullOrder, criterium.order];
-  //   final childrens = criterium.subCriterias?.map(
+  //   final children = criterium.subCriterias?.map(
   //     (subCriteria) {
   //       return CalificationNode.from(
   //         criterium: subCriteria,
@@ -61,13 +61,13 @@ class CalificationNode extends Criterium {
   //     order: criterium.order,
   //     name: criterium.name,
   //     description: criterium.description,
-  //     childrens: childrens,
+  //     children: children,
   //     fullOrder: fullOrder,
   //     score: Score.pure(
   //       score: calification.score.toString(),
   //       maxScore: criterium.maxScore,
   //     ),
-  //     comment: childrens?.isEmpty ?? true
+  //     comment: children?.isEmpty ?? true
   //         ? null
   //         : Comment.pure(
   //             value: calification.comment ?? '',
@@ -79,10 +79,10 @@ class CalificationNode extends Criterium {
   final Comment? comment;
   final List<int> fullOrder;
 
-  final List<CalificationNode>? childrens;
+  final List<CalificationNode>? children;
 
   @override
-  List<Criterium>? get subCriterias => childrens;
+  List<Criterium>? get subCriterias => children;
 
   bool get isLeaf => subCriterias?.isEmpty ?? true;
 
@@ -91,13 +91,13 @@ class CalificationNode extends Criterium {
       return score.isValid && (comment?.isValid ?? true);
     }
 
-    return childrens?.every((child) => child.validate()) ?? true;
+    return children?.every((child) => child.validate()) ?? true;
   }
 
   CalificationNode copyWith({
     Score? score,
     Comment? comment,
-    List<CalificationNode>? childrens,
+    List<CalificationNode>? children,
   }) {
     return CalificationNode(
       order: order,
@@ -106,7 +106,7 @@ class CalificationNode extends Criterium {
       description: description,
       score: score ?? this.score,
       comment: comment ?? this.comment,
-      childrens: childrens ?? this.childrens,
+      children: children ?? this.children,
     );
   }
 
@@ -119,7 +119,7 @@ class CalificationNode extends Criterium {
       return this;
     }
 
-    final node = childrens?.firstWhere(
+    final node = children?.firstWhere(
       (child) => child.order == order.first,
     );
 
@@ -136,25 +136,25 @@ class CalificationNode extends Criterium {
       );
     }
 
-    final index = childrens?.indexWhere(
+    final index = children?.indexWhere(
       (child) => child.order == order.first,
     );
 
     if (index case null || -1) {
       throw Exception('Invalid order');
     }
-    final node = childrens![index];
+    final node = children![index];
 
     final upNode = node.updateComment(
       comment: comment,
       order: order.sublist(1),
     );
 
-    final upChildrens = [...childrens!];
+    final upChildrens = [...children!];
     upChildrens[index] = upNode;
 
     return copyWith(
-      childrens: upChildrens,
+      children: upChildrens,
     );
   }
 
@@ -176,21 +176,21 @@ class CalificationNode extends Criterium {
       );
     }
 
-    final index = childrens?.indexWhere(
+    final index = children?.indexWhere(
       (child) => child.order == order.first,
     );
 
     if (index case null || -1) {
       throw Exception('Invalid order');
     }
-    final node = childrens![index];
+    final node = children![index];
 
     final (upNode, diff) = node.updateScore(
       score: score,
       order: order.sublist(1),
     );
 
-    final upChildrens = [...childrens!];
+    final upChildrens = [...children!];
     upChildrens[index] = upNode;
 
     final upScore = double.tryParse(this.score.value) ?? 0;
@@ -199,7 +199,7 @@ class CalificationNode extends Criterium {
     return (
       copyWith(
         score: Score.pure(score: '$newScore', maxScore: maxScore),
-        childrens: upChildrens,
+        children: upChildrens,
       ),
       diff * percent,
     );
@@ -214,14 +214,14 @@ class CalificationNode extends Criterium {
       );
     }
 
-    final subCalifications = childrens!.map(
+    final subCalifications = children?.map(
       (child) => child.toModels(),
     );
 
     return Calification(
       order: order,
       score: score.numericValue!,
-      subCalifications: subCalifications.toList(),
+      subCalifications: subCalifications?.toList(),
     );
   }
 }
@@ -244,7 +244,7 @@ extension CriteriumExt on Criterium {
         score: calification?.score.toString() ?? '',
         maxScore: maxScore,
       ),
-      childrens: subCriterias?.map(
+      children: subCriterias?.map(
         (subCriteria) {
           final cal = calification?.subCalifications?.firstWhere(
             (cal) => cal.order == subCriteria.order,

@@ -1,4 +1,3 @@
-import 'package:data_repository/data_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,50 +9,18 @@ class ApplyReviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final review = context.select((ApplyReviewBloc bloc) => bloc.state.review);
     return Scaffold(
       appBar: AppBar(
-        title: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
-          builder: (context, state) {
-            return Text(
-              state.isNew ? 'New review' : 'Review',
-            );
-          },
-        ),
+        title: Text(review.isCreated ? 'Edit Review' : 'Create Review'),
       ),
-      bottomNavigationBar: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
-        builder: (context, state) {
-          final score = state.totalScore;
-
-          return BottomAppBar(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('${state.isValid}'),
-                if (state.isNew)
-                  ElevatedButton(
-                    onPressed: state.isValid ?? false
-                        ? () => context.read<ApplyReviewBloc>().add(
-                              const ApplyReviewSubmit(),
-                            )
-                        : null,
-                    child: Text(
-                      '$score',
-                    ),
-                  )
-                else
-                  Text(
-                    '$score',
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
+      bottomNavigationBar: _BottomNavigator(isCreated: review.isCreated),
       body: MultiBlocListener(
         listeners: [
           BlocListener<ApplyReviewBloc, ApplyReviewState>(
             listenWhen: (previous, current) =>
-                previous.status != current.status && current.isFailure,
+                previous.status != current.status &&
+                current.status == ApplyReviewStatus.failure,
             listener: (context, state) {
               context.pop();
 
@@ -62,7 +29,7 @@ class ApplyReviewView extends StatelessWidget {
                 ..showSnackBar(
                   SnackBar(
                     content: Text(
-                      state.isNew
+                      state.review.isCreated
                           ? 'Failed to create review'
                           : 'Failed to save review',
                     ),
@@ -72,7 +39,8 @@ class ApplyReviewView extends StatelessWidget {
           ),
           BlocListener<ApplyReviewBloc, ApplyReviewState>(
             listenWhen: (previous, current) =>
-                previous.status != current.status && current.isSuccess,
+                previous.status != current.status &&
+                current == ApplyReviewStatus.success,
             listener: (context, state) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
@@ -85,6 +53,41 @@ class ApplyReviewView extends StatelessWidget {
           ),
         ],
         child: const ApplyReviewForm(),
+      ),
+    );
+  }
+}
+
+class _BottomNavigator extends StatelessWidget {
+  const _BottomNavigator({required this.isCreated});
+
+  final bool isCreated;
+
+  void _onTap(BuildContext context) {
+    context.read<ApplyReviewBloc>().add(const ApplyReviewSubmit());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final calification = context.select(
+      (ApplyReviewBloc bloc) => bloc.state.calification,
+    );
+    final isValid = context.select(
+      (ApplyReviewBloc bloc) => bloc.state.isValid,
+    );
+
+    return BottomAppBar(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (isCreated)
+            ElevatedButton(
+              onPressed: isValid ? () => _onTap(context) : null,
+              child: Text('${calification.score}'),
+            )
+          else
+            Text('${calification.score}'),
+        ],
       ),
     );
   }
