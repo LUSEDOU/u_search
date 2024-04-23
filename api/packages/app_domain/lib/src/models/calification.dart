@@ -46,7 +46,7 @@ class Calification extends Equatable {
   /// Converts a [Calification] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$CalificationToJson(this);
 
-  bool get isCalificated => score != -1;
+  bool get isCreated => score != -1;
 
   Calification copyWith({
     int? order,

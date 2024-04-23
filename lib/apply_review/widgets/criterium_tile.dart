@@ -1,54 +1,71 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:u_search_api/client.dart';
-
-typedef CalificationNode = ({Criterium criteria, Calification calification});
+import 'package:u_search_flutter/apply_review/apply_review.dart';
 
 class CriteriumTile extends StatelessWidget {
   const CriteriumTile({
-    required this.criteria,
-    required this.calification,
-    required this.nodes,
+    required this.node,
     super.key,
   });
 
-  final Criterium criteria;
-  final Calification calification;
-  final List<int> nodes;
+  final CalificationNode node;
 
   @override
   Widget build(BuildContext context) {
-    final calificationNodes = <CalificationNode>[];
-
-    bool Function(Calification) matchOrder(Criterium criteria) =>
-        (Calification calification) {
-          return calification.order == criteria.order;
-        };
-
-    for (final criteria in criteria.subCriterias ?? <Criterium>[]) {
-      calificationNodes.add(
-        (
-          criteria: criteria,
-          calification:
-              calification.subCalifications!.firstWhere(matchOrder(criteria))
-        ),
-      );
-    }
     return Column(
       children: [
         Row(
           children: [
-            Text(criteria.name),
-            Text(calification.score.toString()),
+            Text(node.name),
+            BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
+              buildWhen: (previous, current) =>
+                  previous.calification.getFromOrder(node.fullOrder)!.score !=
+                  current.calification.getFromOrder(node.fullOrder)!.score,
+              builder: (context, state) {
+                final nnnode = state.calification.getFromOrder(node.fullOrder)!;
+
+                return AppTextField(
+                  initialValue: node.score.value,
+                  readOnly: node.isLeaf,
+                  onChanged: (value) => context.read<ApplyReviewBloc>().add(
+                        ApplyReviewScoreChanged(
+                          order: node.fullOrder,
+                          score: value,
+                        ),
+                      ),
+                );
+              },
+            ),
           ],
         ),
-        for (final node in calificationNodes)
-          CriteriumTile(
-            criteria: node.criteria,
-            calification: node.calification,
-            nodes: [...nodes, node.calification.order],
+        // ignore: prefer_const_constructors
+        Visibility(
+          child: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
+            buildWhen: (previous, current) =>
+                previous.calification.getFromOrder(node.fullOrder)!.comment !=
+                current.calification.getFromOrder(node.fullOrder)!.comment,
+            builder: (context, state) {
+              final nnode = state.calification.getFromOrder(node.fullOrder)!;
+              final comment = nnode.comment!;
+
+              return AppTextField(
+                initialValue: node.comment!.value,
+                errorText: comment.error?.message,
+                onChanged: (value) => context.read<ApplyReviewBloc>().add(
+                      ApplyReviewUpdateCalification(
+                        order: node.fullOrder,
+                        comment: value,
+                      ),
+                    ),
+              );
+            },
           ),
+        ),
+        if (!node.isLeaf)
+          for (final node in node.childrens!) CriteriumTile(node: node),
       ],
     );
   }
 }
-

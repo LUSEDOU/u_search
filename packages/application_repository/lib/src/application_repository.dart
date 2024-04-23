@@ -177,7 +177,15 @@ class ApplicationRepository {
     required Review review,
   }) async {
     try {
-      await _apiClient.submitReview(apply: apply, review: review);
+      final ureview = await _apiClient.submitReview(
+        apply: apply,
+        review: review,
+      );
+      final current = [..._applicationController.value];
+
+      final index = current.indexWhere((element) => element.id == apply);
+      current[index] = current[index].copyWith(review: ureview);
+      _applicationController.add(current);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ApplicationReviewFailure(error), stackTrace);
     }

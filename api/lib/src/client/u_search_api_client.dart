@@ -392,7 +392,7 @@ class USearchApiClient {
   /// * [apply] - The apply id to select a reviewer for.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
-  Future<void> submitReview({
+  Future<Review> submitReview({
     required int apply,
     required Review review,
   }) async {
@@ -404,12 +404,16 @@ class USearchApiClient {
       body: jsonEncode(review.toJson()),
     );
 
+    final body = response.json();
+
     if (response.statusCode != HttpStatus.ok) {
       throw USearchApiRequestFailure(
         body: response.json(),
         statusCode: response.statusCode,
       );
     }
+
+    return Review.fromJson(body);
   }
 
   /// POST /api/v1/researches

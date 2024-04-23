@@ -29,6 +29,9 @@ class AppTextField extends StatelessWidget {
   /// A value to initialize the field to.
   final String? initialValue;
 
+  /// Whether the text field is read-only.
+  final bool readOnly;
+
   /// List of auto fill hints.
   final Iterable<String>? autoFillHints;
 

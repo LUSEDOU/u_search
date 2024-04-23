@@ -33,6 +33,8 @@ class Score extends FormzInput<String, ScoreValidationError> {
 
   static const _scoreRegExp = r'^\d(?:\.\d{0,2})?$';
 
+  double? get numericValue => double.tryParse(value);
+
   @override
   ScoreValidationError? validator(String? value) {
     if (value?.isEmpty ?? true) {

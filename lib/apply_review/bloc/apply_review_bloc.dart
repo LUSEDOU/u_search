@@ -2,21 +2,12 @@ import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_inputs/form_inputs.dart';
-import 'package:formz/formz.dart';
 import 'package:u_search_api/client.dart';
 
 import 'package:u_search_flutter/apply_review/apply_review.dart';
-import 'package:u_search_flutter/utils/dart_extensions.dart';
-import 'package:u_search_flutter/utils/logger_manager.dart';
 
 part 'apply_review_event.dart';
 part 'apply_review_state.dart';
-
-class Node {
-  const Node(this.parent, this.order);
-  final Node? parent;
-  final int order;
-}
 
 class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
   ApplyReviewBloc({
@@ -28,7 +19,7 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
         super(
           ApplyReviewState(
             review: review,
-            calification: review.calification,
+            calification: CalificationNode.fromReview(review),
             isValid: review.isCreated,
           ),
         ) {
@@ -44,26 +35,43 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     ApplyReviewScoreChanged event,
     Emitter<ApplyReviewState> emit,
   ) {
+    final score = Score.dirty(value: event.score);
+    if (!score.isValid) {
+      emit(state.copyWith(isValid: false));
+    }
     try {
-      Node? node = event.node;
-      final score = event.score;
+      final (updatedCalification, _) = state.calification.updateScore(
+        score: score.numericValue!,
+        order: event.order,
+      );
+      emit(
+        state.copyWith(
+          calification: updatedCalification,
+          isValid: updatedCalification.validate(),
+        ),
+      );
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: ApplyReviewStatus.failure));
+    }
+  }
 
-      final List<int> orders = [];
-      while (node != null) {
-        orders.add(node.order);
-        node = node.parent;
-      }
-
-      while (orders.isNotEmpty) {
-        final order = orders.removeLast();
-
-        emit(
-          state.copyWith(
-            calification: updatedCalification,
-            isValid: updatedCalification.isValid,
-          ),
-        );
-      }
+  void _onCommentChanged(
+    ApplyReviewCommentChanged event,
+    Emitter<ApplyReviewState> emit,
+  ) {
+    try {
+      final comment = Comment.dirty(value: event.comment);
+      final updatedCalification = state.calification.updateComment(
+        comment: comment.value,
+        order: event.order,
+      );
+      emit(
+        state.copyWith(
+          calification: updatedCalification,
+          isValid: updatedCalification.validate(),
+        ),
+      );
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(
@@ -74,114 +82,27 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     }
   }
 
-  void _onCommentChanged(
-    ApplyReviewCommentChanged event,
-    Emitter<ApplyReviewState> emit,
-  ) {
-    try {
-      final calification = state.califications.firstWhereOrNull(
-              (calification) => calification.id == event.id) ??
-          CalificationForm.fromSubCriteria(
-            state.apply.contest.criterias
-                .expand((element) => element.subCriterias)
-                .firstWhere((element) => element.id == event.id),
-          );
-
-      final updatedCalifications = List<CalificationForm>.from(
-        state.califications,
-      )
-        ..removeWhere((element) => element.id == event.id)
-        ..add(
-          calification.dirty(comment: event.comment),
-        );
-
-      emit(
-        state.copyWith(
-          califications: updatedCalifications,
-          isValid: updatedCalifications.validate(),
-        ),
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          status: ApplyReviewStatus.failure,
-        ),
-      );
-    }
-  }
-
-  void _onScoreChanged(
-    ApplyReviewScoreChanged event,
-    Emitter<ApplyReviewState> emit,
-  ) {
-    try {
-      final calification = state.califications.firstWhereOrNull(
-              (calification) => calification.id == event.id) ??
-          CalificationForm.fromSubCriteria(
-            state.apply.contest.criterias
-                .expand((element) => element.subCriterias)
-                .firstWhere((element) => element.id == event.id),
-          );
-
-      final updatedCalifications = List<CalificationForm>.from(
-        state.califications,
-      )
-        ..removeWhere((element) => element.id == event.id)
-        ..add(
-          calification.dirty(score: event.score),
-        );
-
-      emit(
-        state.copyWith(
-          califications: updatedCalifications,
-          isValid: updatedCalifications.validate(),
-        ),
-      );
-    } catch (e) {
-      LoggerManager().logger.e(e);
-      emit(
-        state.copyWith(status: ApplyReviewStatus.failure),
-      );
-    }
-  }
-
-  void _onSubmit(
+  Future<void> _onSubmit(
     ApplyReviewSubmit event,
     Emitter<ApplyReviewState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        status: ApplyReviewStatus.loading,
-      ),
-    );
-
+    if (!state.isValid) return;
+    emit(state.copyWith(status: ApplyReviewStatus.loading));
     try {
-      final review = await _applicationRepository.addReview(
-        (state.initialReview ?? Review.empty).copyWith(
-          califications: state.califications.map((e) => e.model).toList(),
+      final calification = state.calification.toModels();
+      final criterias = state.calification.childrens!;
+      await _applicationRepository.review(
+        apply: _applyId,
+        review: Review(
+          id: -1,
+          calification: calification,
+          criterias: criterias,
         ),
       );
-
-      final apply = await _applicationRepository.updateApply(
-        state.apply.copyWith(
-          review: review,
-        ),
-      );
-
-      emit(
-        state.copyWith(
-          apply: apply,
-          initialReview: review,
-          status: ApplyReviewStatus.success,
-        ),
-      );
-    } catch (e) {
-      LoggerManager().logger.e(e);
-      emit(
-        state.copyWith(
-          status: ApplyReviewStatus.failure,
-        ),
-      );
+      emit(state.copyWith(status: ApplyReviewStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: ApplyReviewStatus.failure));
     }
   }
 }
