@@ -33,11 +33,25 @@ abstract class DataSource {
   Future<User?> getUserByToken(String token);
   Future<int> addUser(User reviewer);
 
-  Future<Review?> getReview(int id);
+  /// Returns the review for the given apply id.
+  ///
+  /// In case of no review, returns an editable review.
+  /// Only returns null if the apply id is invalid.
+  Future<Review?> getReview(int applyId);
   Future<int> addReview(Review review);
 
+  /// Generates an auth token for the given user id.
+  ///
+  /// In case of an existing token, the token will be overwritten.
   Future<String> generateToken(int userId);
 
+  /// Returns the email address associated with the given token.
+  ///
+  /// If the token is not found, `null` is returned.
   Future<String?> getEmailToken(String email);
-  Future<String?> generateEmailToken(String email);
+
+  /// Generates a token for the given email address.
+  ///
+  /// In case of an existing token, the token will be overwritten.
+  Future<String> generateEmailToken(String email);
 }

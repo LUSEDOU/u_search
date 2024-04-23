@@ -49,6 +49,20 @@ class Contest extends Equatable {
   /// Returns true if this [Contest] is created
   bool get isCreated => id != -1;
 
+  Contest copyWith({
+    int? id,
+    String? name,
+    String? description,
+    List<Criterium>? criterias,
+  }) {
+    return Contest(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      criterias: criterias ?? this.criterias,
+    );
+  }
+
   @override
   List<Object> get props => [id, name, description, criterias];
 }
