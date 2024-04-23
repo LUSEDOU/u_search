@@ -7,7 +7,7 @@ class InMemoryTokenStorage implements TokenStorage {
   String? _token;
 
   @override
-  Future<String?> readToken() async => _token;
+  Future<String> readToken() async => _token ?? '';
 
   @override
   Future<void> saveToken(String token) async => _token = token;

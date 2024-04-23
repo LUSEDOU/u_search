@@ -3,7 +3,7 @@
 /// {@endtemplate}
 abstract class TokenStorage {
   /// Returns the current token.
-  Future<String?> readToken();
+  Future<String> readToken();
 
   /// Saves the current token.
   Future<void> saveToken(String token);

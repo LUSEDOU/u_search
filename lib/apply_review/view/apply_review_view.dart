@@ -40,7 +40,7 @@ class ApplyReviewView extends StatelessWidget {
           BlocListener<ApplyReviewBloc, ApplyReviewState>(
             listenWhen: (previous, current) =>
                 previous.status != current.status &&
-                current == ApplyReviewStatus.success,
+                current.status == ApplyReviewStatus.success,
             listener: (context, state) {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
@@ -52,7 +52,16 @@ class ApplyReviewView extends StatelessWidget {
             },
           ),
         ],
-        child: const ApplyReviewForm(),
+        child: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
+          buildWhen: (previous, current) => previous.review != current.review,
+          builder: (context, state) {
+            final calification = state.calification;
+            return ApplyReviewForm(
+              node: calification,
+              isEditable: review.isCreated,
+            );
+          },
+        ),
       ),
     );
   }

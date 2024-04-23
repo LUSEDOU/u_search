@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
 import 'package:u_search_api/api.dart';
 import 'package:uuid/uuid.dart';
 
@@ -29,9 +28,18 @@ FutureOr<Response> _createResearch(RequestContext context) async {
 
   final dataSource = context.read<DataSource>();
 
-  final temDir = await getTemporaryDirectory();
   final uuid = const Uuid().v4();
-  final file = File('${temDir.path}/$uuid');
+  final file = File(
+    path.join(
+      path.current,
+      'www',
+      'u_search',
+      'api',
+      'public',
+      'researches',
+      uuid,
+    ),
+  );
   await file.writeAsBytes(base64Decode(encodedFile));
 
   final research = Research(

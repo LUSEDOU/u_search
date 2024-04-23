@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:u_search_api/api.dart';
 
-FutureOr<Response> onRequest(RequestContext context, int contestId) async {
+FutureOr<Response> onRequest(RequestContext context, String contestId) async {
   switch (context.request.method) {
     case HttpMethod.get:
-      return _getContest(context, contestId);
+      final id = int.tryParse(contestId);
+      if (id == null) return Response(statusCode: HttpStatus.badRequest);
+      return _getContest(context, id);
     // case HttpMethod.post:
-      // return _createApply(context, contestId);
+    // return _createApply(context, contestId);
     case _:
       return Response(statusCode: HttpStatus.methodNotAllowed);
   }

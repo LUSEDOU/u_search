@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:u_search_flutter/firebase_options.dart';
 import 'package:u_search_flutter/main/bootstrap/app_observer.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
@@ -26,6 +26,10 @@ Future<void> bootstrap(AppBuilder builder) async {
       stackTrace: details.stack,
     );
   };
+
+  if (kIsWeb) {
+    usePathUrlStrategy();
+  }
 
   runApp(
     await builder(

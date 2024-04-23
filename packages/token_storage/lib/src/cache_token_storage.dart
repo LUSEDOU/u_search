@@ -23,7 +23,7 @@ class CacheTokenStorage implements TokenStorage {
   }
 
   @override
-  Future<String?> readToken() async {
+  Future<String> readToken() async {
     final token = _preferences.getString(_tokenKey);
     return token ?? _anonymousToken;
   }

@@ -118,7 +118,7 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
         review: Review(
           id: -1,
           calification: calification,
-          criterias: criterias,
+          criterias: criterias!,
         ),
       );
       emit(state.copyWith(status: ApplyReviewStatus.success));

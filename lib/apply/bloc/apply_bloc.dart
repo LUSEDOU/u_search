@@ -40,6 +40,7 @@ class ApplyBloc extends Bloc<ApplyEvent, ApplyState> {
       await _applicationRepository.apply(
         research: file,
         contest: _contest,
+        title: state.file!.name,
       );
       emit(state.copyWith(status: ApplyStatus.success));
     } catch (error, stackTrace) {

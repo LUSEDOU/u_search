@@ -5,12 +5,14 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
 
-FutureOr<Response> onRequest(RequestContext context, int applyId) async {
+FutureOr<Response> onRequest(RequestContext context, String applyId) async {
+  final id = int.tryParse(applyId);
+  if (id == null) return Response(statusCode: HttpStatus.badRequest);
   switch (context.request.method) {
     case HttpMethod.get:
-      return _getReview(context, applyId);
+      return _getReview(context, id);
     case HttpMethod.post:
-      return _createReview(context, applyId);
+      return _createReview(context, id);
     case _:
       return Response(statusCode: HttpStatus.methodNotAllowed);
   }

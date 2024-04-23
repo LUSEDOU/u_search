@@ -5,10 +5,12 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
 
-FutureOr<Response> onRequest(RequestContext context, int applyId) async {
+FutureOr<Response> onRequest(RequestContext context, String applyId) async {
   switch (context.request.method) {
     case HttpMethod.post:
-      return _selectReviewer(context, applyId);
+      final id = int.tryParse(applyId);
+      if (id == null) return Response(statusCode: HttpStatus.badRequest);
+      return _selectReviewer(context, id);
     // case HttpMethod.post:
     // return _createApply(context, id);
     case _:
