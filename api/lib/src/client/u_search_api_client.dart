@@ -4,6 +4,7 @@ import 'dart:io';
 // import 'package:u_search_api/client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
 
 /// {@template u_search_api_malformed_response}
@@ -35,6 +36,11 @@ class USearchApiRequestFailure implements Exception {
 
   /// The associated response body.
   final Map<String, dynamic> body;
+
+  @override
+  String toString() {
+    return 'USearchApiRequestFailure: $statusCode $body';
+  }
 }
 
 /// {@template u_search_api_unauthorized_request_failure}
@@ -176,9 +182,11 @@ class USearchApiClient {
     final response = await _httpClient.post(
       uri,
       headers: await _getRequestHeaders(),
-      body: jsonEncode(<String, String>{
-        'token': token,
-      }),
+      body: jsonEncode(
+        <String, String>{
+          'token': token,
+        },
+      ),
     );
     final body = response.json();
 
@@ -202,20 +210,29 @@ class USearchApiClient {
   Future<void> sendLoginEmailLink({
     required String email,
   }) async {
-    final uri = Uri.parse('$_baseUrl/api/v1/auth');
+    try {
+      final uri = Uri.parse('$_baseUrl/api/v1/auth');
 
-    final response = await _httpClient.post(
-      uri,
-      headers: await _getRequestHeaders(),
-      body: jsonEncode(<String, String>{
-        'email': email,
-      }),
-    );
+      final response = await _httpClient.post(
+        uri,
+        headers: await _getRequestHeaders(),
+        body: jsonEncode(
+          <String, String>{
+            'email': email,
+          },
+        ),
+      );
 
-    if (response.statusCode != HttpStatus.ok) {
-      throw USearchApiRequestFailure(
-        body: response.json(),
-        statusCode: response.statusCode,
+      if (response.statusCode != HttpStatus.ok) {
+        throw USearchApiRequestFailure(
+          body: response.json(),
+          statusCode: response.statusCode,
+        );
+      }
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        USearchApiMalformedResponse(error: error),
+        stackTrace,
       );
     }
   }
@@ -532,6 +549,7 @@ class USearchApiClient {
       HttpHeaders.contentTypeHeader: ContentType.json.value,
       HttpHeaders.acceptHeader: ContentType.json.value,
       HttpHeaders.authorizationHeader: 'Bearer $token',
+      'Authorization': 'Bearer $token',
     };
   }
 }

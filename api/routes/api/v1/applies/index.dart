@@ -11,14 +11,14 @@ FutureOr<Response> onRequest(RequestContext context) async {
     case HttpMethod.post:
       return _createApply(context);
     case _:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return Response.json(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 
 FutureOr<Response> _getApplies(RequestContext context) async {
   final user = context.read<User>();
   if (user.role == Role.none) {
-    return Response(statusCode: HttpStatus.forbidden);
+    return Response.json(statusCode: HttpStatus.forbidden);
   }
 
   final dataSource = context.read<DataSource>();
@@ -39,7 +39,7 @@ FutureOr<Response> _createApply(RequestContext context) async {
   final researchId = body['researchId'];
 
   if (contestId is! int || researchId is! int) {
-    return Response(statusCode: HttpStatus.badRequest);
+    return Response.json(statusCode: HttpStatus.badRequest);
   }
 
   final dataSource = context.read<DataSource>();
@@ -53,7 +53,7 @@ FutureOr<Response> _createApply(RequestContext context) async {
   final apply = await dataSource.getApplication(application.id);
 
   if (apply == null) {
-    return Response(statusCode: HttpStatus.internalServerError);
+    return Response.json(statusCode: HttpStatus.internalServerError);
   }
 
   return Response.json(body: apply);

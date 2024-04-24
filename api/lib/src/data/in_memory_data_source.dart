@@ -141,8 +141,8 @@ class InMemoryDataSource implements DataSource {
   }
 
   @override
-  Future<String?> getEmailToken(String email) {
-    return Future.value(_emailTokens[email]);
+  Future<String?> getEmailToken(String token) {
+    return Future.value(_emailTokens[token]);
   }
 
   @override

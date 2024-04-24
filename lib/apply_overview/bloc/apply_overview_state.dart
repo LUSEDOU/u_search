@@ -21,7 +21,7 @@ class ApplyOverviewState extends Equatable {
       ApplyOverviewState(
         apply: apply ?? this.apply,
         status: status ?? this.status,
-        reviewer: reviewer?.call() ?? this.reviewer,
+        reviewer: reviewer != null ? reviewer() : this.reviewer,
       );
 
   @override

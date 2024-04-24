@@ -54,14 +54,28 @@ class EvaluatorsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final evaluators = context.select((EvaluatorsCubit cubit) => cubit.state);
-    return ListView.builder(
-      itemCount: evaluators.length,
-      itemBuilder: (context, index) {
-        final evaluator = evaluators[index];
-        return ListTile(
-          title: Text(evaluator.name),
-          subtitle: Text(evaluator.email),
-          onTap: () => context.pop(evaluator),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (evaluators.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: constraints.maxHeight * 0.8,
+            maxWidth: constraints.maxWidth * 0.25,
+          ),
+          child: ListView.builder(
+            itemCount: evaluators.length,
+            itemBuilder: (context, index) {
+              final evaluator = evaluators[index];
+              return ListTile(
+                trailing: const Icon(Icons.arrow_forward),
+                title: Text(evaluator.name),
+                subtitle: Text(evaluator.email),
+                onTap: () => context.pop(evaluator),
+              );
+            },
+          ),
         );
       },
     );

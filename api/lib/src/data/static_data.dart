@@ -329,7 +329,9 @@ final _applications = <Application>[
   ),
 ];
 
-final _emailTokens = <String, String>{};
+final _emailTokens = <String, String>{
+  'admin': 'admin@usil.test',
+};
 
 final _tokens = <int, String>{
   0: 'admin',

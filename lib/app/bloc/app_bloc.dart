@@ -12,7 +12,7 @@ part 'app_state.dart';
 class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
   AppBloc({
     required UserRepository userRepository,
-    required User user,
+    required this.user,
   })  : _userRepository = userRepository,
         super(
           user.isAnonymous
@@ -25,6 +25,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
 
   final UserRepository _userRepository;
   late StreamSubscription<User> _userSubscription;
+  User user;
 
   void _userChanged(User user) => add(_AppUserChanged(user));
 
@@ -32,6 +33,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
     _AppUserChanged event,
     Emitter<AppState> emit,
   ) async {
+    user = event.user;
     emit(
       event.user.isAnonymous
           ? const AppState.unauthenticated()

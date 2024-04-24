@@ -13,7 +13,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     case HttpMethod.post:
       return _createResearch(context);
     case _:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return Response.json(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 
@@ -23,7 +23,7 @@ FutureOr<Response> _createResearch(RequestContext context) async {
   final title = body['title'];
 
   if (encodedFile is! String || title is! String) {
-    return Response(statusCode: HttpStatus.badRequest);
+    return Response.json(statusCode: HttpStatus.badRequest);
   }
 
   final dataSource = context.read<DataSource>();

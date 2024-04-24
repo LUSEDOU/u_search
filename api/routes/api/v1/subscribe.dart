@@ -10,7 +10,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     return _subscribe(context);
   }
 
-  return Response(statusCode: HttpStatus.methodNotAllowed);
+  return Response.json(statusCode: HttpStatus.methodNotAllowed);
 }
 
 FutureOr<Response> _subscribe(RequestContext context) async {
@@ -18,7 +18,7 @@ FutureOr<Response> _subscribe(RequestContext context) async {
   final email = json['email'];
 
   if (email is! String) {
-    return Response(statusCode: HttpStatus.badRequest);
+    return Response.json(statusCode: HttpStatus.badRequest);
   }
 
   // finish in usil.pe usil.edu.pe usil.epg.edu.pe
@@ -26,7 +26,7 @@ FutureOr<Response> _subscribe(RequestContext context) async {
     r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@(usil\.pe|usil\.edu\.pe|epg\.usil\.pe)$',
   );
 
-  if (!regExp.hasMatch(email)) return Response();
+  if (!regExp.hasMatch(email)) return Response.json();
 
   // checks if the user is already subscribed
   final user = context.read<User>();

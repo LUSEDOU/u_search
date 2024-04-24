@@ -5,9 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 
 class ApplyOverviewView extends StatelessWidget {
-  const ApplyOverviewView({super.key});
+  const ApplyOverviewView({
+    required this.role,
+    super.key,
+  });
+
+  final Role role;
 
   @override
   Widget build(BuildContext context) {
@@ -57,25 +63,38 @@ class ApplyOverviewView extends StatelessWidget {
 
             return CupertinoScrollbar(
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text('id: ${apply.id}'),
-                    const SizedBox(height: 8),
-                    ContestTile(contest: apply.contest),
-                    const SizedBox(height: 8),
-                    const ReviewerTile(),
-                    const SizedBox(height: 8),
-                    ResearchTile(research: apply.research),
-                    const SizedBox(height: 8),
-                    AppButton.blueDress(
-                      child: const Text('Download'),
-                      onPressed: () => context
-                          .read<ApplyOverviewBloc>()
-                          .add(const ApplyOverviewDownloadRequested()),
-                    ),
-                    const SizedBox(height: 8),
-                    const SelectReviewerButton(),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.xxxlg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          'Application #${apply.id}',
+                          style: Theme.of(context).textTheme.headlineLarge,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ContestTile(contest: apply.contest),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Evaluador',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      ReviewerTile(
+                        canEdit: role.isAdmin || apply.review == null,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Trabajo de Investigación',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      ResearchTile(research: apply.research),
+                      const SizedBox(height: 8),
+                      const SizedBox(height: 8),
+                      const SelectReviewerButton(),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -97,44 +116,69 @@ class ContestTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(_contest.name),
-      subtitle: Text(_contest.description),
-    );
-  }
-}
-
-class EvaluatorTile extends StatelessWidget {
-  const EvaluatorTile({
-    required User reviewer,
-    super.key,
-  }) : _evaluator = reviewer;
-
-  final User _evaluator;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(_evaluator.name),
-      subtitle: Text(_evaluator.email),
-      trailing: Visibility(
-        child: IconButton(
-          onPressed: () => context
-              .read<ApplyOverviewBloc>()
-              .add(const ApplyOverviewReviewerChanged(null)),
-          icon: const Icon(Icons.delete),
-        ),
+      contentPadding: EdgeInsets.zero,
+      title: Text(
+        _contest.name,
+        style: Theme.of(context).textTheme.headlineMedium,
+      ),
+      subtitle: Text(
+        _contest.description,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
     );
   }
 }
 
-class EmptyEvaluatorTile extends StatelessWidget {
-  const EmptyEvaluatorTile({super.key});
+class ReviewerTile extends StatelessWidget {
+  const ReviewerTile({
+    required this.canEdit,
+    super.key,
+  });
+
+  final bool canEdit;
 
   @override
   Widget build(BuildContext context) {
-    return const ListTile(
-      title: Text('No reviewer'),
+    final reviewer = context.select(
+      (ApplyOverviewBloc bloc) => bloc.state.reviewer,
+    );
+
+    if (reviewer?.isAnonymous ?? true) {
+      if (!canEdit) {
+        return const Text('No Evaluador');
+      }
+
+      return SizedBox(
+        width: MediaQuery.of(context).size.width * 0.3,
+        child: AppButton.blueDress(
+          child: const Text('Agregar evaluador'),
+          onPressed: () async {
+            final evaluator = await EvaluatorsDialog.show(context);
+            if (!context.mounted) return;
+
+            context
+                .read<ApplyOverviewBloc>()
+                .add(ApplyOverviewReviewerChanged(evaluator));
+          },
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: ListTile(
+        title: Text('${reviewer!.name} ${reviewer.lastName}'),
+        subtitle: Text(reviewer.email),
+        trailing: Visibility(
+          visible: canEdit,
+          child: IconButton(
+            onPressed: () => context
+                .read<ApplyOverviewBloc>()
+                .add(const ApplyOverviewReviewerChanged(null)),
+            icon: const Icon(Icons.delete),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -148,55 +192,19 @@ class ResearchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(_research.title),
-      subtitle: Text('${_research.length} kb'),
-    );
-  }
-}
-
-class DownloadButton extends StatelessWidget {
-  const DownloadButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
-      builder: (context, state) {
-        return ElevatedButton(
-          onPressed: () {},
-          child: state.status.isLoading
-              ? const Text('Download')
-              : const CircularProgressIndicator(),
-        );
-      },
-    );
-  }
-}
-
-class ReviewerTile extends StatelessWidget {
-  const ReviewerTile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final reviewer = context.select(
-      (ApplyOverviewBloc bloc) => bloc.state.reviewer,
-    );
-
-    if (reviewer?.isAnonymous ?? true) {
-      return AppButton.blueDress(
-        child: const Text('Select Evaluator'),
-        onPressed: () async {
-          final evaluator = await EvaluatorsDialog.show(context);
-          if (!context.mounted) return;
-
-          context
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.3,
+      child: ListTile(
+        title: Text(_research.title),
+        subtitle: Text('${_research.length} kb'),
+        trailing: IconButton(
+          onPressed: () => context
               .read<ApplyOverviewBloc>()
-              .add(ApplyOverviewReviewerChanged(evaluator));
-        },
-      );
-    }
-
-    return EvaluatorTile(reviewer: reviewer!);
+              .add(const ApplyOverviewDownloadRequested()),
+          icon: const Icon(Icons.download),
+        ),
+      ),
+    );
   }
 }
 
@@ -209,9 +217,15 @@ class SelectReviewerButton extends StatelessWidget {
       buildWhen: (previous, current) => previous.reviewer != current.reviewer,
       builder: (context, state) {
         final reviewer = state.reviewer;
+        final role = context.read<User>().role;
+        final apply = state.apply;
+        LoggerManager().d('apply: ${apply.review?.isCreated ?? false}');
+        LoggerManager().d('reviewer: $reviewer');
+        LoggerManager().d('role: $role');
 
         return Visibility(
-          visible: !(reviewer?.isAnonymous ?? true),
+          visible: (role.isAdmin && !(apply.review?.isCreated ?? false)) &&
+              (reviewer != null),
           child: AppButton.blueDress(
             child: const Text('Guardar'),
             onPressed: () => context

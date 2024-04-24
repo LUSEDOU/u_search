@@ -94,4 +94,8 @@ enum Role {
 
   /// The value of the enum
   final int value;
+
+  bool get isReviewer => this == Role.reviewer;
+  bool get isResearcher => this == Role.researcher;
+  bool get isAdmin => this == Role.admin;
 }

@@ -9,7 +9,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     case HttpMethod.get:
       return _geContests(context);
     case _:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return Response.json(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 

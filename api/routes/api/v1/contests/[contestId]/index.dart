@@ -8,12 +8,12 @@ FutureOr<Response> onRequest(RequestContext context, String contestId) async {
   switch (context.request.method) {
     case HttpMethod.get:
       final id = int.tryParse(contestId);
-      if (id == null) return Response(statusCode: HttpStatus.badRequest);
+      if (id == null) return Response.json(statusCode: HttpStatus.badRequest);
       return _getContest(context, id);
     // case HttpMethod.post:
     // return _createApply(context, contestId);
     case _:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return Response.json(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 
@@ -22,7 +22,7 @@ FutureOr<Response> _getContest(RequestContext context, int contestId) async {
   final contest = await dataSource.getContest(contestId);
 
   if (contest == null) {
-    return Response(statusCode: HttpStatus.notFound);
+    return Response.json(statusCode: HttpStatus.notFound);
   }
 
   return Response.json(body: contest);
@@ -34,7 +34,7 @@ FutureOr<Response> _getContest(RequestContext context, int contestId) async {
 //   final researchId = body['researchId'];
 //
 //   if (contestId is! int || researchId is! int) {
-//     return Response(statusCode: HttpStatus.badRequest);
+//     return Response.json(statusCode: HttpStatus.badRequest);
 //   }
 //
 //   final dataSource = context.read<DataSource>();
@@ -42,7 +42,7 @@ FutureOr<Response> _getContest(RequestContext context, int contestId) async {
 //   final research = await dataSource.getResearch(researchId);
 //
 //   if (contest == null || research == null) {
-//     return Response(statusCode: HttpStatus.notFound);
+//     return Response.json(statusCode: HttpStatus.notFound);
 //   }
 //
 //   final applies = await dataSource.getApplications();

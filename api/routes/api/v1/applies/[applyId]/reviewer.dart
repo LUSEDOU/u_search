@@ -9,12 +9,12 @@ FutureOr<Response> onRequest(RequestContext context, String applyId) async {
   switch (context.request.method) {
     case HttpMethod.post:
       final id = int.tryParse(applyId);
-      if (id == null) return Response(statusCode: HttpStatus.badRequest);
+      if (id == null) return Response.json(statusCode: HttpStatus.badRequest);
       return _selectReviewer(context, id);
     // case HttpMethod.post:
     // return _createApply(context, id);
     case _:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return Response.json(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 
@@ -25,13 +25,13 @@ FutureOr<Response> _selectReviewer(RequestContext context, int applyId) async {
   final reviewerId = body['reviewerId'];
 
   if (reviewerId is! int || apply == null) {
-    return Response(statusCode: HttpStatus.badRequest);
+    return Response.json(statusCode: HttpStatus.badRequest);
   }
 
   final reviewer = await dataSource.getUser(reviewerId);
 
   if (reviewer == null || reviewer.role != Role.reviewer) {
-    return Response(statusCode: HttpStatus.notFound);
+    return Response.json(statusCode: HttpStatus.notFound);
   }
 
   final updated = apply.copyWith(reviewer: reviewer.id);
@@ -55,7 +55,7 @@ FutureOr<Response> _selectReviewer(RequestContext context, int applyId) async {
 //   final researchId = body['researchId'];
 //
 //   if (contestId is! int || researchId is! int) {
-//     return Response(statusCode: HttpStatus.badRequest);
+//     return Response.json(statusCode: HttpStatus.badRequest);
 //   }
 //
 //   final dataSource = context.read<DataSource>();
@@ -63,7 +63,7 @@ FutureOr<Response> _selectReviewer(RequestContext context, int applyId) async {
 //   final research = await dataSource.getResearch(researchId);
 //
 //   if (contest == null || research == null) {
-//     return Response(statusCode: HttpStatus.notFound);
+//     return Response.json(statusCode: HttpStatus.notFound);
 //   }
 //
 //   final applies = await dataSource.getApplications();

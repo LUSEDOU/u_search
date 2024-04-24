@@ -10,7 +10,7 @@ FutureOr<Response> onRequest(RequestContext context) async {
     return _auth(context);
   }
 
-  return Response(statusCode: HttpStatus.methodNotAllowed);
+  return Response.json(statusCode: HttpStatus.methodNotAllowed);
 }
 
 FutureOr<Response> _auth(RequestContext context) async {
@@ -18,20 +18,20 @@ FutureOr<Response> _auth(RequestContext context) async {
   final email = json['email'];
 
   if (email is! String) {
-    return Response(statusCode: HttpStatus.badRequest);
+    return Response.json(statusCode: HttpStatus.badRequest);
   }
 
   final regExp = RegExp(
     r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@(usil\.pe|usil\.edu\.pe|epg\.usil\.pe)$',
   );
 
-  if (!regExp.hasMatch(email)) return Response();
+  if (!regExp.hasMatch(email)) return Response.json();
 
-  if (!context.read<User>().isAnonymous) return Response();
+  if (!context.read<User>().isAnonymous) return Response.json();
 
   final dataSource = context.read<DataSource>();
   final user = await dataSource.getUserByEmail(email);
-  if (user == null) return Response();
+  if (user == null) return Response.json();
 
   final token = await dataSource.generateEmailToken(email);
   await context.read<EmailService>().sendMailFromTemplate(
@@ -40,5 +40,5 @@ FutureOr<Response> _auth(RequestContext context) async {
           link: 'localhost:8080/login?token=$token',
         ),
       );
-  return Response();
+  return Response.json();
 }

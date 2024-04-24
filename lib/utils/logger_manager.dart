@@ -11,12 +11,12 @@ class LoggerManager {
     _logger = Logger(
       level: Level.debug,
       printer: PrettyPrinter(
-        methodCount: 0,
+        // methodCount: 2,
         errorMethodCount: 10,
         // lineLength: 60,
         // printTime: false,
         // colors: false,
-        printEmojis: false,
+        // printEmojis: false,
         noBoxingByDefault: true,
       ),
     );

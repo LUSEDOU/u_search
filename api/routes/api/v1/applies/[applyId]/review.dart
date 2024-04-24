@@ -7,14 +7,14 @@ import 'package:u_search_api/api.dart';
 
 FutureOr<Response> onRequest(RequestContext context, String applyId) async {
   final id = int.tryParse(applyId);
-  if (id == null) return Response(statusCode: HttpStatus.badRequest);
+  if (id == null) return Response.json(statusCode: HttpStatus.badRequest);
   switch (context.request.method) {
     case HttpMethod.get:
       return _getReview(context, id);
     case HttpMethod.post:
       return _createReview(context, id);
     case _:
-      return Response(statusCode: HttpStatus.methodNotAllowed);
+      return Response.json(statusCode: HttpStatus.methodNotAllowed);
   }
 }
 
@@ -23,7 +23,7 @@ FutureOr<Response> _getReview(RequestContext context, int applyId) async {
   final apply = await dataSource.getApplication(applyId);
 
   if (apply == null) {
-    return Response(statusCode: HttpStatus.notFound);
+    return Response.json(statusCode: HttpStatus.notFound);
   }
 
   final review = apply.review;
@@ -55,7 +55,7 @@ FutureOr<Response> _createReview(RequestContext context, int applyId) async {
   final researcher = await dataSource.getResearcherForApply(applyId);
 
   if (apply == null || researcher == null) {
-    return Response(statusCode: HttpStatus.notFound);
+    return Response.json(statusCode: HttpStatus.notFound);
   }
 
   final body = await context.request.json() as Map<String, dynamic>;
