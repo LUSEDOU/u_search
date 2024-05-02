@@ -6,7 +6,7 @@ part 'user.g.dart';
 /// {@template user}
 /// A class that represents a user.
 /// {@endtemplate}
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class User extends Equatable {
   /// {@macro user}
   const User({

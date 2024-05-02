@@ -8,7 +8,7 @@ part 'calification.g.dart';
 /// {@template calification}
 /// A calification of a sub-criteria of a criteria of a contest.
 /// {@endtemplate}
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Calification extends Equatable {
   /// Creates an instance of [Calification].
   const Calification({
@@ -46,7 +46,7 @@ class Calification extends Equatable {
   /// Converts a [Calification] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$CalificationToJson(this);
 
-  bool get isCreated => score != -1;
+  bool get isCreated => order != -1;
 
   Calification copyWith({
     int? order,

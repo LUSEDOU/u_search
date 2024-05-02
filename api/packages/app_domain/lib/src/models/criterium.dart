@@ -6,7 +6,7 @@ part 'criterium.g.dart';
 /// {@template criterium}
 /// A model representing a criterium for a contest.
 /// {@endtemplate}
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Criterium extends Equatable {
   /// Creates an instance of [Criterium].
   const Criterium({

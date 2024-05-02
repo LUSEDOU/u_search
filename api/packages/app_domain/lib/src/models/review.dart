@@ -8,8 +8,9 @@ part 'review.g.dart';
 /// A review of an apply to a contest, rates the apply in each criteria of the
 /// contest.
 /// {@endtemplate}
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Review extends Equatable {
+
   /// {@macro review}
   const Review({
     required this.id,

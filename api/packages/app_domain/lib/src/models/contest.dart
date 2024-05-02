@@ -7,7 +7,7 @@ part 'contest.g.dart';
 /// {@template contest}
 /// A model representing a contest for financial aid.
 /// {@endtemplate}
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Contest extends Equatable {
   /// {@macro contest}
   const Contest({

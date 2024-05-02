@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 
 import '../apply_review.dart';
 
@@ -10,9 +11,11 @@ class ApplyReviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final review = context.select((ApplyReviewBloc bloc) => bloc.state.review);
+    final isEditable = !review.isCreated;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(review.isCreated ? 'Edit Review' : 'Create Review'),
+        title: Text(isEditable ? 'Edit Review' : 'Create Review'),
       ),
       bottomNavigationBar: _BottomNavigator(isCreated: review.isCreated),
       body: MultiBlocListener(
@@ -58,7 +61,7 @@ class ApplyReviewView extends StatelessWidget {
             final calification = state.calification;
             return ApplyReviewForm(
               node: calification,
-              isEditable: review.isCreated,
+              isEditable: isEditable,
             );
           },
         ),
@@ -95,7 +98,7 @@ class _BottomNavigator extends StatelessWidget {
               child: Text('${calification.score}'),
             )
           else
-            Text('${calification.score}'),
+            Text(calification.score.value),
         ],
       ),
     );

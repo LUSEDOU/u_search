@@ -4,11 +4,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'application.g.dart';
 
-@JsonSerializable()
-
 /// {@template application}
 /// A model representing an application for a contest.
 /// {@endtemplate}
+@JsonSerializable(explicitToJson: true)
 class Application extends Equatable {
   /// {@macro application}
   const Application({

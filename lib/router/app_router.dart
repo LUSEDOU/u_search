@@ -81,18 +81,16 @@ GoRouter router = GoRouter(
       builder: AppliesOverviewPage.routeBuilder,
       routes: [
         GoRoute(
+          path: ':applyId/review',
+          builder: ApplyReviewPage.routeBuilder,
+        ),
+        GoRoute(
           path: ':applyId',
           builder: ApplyOverviewPage.routeBuilder,
           redirect: (context, state) {
             final id = int.tryParse(state.pathParameters['applyId']!);
             return id == null ? '/applies' : null;
           },
-          routes: [
-            GoRoute(
-              path: 'review',
-              builder: ApplyReviewPage.routeBuilder,
-            ),
-          ],
         ),
         GoRoute(
           path: 'new',

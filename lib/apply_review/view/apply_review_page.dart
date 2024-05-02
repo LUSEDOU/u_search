@@ -53,5 +53,5 @@ class ApplyReviewData {
     required this.review,
   });
 
-  final Review review;
+  final Review? review;
 }

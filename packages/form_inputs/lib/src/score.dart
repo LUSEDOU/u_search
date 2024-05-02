@@ -3,13 +3,13 @@ import 'package:formz/formz.dart';
 /// Validation errors for the [Score] [FormzInput].
 enum ScoreValidationError {
   /// When the score is empty
-  empty('Please enter a score'),
+  empty('Por favor ingrese una nota'),
 
   /// When the score is invalid
-  invalid('Please enter a valid score'),
+  invalid('Por favor ingrese una nota válida'),
 
   /// When the score is greater than the max score
-  greaterThanMax('Score must be less than or equal to the max score');
+  greaterThanMax('La nota debe ser menor');
 
   /// {@macro score_validation_error}
   const ScoreValidationError(this.message);
@@ -40,11 +40,12 @@ class Score extends FormzInput<String, ScoreValidationError> {
     if (value?.isEmpty ?? true) {
       return ScoreValidationError.empty;
     }
-    final score = double.tryParse(value!);
-    if (!RegExp(_scoreRegExp).hasMatch(value) || (score ?? 0) < 0) {
+
+    if ((numericValue ?? -1) < 0) {
       return ScoreValidationError.invalid;
     }
-    if (maxScore != null && score! > maxScore!) {
+
+    if (maxScore != null && numericValue! > maxScore!) {
       return ScoreValidationError.greaterThanMax;
     }
     return null;

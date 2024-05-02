@@ -27,7 +27,10 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
   late StreamSubscription<User> _userSubscription;
   User user;
 
-  void _userChanged(User user) => add(_AppUserChanged(user));
+  void _userChanged(User user) {
+    this.user = user;
+    add(_AppUserChanged(user));
+  }
 
   Future<void> _onUserChanged(
     _AppUserChanged event,

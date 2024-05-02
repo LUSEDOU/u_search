@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
 import 'package:email_service/email_service.dart';
+import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
 
 FutureOr<Response> onRequest(RequestContext context, String applyId) async {
@@ -33,12 +34,9 @@ FutureOr<Response> _getReview(RequestContext context, int applyId) async {
 
   final contest = apply.contest;
   final criterias = contest.criterias;
+  Logger('getReview').info(criterias);
 
-  final calification = Calification(
-    order: 0,
-    score: -1,
-    subCalifications: criterias.map(Calification.fromCriteria).toList(),
-  );
+  const calification = Calification.empty;
 
   final emptyReview = Review(
     id: -1,

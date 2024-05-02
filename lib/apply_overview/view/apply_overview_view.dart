@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
+import 'package:u_search_flutter/apply_review/view/view.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
 class ApplyOverviewView extends StatelessWidget {
@@ -30,7 +31,7 @@ class ApplyOverviewView extends StatelessWidget {
             child: FloatingActionButton(
               onPressed: () => context.go(
                 '/applies/${apply.id}/review',
-                extra: state.apply,
+                extra: ApplyReviewData(review: apply.review),
               ),
               child: const Icon(Icons.edit),
             ),

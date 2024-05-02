@@ -6,7 +6,7 @@ part 'research.g.dart';
 /// {@template research}
 /// A model representing a research.
 /// {@endtemplate}
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class Research extends Equatable {
   /// Creates an instance of [Research].
   const Research({

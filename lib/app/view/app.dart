@@ -1,6 +1,7 @@
 import 'package:application_repository/application_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/app/app.dart';
 
@@ -23,18 +24,24 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider.value(value: _userRepository),
-        RepositoryProvider.value(value: _applicationRepository),
-        RepositoryProvider.value(value: _user),
-      ],
-      child: BlocProvider(
-        create: (_) => AppBloc(
-          userRepository: _userRepository,
-          user: _user,
+    return Provider.value(
+      value: _user,
+      child: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider.value(value: _userRepository),
+          RepositoryProvider.value(value: _applicationRepository),
+        ],
+        child: BlocProvider(
+          create: (context) {
+            final user = context.read<User>();
+            final userRepository = context.read<UserRepository>();
+            return AppBloc(
+              userRepository: userRepository,
+              user: user,
+            );
+          },
+          child: const AppView(),
         ),
-        child: const AppView(),
       ),
     );
   }

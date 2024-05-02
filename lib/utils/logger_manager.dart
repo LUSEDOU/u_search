@@ -11,7 +11,7 @@ class LoggerManager {
     _logger = Logger(
       level: Level.debug,
       printer: PrettyPrinter(
-        // methodCount: 2,
+        methodCount: 0,
         errorMethodCount: 10,
         // lineLength: 60,
         // printTime: false,
