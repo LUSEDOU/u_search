@@ -27,7 +27,7 @@ class ApplyOverviewView extends StatelessWidget {
         builder: (context, state) {
           final apply = state.apply;
           return Visibility(
-            visible: !apply.isEmpty && !apply.isReviewed,
+            visible: !apply.isEmpty && apply.reviewer != null,
             child: FloatingActionButton(
               onPressed: () => context.go(
                 '/applies/${apply.id}/review',
@@ -70,9 +70,12 @@ class ApplyOverviewView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(
-                        child: Text(
-                          'Application #${apply.id}',
-                          style: Theme.of(context).textTheme.headlineLarge,
+                        child: Hero(
+                          tag: '__hero_apply_${apply.id}',
+                          child: Text(
+                            'Application #${apply.id}',
+                            style: Theme.of(context).textTheme.headlineLarge,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 8),

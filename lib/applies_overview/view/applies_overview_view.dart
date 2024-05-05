@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,8 +8,6 @@ import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/contests/view/view.dart';
-import 'package:u_search_flutter/utils/dart_extensions.dart';
-import 'package:user_repository/user_repository.dart';
 
 class AppliesOverviewView extends StatelessWidget {
   const AppliesOverviewView({super.key});
@@ -17,7 +16,7 @@ class AppliesOverviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Applies Overview'),
+        title: const Text('USIL'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.go(
@@ -26,62 +25,67 @@ class AppliesOverviewView extends StatelessWidget {
         ),
         child: const Icon(Icons.add),
       ),
-      body: BlocConsumer<AppliesOverviewBloc, AppliesOverviewState>(
-        listenWhen: (previous, current) => previous.status != current.status,
-        listener: (context, state) {
-          if (state.status == AppliesOverviewStatus.failure) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                const SnackBar(
-                  content: Text('Applies Failure'),
-                ),
-              );
-          }
-        },
-        builder: (context, state) {
-          if (state.applies.isEmpty) {
-            if (state.status == AppliesOverviewStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (state.status != AppliesOverviewStatus.success) {
-              return const SizedBox();
-            } else {
-              return const Center(
-                child: Text(
-                  'You have no applies',
-                  // role.isReviewer
-                  //     ? 'Wait until we assign you an apply'
-                  //     : 'You have no applies',
-                ),
-              );
-            }
-          }
-
-          return CupertinoScrollbar(
-            child: Column(
-              children: [
-                const WelcomeText(),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: state.applies.length,
-                    itemBuilder: (context, index) {
-                      final apply = state.applies[index];
-                      return ApplyTile(
-                        apply: apply,
-                        onTap: () => context.go(
-                          '/applies/${apply.id}',
-                          extra: ApplyOverviewData(apply: apply),
-                        ),
-                      );
-                    },
+      body: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xxxlg),
+        child: BlocConsumer<AppliesOverviewBloc, AppliesOverviewState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (context, state) {
+            if (state.status == AppliesOverviewStatus.failure) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Text('Applies Failure'),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                );
+            }
+          },
+          builder: (context, state) {
+            if (state.applies.isEmpty) {
+              if (state.status == AppliesOverviewStatus.loading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (state.status != AppliesOverviewStatus.success) {
+                return const SizedBox();
+              } else {
+                return const Center(
+                  child: Text(
+                    'You have no applies',
+                    // role.isReviewer
+                    //     ? 'Wait until we assign you an apply'
+                    //     : 'You have no applies',
+                  ),
+                );
+              }
+            }
+
+            return CupertinoScrollbar(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const WelcomeText(),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.applies.length,
+                      itemBuilder: (context, index) {
+                        final apply = state.applies[index];
+                        return ApplyTile(
+                          apply: apply,
+                          onTap: () => context.go(
+                            '/applies/${apply.id}',
+                            extra: ApplyOverviewData(apply: apply),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -94,19 +98,15 @@ class WelcomeText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((User user) => user);
     final theme = Theme.of(context);
 
-    return FutureBuilder(
-      future: context.read<UserRepository>().user.first,
-      builder: (context, snapshot) {
-        return Visibility(
-          visible: snapshot.hasData,
-          child: Text(
-            'Hi! ${snapshot.data?.email ?? ''}',
-            style: theme.textTheme.titleLarge,
-          ),
-        );
-      },
+    return Visibility(
+      // visible: user.isAnonymous,
+      child: Text(
+        'Bienvenido ${user.name}',
+        style: theme.textTheme.titleLarge,
+      ),
     );
   }
 }
@@ -123,39 +123,46 @@ class ApplyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = apply.isReviewed ? Colors.green : Colors.grey;
+    final textTheme = Theme.of(context).textTheme;
     return ListTile(
       title: Row(
         children: [
-          Text('Apply ${apply.id} - ${apply.contest.name}'),
-          if (apply.reviewer != null)
-            BulletText(
-              text: 'Reviewer assigned',
-              color: Colors.green.withOpacity(0.5),
-              textColor: Colors.green.shade900,
-            )
-          else
-            BulletText(
-              text: 'Reviewer Pending',
-              color: Colors.yellow.withOpacity(0.5),
-              textColor: Colors.yellow.shade900,
+          Hero(
+            tag: '__hero_apply_${apply.id}',
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: '#${apply.id}',
+                    style: textTheme.titleMedium,
+                  ),
+                  TextSpan(
+                    text: ' - ${apply.research.title}',
+                    style: textTheme.bodyMedium,
+                  ),
+                ],
+              ),
             ),
-          if (apply.review != null)
-            BulletText(
-              text: 'Reviewed',
-              color: Colors.green.withOpacity(0.5),
-              textColor: Colors.green.shade900,
-            )
-          else
-            BulletText(
-              text: 'Pending',
-              color: Colors.yellow.withOpacity(0.5),
-              textColor: Colors.yellow.shade900,
-            ),
+          ),
+          BulletText(
+            text: apply.status.label,
+            color: color.withOpacity(0.2),
+            textColor: color,
+          ),
         ],
+      ),
+      subtitle: Text(
+        apply.contest.name,
+        style: textTheme.bodySmall,
       ),
       onTap: onTap,
       trailing: apply.review == null
-          ? const Icon(Icons.pending_outlined)
+          ? const Padding(
+              padding: EdgeInsets.all(AppSpacing.sm),
+              // pending icon
+              child: Icon(Icons.pending_actions),
+            )
           : IconButton(
               icon: const Icon(Icons.remove_red_eye_outlined),
               onPressed: () => context.go(
@@ -181,29 +188,26 @@ class BulletText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: DecoratedBox(
-        decoration: ShapeDecoration(
-          shape: const StadiumBorder(),
-          color: color,
-        ),
-        // BoxDecoration(
-        //   color: color,
-        //   borderRadius: BorderRadius.circular(10),
-        // ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Text(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: ShapeDecoration(
+        shape: const StadiumBorder(),
+        color: color,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.circle, size: 10, color: textColor),
+          const SizedBox(width: 4),
+          Text(
             text,
             style: TextStyle(
               color: textColor,
               fontSize: 10,
             ),
           ),
-        ),
+        ],
       ),
     );
   }

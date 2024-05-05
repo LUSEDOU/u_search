@@ -19,8 +19,6 @@ class CalificationNode extends Criterium with EquatableMixin {
 
   factory CalificationNode.fromReview(Review review) {
     final calification = review.calification;
-    LoggerManager().logger.i('Calification.fromReview ');
-
     final children = <CalificationNode>[];
     for (final criterium in review.criterias) {
       final subCalification = calification.isCreated
@@ -104,20 +102,11 @@ class CalificationNode extends Criterium with EquatableMixin {
   }
 
   CalificationNode? getFromOrder(List<int> order) {
-    if (order.isEmpty) {
-      LoggerManager()
-          .logger
-          .i('CalificationNode.getFromOrder return $fullOrder');
-      return this;
-    }
+    if (order.isEmpty) return this;
 
     final node = children?.firstWhere(
       (child) => child.order == order.first,
     );
-    LoggerManager().logger
-      ..i('CalificationNode.getFromOrder Searching {order: $order}')
-      ..i('CalificationNode.getFromOrder ${node == null ? 'non' : ''} '
-          '${order.first} found');
 
     return node?.getFromOrder(order.sublist(1));
   }
@@ -126,33 +115,32 @@ class CalificationNode extends Criterium with EquatableMixin {
     required String comment,
     required List<int> order,
   }) {
-    return this;
-    // if (order.isEmpty) {
-    //   return copyWith(
-    //     comment: Comment.dirty(value: comment),
-    //   );
-    // }
-    //
-    // final index = children?.indexWhere(
-    //   (child) => child.order == order.first,
-    // );
-    //
-    // if (index case null || -1) {
-    //   throw Exception('Invalid order');
-    // }
-    // final node = children![index];
-    //
-    // final upNode = node.updateComment(
-    //   comment: comment,
-    //   order: order.sublist(1),
-    // );
-    //
-    // final upChildrens = [...children!];
-    // upChildrens[index] = upNode;
-    //
-    // return copyWith(
-    //   children: upChildrens,
-    // );
+    if (order.isEmpty) {
+      return copyWith(
+        comment: Comment.dirty(value: comment),
+      );
+    }
+
+    final index = children?.indexWhere(
+      (child) => child.order == order.first,
+    );
+
+    if (index case null || -1) {
+      throw Exception('Invalid order');
+    }
+    final node = children![index];
+
+    final upNode = node.updateComment(
+      comment: comment,
+      order: order.sublist(1),
+    );
+
+    final upChildrens = [...children!];
+    upChildrens[index] = upNode;
+
+    return copyWith(
+      children: upChildrens,
+    );
   }
 
   (CalificationNode, double) updateScore({
@@ -163,9 +151,6 @@ class CalificationNode extends Criterium with EquatableMixin {
       final oldScore = this.score.isValid ? this.score.numericValue! : 0;
       final newScore = Score.dirty(value: '$score', maxScore: maxScore);
       final scoreValue = newScore.isValid ? newScore.numericValue! : 0;
-      LoggerManager().logger.i(
-            'CalificationNode.updateScore return $fullOrder with score $score',
-          );
       return (
         copyWith(score: newScore),
         (scoreValue - oldScore) * percent,
@@ -175,11 +160,6 @@ class CalificationNode extends Criterium with EquatableMixin {
     final index = children?.indexWhere(
       (child) => child.order == order.first,
     );
-    LoggerManager().logger
-      ..i('CalificationNode.updateScore searching {order: $order}')
-      ..i('CalificationNode.updateScore ${index == null ? 'non' : ''} '
-          '${order.first} found');
-
     if (index case null || -1) throw Exception('Invalid order');
 
     final child = children![index];
@@ -201,43 +181,6 @@ class CalificationNode extends Criterium with EquatableMixin {
       ),
       uDiff,
     );
-    // if (order.isEmpty) {
-    //   final oldScore = double.tryParse(this.score.value) ?? 0;
-    //   return (
-    //     copyWith(
-    //       score: Score.dirty(value: '$score', maxScore: maxScore),
-    //     ),
-    //     (score - oldScore) * percent,
-    //   );
-    // }
-    //
-    // final index = children?.indexWhere(
-    //   (child) => child.order == order.first,
-    // );
-    //
-    // if (index case null || -1) {
-    //   throw Exception('Invalid order');
-    // }
-    // final node = children![index];
-    //
-    // final (upNode, diff) = node.updateScore(
-    //   score: score,
-    //   order: order.sublist(1),
-    // );
-    //
-    // final upChildrens = [...children!];
-    // upChildrens[index] = upNode;
-    //
-    // final upScore = double.tryParse(this.score.value) ?? 0;
-    // final newScore = upScore + diff;
-    //
-    // return (
-    //   copyWith(
-    //     score: Score.pure(score: '$newScore', maxScore: maxScore),
-    //     children: upChildrens,
-    //   ),
-    //   diff * percent,
-    // );
   }
 
   Calification toModels() {

@@ -13,7 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(const AuthState()) {
     on<AuthRequested>(_onRequested);
     on<AuthEmailChanged>(_onEmailChanged);
-    on<AutheEmailSubmitted>(_onSubmitted);
+    on<AuthEmailSubmitted>(_onSubmitted);
   }
 
   final UserRepository _userRepository;
@@ -49,7 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onSubmitted(
-    AutheEmailSubmitted event,
+    AuthEmailSubmitted event,
     Emitter<AuthState> emit,
   ) async {
     if (!state.isValid) return;
@@ -59,8 +59,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _userRepository.sendLoginEmailLink(email: state.email.value);
       emit(state.copyWith(status: AuthStatus.success));
     } catch (error, stackTrace) {
-      emit(state.copyWith(status: AuthStatus.failure));
       addError(error, stackTrace);
+      emit(state.copyWith(status: AuthStatus.failure));
     }
   }
 }

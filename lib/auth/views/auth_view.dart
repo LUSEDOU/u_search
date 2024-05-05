@@ -19,17 +19,17 @@ class AuthView extends StatelessWidget {
       },
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          padding: const EdgeInsets.all(AppSpacing.xxxlg),
           child: Center(
-            child: BlocBuilder<AuthBloc, AuthState>(
-              buildWhen: (previous, current) =>
-                  previous.status != current.status,
-              builder: (context, state) {
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('Auth'),
-                    AppEmailTextField(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Auth'),
+                BlocBuilder<AuthBloc, AuthState>(
+                  buildWhen: (previous, current) =>
+                      previous.status != current.status,
+                  builder: (context, state) {
+                    return AppEmailTextField(
                       onChanged: (email) =>
                           context.read<AuthBloc>().add(AuthEmailChanged(email)),
                       hintText: 'Email',
@@ -37,12 +37,30 @@ class AuthView extends StatelessWidget {
                         icon: const Icon(Icons.arrow_forward),
                         onPressed: () => context
                             .read<AuthBloc>()
-                            .add(const AutheEmailSubmitted()),
+                            .add(const AuthEmailSubmitted()),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    );
+                  },
+                ),
+                BlocBuilder<AuthBloc, AuthState>(
+                  buildWhen: (previous, current) =>
+                      previous.status != current.status,
+                  builder: (context, state) {
+                    return RichText(
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: 'Se ha enviado un link de acceso a ',
+                          ),
+                          TextSpan(
+                            text: state.email.value,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ),

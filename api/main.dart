@@ -10,6 +10,7 @@ late DataSource dataSource;
 late EmailService emailService;
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
+  Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print
     print(
@@ -17,10 +18,12 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
       '${record.time}: ${record.message}',
     );
   });
-  Logger.root.level = Level.ALL;
   dataSource = InMemoryDataSource();
   emailService = EmailService(
     smtp: gmail('noreplayusearch@gmail.com', 'Usil2018*'),
+    admins: ['luis.dolorier@usil.pe'],
+    logger: (message, {required success}) => Logger('EmailService')
+        .info('${message.from} ${message.headers} ${message.recipients}'),
   );
 
   return serve(

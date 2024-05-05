@@ -45,11 +45,14 @@ class CriteriumTile extends StatelessWidget {
             ),
             Row(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: AppSpacing.xlg),
-                  child: PercentField(
-                    percent: node.percent,
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: AppSpacing.xlg),
+                    child: PercentField(
+                      percent: node.percent,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -79,8 +82,9 @@ class CriteriumTile extends StatelessWidget {
               child: AppTextField(
                 initialValue: node.comment?.value,
                 errorText: comment?.displayError?.message,
-                // readOnly: !isEditable,
-                onChanged: (value) => context.read<ApplyReviewBloc>().add(
+                readOnly: !isEditable,
+                maxLines: 3,
+                onSubmitted: (value) => context.read<ApplyReviewBloc>().add(
                       ApplyReviewCommentChanged(
                         order: node.fullOrder,
                         comment: value,
@@ -199,10 +203,25 @@ class PercentField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentString = (percent * 100).toStringAsFixed(2);
-    return Text(
-      '$percentString%',
-      style: Theme.of(context).textTheme.bodyMedium,
+    var percentString = (percent * 100).toStringAsFixed(2);
+    if (percentString.endsWith('00')) {
+      percentString = percentString.substring(0, percentString.length - 3);
+    } else if (percentString.endsWith('0')) {
+      percentString = percentString.substring(0, percentString.length - 1);
+    }
+
+    return Container(
+      width: 70,
+      padding: const EdgeInsets.all(AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.lg),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        '$percentString%',
+        style: Theme.of(context).textTheme.bodyMedium,
+      ),
     );
   }
 }

@@ -62,7 +62,6 @@ class Apply extends Equatable {
   static const Apply empty = Apply(
     contest: Contest.empty,
     research: Research.empty,
-    id: -1,
   );
 
   /// Returns true if this [Apply] is empty

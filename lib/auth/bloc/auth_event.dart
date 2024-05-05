@@ -25,6 +25,6 @@ final class AuthEmailChanged extends AuthEvent {
   List<Object?> get props => [email];
 }
 
-final class AutheEmailSubmitted extends AuthEvent {
-  const AutheEmailSubmitted();
+final class AuthEmailSubmitted extends AuthEvent {
+  const AuthEmailSubmitted();
 }

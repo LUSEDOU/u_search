@@ -1,5 +1,6 @@
 import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:u_search_api/client.dart';
 
@@ -24,9 +25,9 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
           ),
         ) {
     on<ApplyReviewRequested>(_onRequested);
-    on<ApplyReviewCommentChanged>(_onCommentChanged);
-    on<ApplyReviewScoreChanged>(_onScoreChanged);
-    on<ApplyReviewSubmit>(_onSubmit);
+    on<ApplyReviewCommentChanged>(_onCommentChanged, transformer: sequential());
+    on<ApplyReviewScoreChanged>(_onScoreChanged, transformer: sequential());
+    on<ApplyReviewSubmit>(_onSubmit, transformer: droppable());
   }
 
   final ApplicationRepository _applicationRepository;
@@ -39,10 +40,10 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     emit(state.copyWith(status: ApplyReviewStatus.loading));
     try {
       final review = await _applicationRepository.fetchReview(_applyId);
-      LoggerManager().i('Review is created: ${review.isCreated}');
-      LoggerManager().i(review.toJson());
-      final calification = CalificationNode.fromReview(review);
-      LoggerManager().i(calification.toJson());
+      // LoggerManager().i('Review is created: ${review.isCreated}');
+      // LoggerManager().i(review.toJson());
+      // final calification = CalificationNode.fromReview(review);
+      // LoggerManager().i(calification.toJson());
       emit(
         state.copyWith(
           review: review,
@@ -67,12 +68,12 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     // }
 
     try {
-      LoggerManager().d(state.calification.toJson());
+      // LoggerManager().d(state.calification.toJson());
       final (updatedCalification, _) = state.calification.updateScore(
         score: double.tryParse(event.score),
         order: event.order,
       );
-      LoggerManager().i(updatedCalification.toJson());
+      // LoggerManager().i(updatedCalification.toJson());
       emit(
         state.copyWith(
           calification: updatedCalification,
@@ -115,8 +116,9 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     ApplyReviewSubmit event,
     Emitter<ApplyReviewState> emit,
   ) async {
-    // if (!state.isValid) return;
-    // emit(state.copyWith(status: ApplyReviewStatus.loading));
+    if (!state.isValid) return;
+    emit(state.copyWith(status: ApplyReviewStatus.loading));
+    LoggerManager().i(state.calification.toJson());
     // try {
     //   final calification = state.calification.toModels();
     //   final criterias = state.calification.children;

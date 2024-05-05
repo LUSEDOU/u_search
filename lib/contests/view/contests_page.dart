@@ -9,17 +9,20 @@ import 'package:u_search_flutter/contests/contests.dart';
 
 class ContestsPage extends StatelessWidget {
   const ContestsPage({
+    required this.redirectToApply,
     super.key,
-    this.redirectToApply,
   });
 
-  factory ContestsPage.routeBuilder(_, __) {
-    return const ContestsPage(
-      key: Key('contests'),
+  factory ContestsPage.routeBuilder(_, GoRouterState state) {
+    final data = state.extra as ContestsData?;
+
+    return ContestsPage(
+      key: const Key('contests'),
+      redirectToApply: data?.redirectToApply ?? false,
     );
   }
 
-  final bool? redirectToApply;
+  final bool redirectToApply;
 
   @override
   Widget build(BuildContext context) {
@@ -33,52 +36,6 @@ class ContestsPage extends StatelessWidget {
       child: ContestsView(
         redirectToApply: redirectToApply,
       ),
-    );
-  }
-}
-
-class ContestsView extends StatelessWidget {
-  const ContestsView({
-    super.key,
-    this.redirectToApply,
-  });
-
-  final bool? redirectToApply;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ContestsBloc, ContestsState>(
-      builder: (context, state) {
-        final status = state.status;
-        if (status == ContestsStatus.loading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (status == ContestsStatus.success) {
-          final contests = state.contests;
-          return ListView.builder(
-            itemCount: contests.length,
-            itemBuilder: (context, index) {
-              final contest = contests[index];
-              return ListTile(
-                title: Text(contest.name),
-                subtitle: Text(contest.description),
-                onTap: () {
-                  context.go(
-                    (redirectToApply ?? false)
-                        ? '/contests/${contest.id}/apply'
-                        : '/contests/${contest.id}',
-                  );
-                },
-              );
-            },
-          );
-        } else {
-          return const Center(
-            child: Text('Failed to load contests'),
-          );
-        }
-      },
     );
   }
 }

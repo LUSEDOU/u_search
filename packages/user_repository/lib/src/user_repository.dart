@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:storage/storage.dart';
@@ -15,10 +17,12 @@ class UserRepository {
   UserRepository({
     required TokenStorage tokenStorage,
     required USearchApiClient apiClient,
-    User user = User.anonymous,
+    // User user = User.anonymous,
   })  : _apiClient = apiClient,
-        _tokenStorage = tokenStorage,
-        _userController = BehaviorSubject<User>.seeded(user);
+        _tokenStorage = tokenStorage {
+    unawaited(_init());
+  }
+  // _userController = BehaviorSubject<User>.seeded(user);
 
   final USearchApiClient _apiClient;
   final TokenStorage _tokenStorage;
@@ -26,8 +30,17 @@ class UserRepository {
   /// Stream of [User] which will emit the current user when the user changes.
   /// The initial value is [User.anonymous].
 
-  Stream<User> get user => _userController.stream;
-  final BehaviorSubject<User> _userController;
+  Stream<User> get user => _userController.asBroadcastStream();
+  final BehaviorSubject<User> _userController = BehaviorSubject<User>();
+
+  Future<void> _init() async {
+    try {
+      final user = await _apiClient.me();
+      _userController.add(user);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
 
   /// Sends a subscription request to the API.
   ///

@@ -135,6 +135,24 @@ class USearchApiClient {
   //   return ArticleResponse.fromJson(body);
   // }
 
+  /// GET /api/v1/me
+  Future<User> me() async {
+    final uri = Uri.parse('$_baseUrl/api/v1/me');
+
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      return User.anonymous;
+    }
+
+    return User.fromJson(body);
+  }
+
   /// POST /api/v1/subscribe
   /// Send a subscription request to the server.
   ///

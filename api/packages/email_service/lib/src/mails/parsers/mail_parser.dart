@@ -62,6 +62,8 @@ class MailParser {
     try {
       final template = path.join(
         path.current,
+        'packages',
+        'email_service',
         'lib',
         'src',
         'mails',

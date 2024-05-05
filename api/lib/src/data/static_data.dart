@@ -36,6 +36,13 @@ final _users = <User>[
     email: 'carlos@usil.test',
     role: Role.reviewer,
   ),
+  const User(
+    id: 5,
+    name: 'Luis',
+    lastName: 'Dolorier',
+    email: 'luis.dolorier@usil.pe',
+    role: Role.admin,
+  ),
 ];
 
 final _researches = <Research>[

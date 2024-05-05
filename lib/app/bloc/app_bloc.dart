@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:u_search_api/api.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'app_event.dart';
@@ -28,6 +29,7 @@ class AppBloc extends Bloc<AppEvent, AppState> with ChangeNotifier {
   User user;
 
   void _userChanged(User user) {
+    LoggerManager().d('User changed: $user');
     this.user = user;
     add(_AppUserChanged(user));
   }

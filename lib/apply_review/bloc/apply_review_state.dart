@@ -1,6 +1,6 @@
 part of 'apply_review_bloc.dart';
 
-enum ApplyReviewStatus { initial, loading, success, failure }
+enum ApplyReviewStatus { initial, validating, loading, success, failure }
 
 class ApplyReviewState extends Equatable {
   const ApplyReviewState({

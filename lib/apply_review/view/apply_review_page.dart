@@ -20,6 +20,7 @@ class ApplyReviewPage extends StatelessWidget {
     return ApplyReviewPage(
       applyId: applyId,
       review: data?.review,
+      key: const Key('applyReview'),
     );
   }
 

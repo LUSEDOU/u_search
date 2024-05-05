@@ -12,6 +12,7 @@ Handler middleware(Handler handler) {
       .use(
         bearerAuthentication<User>(
           authenticator: (context, token) async {
+            Logger('UserProvider').info('Attempt to auth: $token');
             if (token
                 case 'pe.edu.usil.u_search_flutter.dev' ||
                     'pe.edu.usil.u_search_flutter') {

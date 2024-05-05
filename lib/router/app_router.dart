@@ -23,7 +23,7 @@ import 'package:u_search_flutter/utils/logger_manager.dart';
 import 'package:u_search_flutter/welcome/views/welcome_page.dart';
 
 GoRouter router = GoRouter(
-  initialLocation: '/auth?token=admin',
+  initialLocation: '/login',
   debugLogDiagnostics: true,
   observers: [LoggerObserver()],
   // redirect: (context, state) async {

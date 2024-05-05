@@ -6,6 +6,7 @@ import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/app/app.dart';
 
 import 'package:u_search_flutter/router/app_router.dart';
+import 'package:u_search_flutter/utils/logger_manager.dart';
 import 'package:user_repository/user_repository.dart';
 
 class App extends StatelessWidget {
@@ -26,6 +27,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Provider.value(
       value: _user,
+      updateShouldNotify: (previous, current) {
+        LoggerManager().d('User updated: $previous -> $current');
+        return previous != current;
+      },
       child: MultiRepositoryProvider(
         providers: [
           RepositoryProvider.value(value: _userRepository),
@@ -33,11 +38,10 @@ class App extends StatelessWidget {
         ],
         child: BlocProvider(
           create: (context) {
-            final user = context.read<User>();
             final userRepository = context.read<UserRepository>();
             return AppBloc(
               userRepository: userRepository,
-              user: user,
+              user: _user,
             );
           },
           child: const AppView(),

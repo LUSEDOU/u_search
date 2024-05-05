@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -27,9 +26,16 @@ class AuthPage extends StatelessWidget {
     return BlocProvider(
       create: (context) {
         final userRepository = context.read<UserRepository>();
-        return AuthBloc(
+
+        final bloc = AuthBloc(
           userRepository: userRepository,
-        )..add(AuthRequested(token));
+        );
+
+        if (token != null) {
+          bloc.add(AuthRequested(token));
+        }
+
+        return bloc;
       },
       child: const AuthView(),
     );

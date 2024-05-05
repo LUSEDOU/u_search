@@ -20,6 +20,7 @@ class AppTextField extends StatelessWidget {
     this.errorText,
     this.prefix,
     this.suffix,
+    this.maxLines,
     this.keyboardType,
     this.onChanged,
     this.onSubmitted,
@@ -40,6 +41,10 @@ class AppTextField extends StatelessWidget {
 
   /// Optional input validation and formatting overrides.
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Maximum number of lines to allow when entering text.
+  /// Defaults to 1.
+  final int? maxLines;
 
   /// Whether to enable autocorrect.
   /// Defaults to true.
@@ -86,6 +91,7 @@ class AppTextField extends StatelessWidget {
           child: TextFormField(
             key: key,
             initialValue: initialValue,
+            maxLines: maxLines,
             controller: controller,
             inputFormatters: inputFormatters,
             keyboardType: keyboardType,

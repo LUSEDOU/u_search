@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_flutter/apply_review/apply_review.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
-
-import '../apply_review.dart';
 
 class ApplyReviewView extends StatelessWidget {
   const ApplyReviewView({super.key});
@@ -12,12 +11,16 @@ class ApplyReviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     final review = context.select((ApplyReviewBloc bloc) => bloc.state.review);
     final isEditable = !review.isCreated;
+    final formKey = GlobalKey<FormState>();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditable ? 'Edit Review' : 'Create Review'),
       ),
-      bottomNavigationBar: _BottomNavigator(isCreated: review.isCreated),
+      bottomNavigationBar: _BottomNavigator(
+        isCreated: review.isCreated,
+        formKey: formKey,
+      ),
       body: MultiBlocListener(
         listeners: [
           BlocListener<ApplyReviewBloc, ApplyReviewState>(
@@ -62,6 +65,7 @@ class ApplyReviewView extends StatelessWidget {
             return ApplyReviewForm(
               node: calification,
               isEditable: isEditable,
+              formKey: formKey,
             );
           },
         ),
@@ -71,34 +75,37 @@ class ApplyReviewView extends StatelessWidget {
 }
 
 class _BottomNavigator extends StatelessWidget {
-  const _BottomNavigator({required this.isCreated});
+  const _BottomNavigator({
+    required this.isCreated,
+    required this.formKey,
+  });
 
   final bool isCreated;
+  final GlobalKey<FormState> formKey;
 
   void _onTap(BuildContext context) {
+    formKey.currentState?.save();
     context.read<ApplyReviewBloc>().add(const ApplyReviewSubmit());
   }
 
   @override
   Widget build(BuildContext context) {
     final calification = context.select(
-      (ApplyReviewBloc bloc) => bloc.state.calification,
+      (ApplyReviewBloc bloc) => bloc.state.calification.score,
     );
-    final isValid = context.select(
-      (ApplyReviewBloc bloc) => bloc.state.isValid,
-    );
+    LoggerManager().i('BottomNavigator build');
 
     return BottomAppBar(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (isCreated)
+          if (!isCreated)
             ElevatedButton(
-              onPressed: isValid ? () => _onTap(context) : null,
-              child: Text('${calification.score}'),
+              onPressed: () => _onTap(context),
+              child: Text('Calificar ${calification.value}'),
             )
           else
-            Text(calification.score.value),
+            Text(calification.value),
         ],
       ),
     );
