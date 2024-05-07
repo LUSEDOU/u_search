@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
 import 'package:uuid/v4.dart';
 
@@ -52,13 +53,15 @@ class InMemoryDataSource implements DataSource {
   @override
   Future<String> generateEmailToken(String email) {
     final token = const UuidV4().generate();
-    _emailTokens[email] = token;
+    _emailTokens[token] = email;
     return Future.value(token);
   }
 
   @override
   Future<String> generateToken(int userId) {
-    return Future.value(_tokens[userId] ?? 'admin');
+    final token = const UuidV4().generate();
+    _tokens[userId] = token;
+    return Future.value(token);
   }
 
   @override
@@ -142,6 +145,8 @@ class InMemoryDataSource implements DataSource {
 
   @override
   Future<String?> getEmailToken(String token) {
+    Logger('DataSource').info('Token: $token');
+    Logger('DataSource').info(_emailTokens);
     return Future.value(_emailTokens[token]);
   }
 

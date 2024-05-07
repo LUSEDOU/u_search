@@ -97,7 +97,6 @@ mason-lock.json
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # Web related
-**/lib/generated_plugin_registrant.dart
 **/web/favicon.png
 **/web/icons/Icon-192.png
 **/web/icons/Icon-512.png

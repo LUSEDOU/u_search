@@ -22,7 +22,7 @@ void main() {
         preferences: sharedPreferences,
       );
 
-      await tokenStorage.clearToken();
+      // await tokenStorage.clearToken();
 
       final apiClient = USearchApiClient.localhost(
         tokenProvider: tokenStorage.readToken,

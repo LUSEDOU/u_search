@@ -7,7 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/app/app.dart';
 
-import '../apply_overview.dart';
+import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 
 class ApplyOverviewPage extends StatelessWidget {
   const ApplyOverviewPage({
@@ -33,6 +33,8 @@ class ApplyOverviewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AppBloc>().user;
+
     return BlocProvider(
       create: (context) {
         final applicationRepository = context.read<ApplicationRepository>();
@@ -45,9 +47,7 @@ class ApplyOverviewPage extends StatelessWidget {
         }
         return bloc;
       },
-      child: ApplyOverviewView(
-        role: context.read<User>().role,
-      ),
+      child: ApplyOverviewView(role: user.role),
     );
   }
 }

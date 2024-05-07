@@ -8,9 +8,12 @@ build-runner:
 		cd ..
 
 build: build-runner
-	flutter build apk --target ./lib/main/main_development.dart
+	flutter build web --target ./lib/main/main_development.dart
+
+runw:
+	flutter run --target ./lib/main/main_development.dart -d chrome
 
 run:
-	flutter run --target ./lib/main/main_development.dart
+	flutter run --target ./lib/main/main_development.dart -d linux
 
 .PHONY: clean build-runner build

@@ -29,6 +29,7 @@ class EmailService {
     required String mailBody,
     List<String> cc = const [],
   }) async {
+    return;
     final message = Message()
       ..from = Address(from, username)
       ..recipients.add(to)

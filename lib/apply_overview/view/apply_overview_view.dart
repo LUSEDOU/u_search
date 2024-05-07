@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
+import 'package:u_search_flutter/app/bloc/app_bloc.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/apply_review/view/view.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
@@ -221,7 +222,7 @@ class SelectReviewerButton extends StatelessWidget {
       buildWhen: (previous, current) => previous.reviewer != current.reviewer,
       builder: (context, state) {
         final reviewer = state.reviewer;
-        final role = context.read<User>().role;
+        final role = context.read<AppBloc>().user.role;
         final apply = state.apply;
         LoggerManager().d('apply: ${apply.review?.isCreated ?? false}');
         LoggerManager().d('reviewer: $reviewer');

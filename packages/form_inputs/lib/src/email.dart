@@ -39,7 +39,6 @@ class DomainEmail extends Email {
   /// {@macro domain_email}
   const DomainEmail.dirty([super.value]) : super.dirty();
 
-
   @override
   RegExp get _emailRegExp => RegExp(
         r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@(usil\.pe|usil\.edu\.pe|epg\.usil\.pe)$',

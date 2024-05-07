@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/api.dart';
+import 'package:u_search_flutter/app/app.dart';
 
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
@@ -98,7 +99,7 @@ class WelcomeText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = context.select((User user) => user);
+    final user = context.read<AppBloc>().user;
     final theme = Theme.of(context);
 
     return Visibility(

@@ -43,11 +43,13 @@ FutureOr<Response> _auth(RequestContext context) async {
   if (user == null) return Response.json();
 
   final token = await dataSource.generateEmailToken(email);
+  _logger.info(token);
   await context.read<EmailService>().sendMailFromTemplate(
         to: email,
         parser: LoginWithLinkMailParser(
           link: 'localhost:8080/login?token=$token',
         ),
       );
+
   return Response.json();
 }
