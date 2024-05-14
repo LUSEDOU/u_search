@@ -81,7 +81,9 @@ GoRouter router = GoRouter(
     ShellRoute(
       navigatorKey: GlobalKey<NavigatorState>(),
       builder: (context, state, child) {
-        LoggerManager().i('ShellRoute');
+        // LoggerManager().i('ShellRoute');
+        LoggerManager().i('Route: ${state.fullPath}');
+        LoggerManager().i('Data: ${state.extra}');
         return NavBar(
           canGoBack: state.uri.pathSegments.length > 1,
           body: child,
@@ -101,7 +103,7 @@ GoRouter router = GoRouter(
               },
               routes: [
                 GoRoute(
-                  path: ':applyId/review',
+                  path: 'review',
                   builder: ApplyReviewPage.routeBuilder,
                 ),
               ],
@@ -159,7 +161,7 @@ class LoggerObserver extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
-    LoggerManager().logger.i('didPush: ${route.settings.name}');
+    LoggerManager().i('didPush: ${route.settings.name}');
   }
 
   @override
