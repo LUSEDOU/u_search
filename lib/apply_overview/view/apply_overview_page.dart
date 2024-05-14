@@ -60,5 +60,5 @@ class ApplyOverviewData extends Equatable {
   final Apply apply;
 
   @override
-  List<Object> get props => [apply];
+  List<Object?> get props => [apply];
 }

@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:application_repository/application_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,11 +50,15 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple, brightness: Brightness.dark),
-        useMaterial3: true,
-      ),
+      theme: const AppTheme().themeData,
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSeed(
+      //     // seedColor: Colors.deepPurple,
+      //     seedColor: AppColors.darkAqua,
+      //     brightness: Brightness.light,
+      //   ),
+      //   useMaterial3: true,
+      // ),
       routerConfig: router,
     );
   }

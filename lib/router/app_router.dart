@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:u_search_flutter/app/bloc/app_bloc.dart';
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/apply/apply.dart';
@@ -10,6 +11,7 @@ import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/apply_review/apply_review.dart';
 import 'package:u_search_flutter/auth/views/auth_page.dart';
 import 'package:u_search_flutter/contests/contests.dart';
+import 'package:u_search_flutter/navigator/nav_bar.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 // import 'package:u_search_flutter/app/app.dart';
 // import 'package:u_search_flutter/applies_overview/view/view.dart';
@@ -41,7 +43,7 @@ GoRouter router = GoRouter(
   //   // logger.i('No redirect from ${state.fullPath}');
   //   return null;
   // },
-  routes: <GoRoute>[
+  routes: [
     GoRoute(
       path: '/',
       builder: WelcomePage.routeBuilder,
@@ -76,35 +78,49 @@ GoRouter router = GoRouter(
     //   path: '/applies/new',
     //   builder: (context, state) => const ApplyPage(),
     // ),
-    GoRoute(
-      path: '/applies',
-      builder: AppliesOverviewPage.routeBuilder,
+    ShellRoute(
+      navigatorKey: GlobalKey<NavigatorState>(),
+      builder: (context, state, child) {
+        LoggerManager().i('ShellRoute');
+        return NavBar(
+          canGoBack: state.uri.pathSegments.length > 1,
+          body: child,
+        );
+      },
       routes: [
         GoRoute(
-          path: ':applyId/review',
-          builder: ApplyReviewPage.routeBuilder,
+          path: '/applies',
+          builder: AppliesOverviewPage.routeBuilder,
+          routes: [
+            GoRoute(
+              path: ':applyId',
+              builder: ApplyOverviewPage.routeBuilder,
+              redirect: (context, state) {
+                final id = int.tryParse(state.pathParameters['applyId']!);
+                return id == null ? '/applies' : null;
+              },
+              routes: [
+                GoRoute(
+                  path: ':applyId/review',
+                  builder: ApplyReviewPage.routeBuilder,
+                ),
+              ],
+            ),
+            GoRoute(
+              path: 'new',
+              builder: ApplyPage.routeBuilder,
+            ),
+          ],
         ),
         GoRoute(
-          path: ':applyId',
-          builder: ApplyOverviewPage.routeBuilder,
-          redirect: (context, state) {
-            final id = int.tryParse(state.pathParameters['applyId']!);
-            return id == null ? '/applies' : null;
-          },
-        ),
-        GoRoute(
-          path: 'new',
-          builder: ApplyPage.routeBuilder,
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/contests',
-      builder: ContestsPage.routeBuilder,
-      routes: [
-        GoRoute(
-          path: ':contestId/apply',
-          builder: ApplyPage.routeBuilder,
+          path: '/contests',
+          builder: ContestsPage.routeBuilder,
+          routes: [
+            GoRoute(
+              path: ':contestId/apply',
+              builder: ApplyPage.routeBuilder,
+            ),
+          ],
         ),
       ],
     ),

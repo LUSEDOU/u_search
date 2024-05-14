@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_api/client.dart';
+import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 
 import 'package:u_search_flutter/apply_review/apply_review.dart';
 
@@ -49,10 +50,14 @@ class ApplyReviewPage extends StatelessWidget {
   }
 }
 
-class ApplyReviewData {
+class ApplyReviewData extends ApplyOverviewData {
   const ApplyReviewData({
     required this.review,
+    required super.apply,
   });
 
   final Review? review;
+
+  @override
+  List<Object?> get props => [apply, review];
 }

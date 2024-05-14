@@ -7,6 +7,7 @@ import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/app/app.dart';
 
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
+import 'package:u_search_flutter/applies_overview/view/scaffold_with_nav_bar.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
 import 'package:u_search_flutter/contests/view/view.dart';
 
@@ -16,9 +17,9 @@ class AppliesOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('USIL'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('USIL'),
+      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.go(
           '/contests',

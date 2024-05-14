@@ -20,9 +20,9 @@ class ApplyOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Apply Overview'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Apply Overview'),
+      // ),
       floatingActionButton: BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
         buildWhen: (previous, current) => previous.apply != current.apply,
         builder: (context, state) {
@@ -32,7 +32,7 @@ class ApplyOverviewView extends StatelessWidget {
             child: FloatingActionButton(
               onPressed: () => context.go(
                 '/applies/${apply.id}/review',
-                extra: ApplyReviewData(review: apply.review),
+                extra: ApplyReviewData(review: apply.review, apply: apply),
               ),
               child: const Icon(Icons.edit),
             ),
