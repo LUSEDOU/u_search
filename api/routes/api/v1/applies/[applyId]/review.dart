@@ -50,7 +50,7 @@ FutureOr<Response> _getReview(RequestContext context, int applyId) async {
 FutureOr<Response> _createReview(RequestContext context, int applyId) async {
   final dataSource = context.read<DataSource>();
   final apply = await dataSource.getApplicationRaw(applyId);
-  final researcher = await dataSource.getResearcherForApply(applyId);
+  final researcher = await dataSource.getResearcherFromApply(applyId);
 
   if (apply == null || researcher == null) {
     return Response.json(statusCode: HttpStatus.notFound);

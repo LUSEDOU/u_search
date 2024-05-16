@@ -1,14 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:mocktail/mocktail.dart';
-import 'package:mysql/mysql.dart';
-import 'package:mysql_client/mysql_client.dart';
+import 'package:my_sql_client/my_sql_client.dart';
 import 'package:test/test.dart';
 
-class MockConnection extends Mock implements Connection {}
+class MockConnection extends Mock implements MySQLConnection {}
 
 void main() {
   group('PostgresClient', () {
-    late Connection connection;
+    late MySQLConnection connection;
 
     setUp(() {
       connection = MockConnection();

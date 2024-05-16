@@ -20,7 +20,7 @@ abstract class DataSource {
     int? researcherId,
   });
 
-  Future<User?> getResearcherForApply(int applyId);
+  Future<User?> getResearcherFromApply(int applyId);
   Future<Research?> getResearch(int id);
   Future<int> addResearch(Research research);
 

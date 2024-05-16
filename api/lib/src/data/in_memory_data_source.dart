@@ -160,7 +160,7 @@ class InMemoryDataSource implements DataSource {
   }
 
   @override
-  Future<User?> getResearcherForApply(int applyId) {
+  Future<User?> getResearcherFromApply(int applyId) {
     final apply = _applications.firstWhereOrNull(
       (element) => element.id == applyId,
     );

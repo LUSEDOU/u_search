@@ -223,7 +223,22 @@ class MysqlSource implements DataSource {
   }
 
   @override
-  Future<void> updateApplication(Apply apply) {
-    return _client.upsert('applications', apply.toJson());
+  Future<void> updateApplication(Application application) {
+    return _client.upsert('applications', application.toJson());
+  }
+
+  @override
+  Future<User?> getResearcherFromApply(int applyId) async {
+    final result = await _client.select(
+      'users',
+      join: 'INNER JOIN researches r ON r.researcher_id = t.id '
+          'INNER JOIN applications a ON a.research_id = r.id',
+      where: 'a.id = $applyId',
+      limit: 1,
+    );
+
+    if (result.isEmpty) return null;
+
+    return User.fromJson(result.first);
   }
 }

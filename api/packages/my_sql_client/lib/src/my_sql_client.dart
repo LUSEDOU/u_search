@@ -48,8 +48,11 @@ class MySqlClient {
   /// Optionally, the results can be ordered by [orderBy], limited by [limit],
   /// and offset by [offset].
   Future<List<Map<String, dynamic>>> select(
+    /// The table to select from
+    /// Translate to "SELECT t.* FROM `table` t"
     String table, {
     String? where,
+    /// The join statement
     String? join,
     String? orderBy,
     int? limit,

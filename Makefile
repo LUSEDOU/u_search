@@ -16,4 +16,7 @@ runw:
 run:
 	flutter run --target ./lib/main/main_development.dart -d linux
 
+runm:
+	flutter run --target ./lib/main/main_development.dart -d macos
+
 .PHONY: clean build-runner build

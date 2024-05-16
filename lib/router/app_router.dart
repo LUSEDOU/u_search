@@ -122,6 +122,10 @@ GoRouter router = GoRouter(
               path: ':contestId/apply',
               builder: ApplyPage.routeBuilder,
             ),
+            GoRoute(
+              path: ':contestId',
+              builder: ContestPage.routeBuilder,
+            ),
           ],
         ),
       ],

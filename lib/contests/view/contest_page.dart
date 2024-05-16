@@ -8,30 +8,40 @@ import 'package:u_search_flutter/contests/contests.dart';
 
 class ContestPage extends StatelessWidget {
   const ContestPage({
+    required this.id,
     this.contest,
     super.key,
   });
 
   factory ContestPage.routeBuilder(_, GoRouterState state) {
     final data = state.extra as ContestData?;
+    final id = int.parse(state.pathParameters['contestId']!);
 
     return ContestPage(
+      id: id,
       key: const Key('contest'),
       contest: data?.contest,
     );
   }
 
   final Contest? contest;
+  final int id;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (ctx) {
         final applicationRepository = ctx.read<ApplicationRepository>();
-        return ContestBloc(
+        final bloc = ContestBloc(
           applicationRepository: applicationRepository,
           contest: contest,
-        )..add(const ContestRequested());
+        );
+
+        if (contest == null) {
+          bloc.add(ContestRequested(id));
+        }
+
+        return bloc;
       },
       child: const ContestView(),
     );
