@@ -54,13 +54,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  authentication_client:
-    dependency: transitive
-    description:
-      path: "packages/authentication_client/authentication_client"
-      relative: true
-    source: path
-    version: "0.1.0+1"
   bloc:
     dependency: "direct main"
     description:
