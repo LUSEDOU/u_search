@@ -1,8 +1,5 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:application_repository/application_repository.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,9 +15,14 @@ class ContestsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ttheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Concursos'),
+        automaticallyImplyLeading: false,
+        title: Text(
+          'Concursos disponibles',
+          style: ttheme.headlineLarge,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxxlg),
@@ -38,16 +40,34 @@ class ContestsView extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final contest = contests[index];
                   return ListTile(
-                    leading: const Icon(Icons.dashboard_customize),
-                    title: Text(contest.name),
-                    subtitle: Text(contest.description),
-                    onTap: () {
-                      context.go(
-                        redirectToApply
-                            ? '/contests/${contest.id}/apply'
-                            : '/contests/${contest.id}',
-                      );
-                    },
+                    leading: const Icon(Icons.star),
+                    title: Text(
+                      contest.name,
+                      style: ttheme.headlineSmall,
+                    ),
+                    subtitle: Text(
+                      contest.description,
+                      style: ttheme.bodyLarge,
+                    ),
+                    trailing: SizedBox(
+                      width: 150,
+                      child: AppButton.darkAqua(
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text('Aplica'),
+                            Icon(Icons.arrow_forward),
+                          ],
+                        ),
+                        onPressed: () =>
+                            context.go('/contests/${contest.id}/apply'),
+                      ),
+                    ),
+                    onTap: () => context.go(
+                      redirectToApply
+                          ? '/contests/${contest.id}/apply'
+                          : '/contests/${contest.id}',
+                    ),
                   );
                 },
               );
