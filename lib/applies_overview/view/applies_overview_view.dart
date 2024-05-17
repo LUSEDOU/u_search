@@ -8,6 +8,7 @@ import 'package:u_search_flutter/app/app.dart';
 
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/apply_overview/apply_overview.dart';
+import 'package:u_search_flutter/apply_review/apply_review.dart';
 import 'package:u_search_flutter/contests/view/view.dart';
 
 class AppliesOverviewView extends StatelessWidget {
@@ -19,12 +20,15 @@ class AppliesOverviewView extends StatelessWidget {
       // appBar: AppBar(
       //   title: const Text('USIL'),
       // ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go(
-          '/contests',
-          extra: const ContestsData(redirectToApply: true),
+      floatingActionButton: Visibility(
+        visible: context.read<AppBloc>().user.role.isResearcher,
+        child: FloatingActionButton.large(
+          onPressed: () => context.go(
+            '/contests',
+            extra: const ContestsData(redirectToApply: true),
+          ),
+          child: const Icon(Icons.add),
         ),
-        child: const Icon(Icons.add),
       ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxxlg),
@@ -168,7 +172,7 @@ class ApplyTile extends StatelessWidget {
               icon: const Icon(Icons.remove_red_eye_outlined),
               onPressed: () => context.go(
                 '/applies/${apply.id}/review',
-                extra: apply,
+                extra: ApplyReviewData(review: apply.review, apply: apply),
               ),
             ),
     );

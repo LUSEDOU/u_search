@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:u_search_flutter/app/bloc/app_bloc.dart';
 
 import 'package:u_search_flutter/contests/contests.dart';
 
@@ -49,18 +50,21 @@ class ContestsView extends StatelessWidget {
                       contest.description,
                       style: ttheme.bodyLarge,
                     ),
-                    trailing: SizedBox(
-                      width: 150,
-                      child: AppButton.darkAqua(
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text('Aplica'),
-                            Icon(Icons.arrow_forward),
-                          ],
+                    trailing: Visibility(
+                      visible: context.read<AppBloc>().user.role.isResearcher,
+                      child: SizedBox(
+                        width: 150,
+                        child: AppButton.darkAqua(
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text('Aplica'),
+                              Icon(Icons.arrow_forward),
+                            ],
+                          ),
+                          onPressed: () =>
+                              context.go('/contests/${contest.id}/apply'),
                         ),
-                        onPressed: () =>
-                            context.go('/contests/${contest.id}/apply'),
                       ),
                     ),
                     onTap: () => context.go(

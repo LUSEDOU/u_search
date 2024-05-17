@@ -36,6 +36,9 @@ class UserRepository {
   Future<void> _init() async {
     try {
       final user = await _apiClient.me();
+      if (user.isAnonymous) {
+        await _tokenStorage.clearToken();
+      }
       _userController.add(user);
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(error, stackTrace);

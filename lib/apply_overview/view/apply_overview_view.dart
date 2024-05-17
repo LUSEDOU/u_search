@@ -20,25 +20,22 @@ class ApplyOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: !role.isResearcher
-          ? BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
-              buildWhen: (previous, current) => previous.apply != current.apply,
-              builder: (context, state) {
-                final apply = state.apply;
-                return Visibility(
-                  visible: !apply.isEmpty && apply.reviewer != null,
-                  child: FloatingActionButton.large(
-                    onPressed: () => context.go(
-                      '/applies/${apply.id}/review',
-                      extra:
-                          ApplyReviewData(review: apply.review, apply: apply),
-                    ),
-                    child: const Icon(Icons.rate_review),
-                  ),
-                );
-              },
-            )
-          : null,
+      floatingActionButton: BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
+        buildWhen: (previous, current) => previous.apply != current.apply,
+        builder: (context, state) {
+          final apply = state.apply;
+          return Visibility(
+            visible: apply.isReviewed || role.isReviewer,
+            child: FloatingActionButton.large(
+              onPressed: () => context.go(
+                '/applies/${apply.id}/review',
+                extra: ApplyReviewData(review: apply.review, apply: apply),
+              ),
+              child: const Icon(Icons.rate_review),
+            ),
+          );
+        },
+      ),
       body: MultiBlocListener(
         listeners: [
           BlocListener<ApplyOverviewBloc, ApplyOverviewState>(
@@ -78,7 +75,8 @@ class ApplyOverviewView extends StatelessWidget {
                               tag: '__hero_apply_${apply.id}',
                               child: Text(
                                 'Application #${apply.id}',
-                                style: Theme.of(context).textTheme.headlineLarge,
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge,
                               ),
                             ),
                           ),

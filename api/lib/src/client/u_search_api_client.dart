@@ -144,11 +144,10 @@ class USearchApiClient {
       headers: await _getRequestHeaders(),
     );
 
-    final body = response.json();
-
     if (response.statusCode != HttpStatus.ok) {
       return User.anonymous;
     }
+    final body = response.json();
 
     return User.fromJson(body);
   }
