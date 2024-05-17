@@ -23,6 +23,7 @@ class AppTextField extends StatelessWidget {
     this.maxLines,
     this.keyboardType,
     this.onChanged,
+    this.onSaved,
     this.onSubmitted,
     this.onTap,
   });
@@ -71,6 +72,9 @@ class AppTextField extends StatelessWidget {
   /// [TextInputType.multiline] otherwise.
   final TextInputType? keyboardType;
 
+  /// Called when the form field is saved.
+  final FormFieldSetter<String>? onSaved;
+
   /// Called when the user inserts or deletes texts in the text field.
   final ValueChanged<String>? onChanged;
 
@@ -103,6 +107,7 @@ class AppTextField extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                 ),
             onFieldSubmitted: onSubmitted,
+            onSaved: onSaved,
             decoration: InputDecoration(
               hintText: hintText,
               errorText: errorText,
