@@ -1,7 +1,9 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/gen/assets.gen.dart';
+import 'package:user_repository/user_repository.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({
@@ -71,7 +73,10 @@ class NavBar extends StatelessWidget {
               _tabButton(
                 'Logout',
                 Icons.logout,
-                onPressed: () => context.go('/logout'),
+                onPressed: () async {
+                  await context.read<UserRepository>().logOut();
+                  if (context.mounted) context.go('/login');
+                },
               ),
             ],
           ),
