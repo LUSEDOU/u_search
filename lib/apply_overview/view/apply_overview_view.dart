@@ -20,21 +20,18 @@ class ApplyOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Apply Overview'),
-      // ),
       floatingActionButton: BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
         buildWhen: (previous, current) => previous.apply != current.apply,
         builder: (context, state) {
           final apply = state.apply;
           return Visibility(
-            visible: !apply.isEmpty && apply.reviewer != null,
-            child: FloatingActionButton(
+            visible: apply.isReviewed || role.isReviewer,
+            child: FloatingActionButton.large(
               onPressed: () => context.go(
                 '/applies/${apply.id}/review',
                 extra: ApplyReviewData(review: apply.review, apply: apply),
               ),
-              child: const Icon(Icons.edit),
+              child: const Icon(Icons.rate_review),
             ),
           );
         },
@@ -67,38 +64,44 @@ class ApplyOverviewView extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.xxxlg),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Hero(
-                          tag: '__hero_apply_${apply.id}',
-                          child: Text(
-                            'Application #${apply.id}',
-                            style: Theme.of(context).textTheme.headlineLarge,
+                  child: Center(
+                    child: IntrinsicWidth(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: Hero(
+                              tag: '__hero_apply_${apply.id}',
+                              child: Text(
+                                'Application #${apply.id}',
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: AppSpacing.xlg),
+                          ContestTile(contest: apply.contest),
+                          const SizedBox(height: AppSpacing.xlg),
+                          Text(
+                            'Evaluador',
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          const SizedBox(height: AppSpacing.xs),
+                          ReviewerTile(
+                            canEdit: role.isAdmin &&
+                                (apply.reviewer?.isAnonymous ?? true),
+                          ),
+                          SaveReviewerButton(role: role),
+                          const SizedBox(height: AppSpacing.xxlg),
+                          Text(
+                            'Trabajo de Investigación',
+                            style: Theme.of(context).textTheme.headlineMedium,
+                          ),
+                          ResearchTile(research: apply.research),
+                        ],
                       ),
-                      const SizedBox(height: 8),
-                      ContestTile(contest: apply.contest),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Evaluador',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      ReviewerTile(
-                        canEdit: role.isAdmin || apply.review == null,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Trabajo de Investigación',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      ResearchTile(research: apply.research),
-                      const SizedBox(height: 8),
-                      const SizedBox(height: 8),
-                      const SelectReviewerButton(),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -144,18 +147,17 @@ class ReviewerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final reviewer = context.select(
-      (ApplyOverviewBloc bloc) => bloc.state.reviewer,
-    );
+    final reviewer =
+        context.select((ApplyOverviewBloc bloc) => bloc.state.reviewer);
 
     if (reviewer?.isAnonymous ?? true) {
       if (!canEdit) {
         return const Text('No Evaluador');
       }
 
-      return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.3,
-        child: AppButton.blueDress(
+      return Padding(
+        padding: const EdgeInsets.only(bottom: AppSpacing.xlg),
+        child: AppButton.smallDarkAqua(
           child: const Text('Agregar evaluador'),
           onPressed: () async {
             final evaluator = await EvaluatorsDialog.show(context);
@@ -172,6 +174,7 @@ class ReviewerTile extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.3,
       child: ListTile(
+        leading: const Icon(Icons.person),
         title: Text('${reviewer!.name} ${reviewer.lastName}'),
         subtitle: Text(reviewer.email),
         trailing: Visibility(
@@ -180,7 +183,7 @@ class ReviewerTile extends StatelessWidget {
             onPressed: () => context
                 .read<ApplyOverviewBloc>()
                 .add(const ApplyOverviewReviewerChanged(null)),
-            icon: const Icon(Icons.delete),
+            icon: const Icon(Icons.clear),
           ),
         ),
       ),
@@ -213,29 +216,46 @@ class ResearchTile extends StatelessWidget {
   }
 }
 
-class SelectReviewerButton extends StatelessWidget {
-  const SelectReviewerButton({super.key});
+class SaveReviewerButton extends StatelessWidget {
+  const SaveReviewerButton({required this.role, super.key});
+
+  final Role role;
 
   @override
   Widget build(BuildContext context) {
+    final apply = context.select((ApplyOverviewBloc bloc) => bloc.state.apply);
+
+    if (!role.isAdmin || apply.reviewer != null) {
+      return const SizedBox.shrink();
+    }
+
     return BlocBuilder<ApplyOverviewBloc, ApplyOverviewState>(
       buildWhen: (previous, current) => previous.reviewer != current.reviewer,
       builder: (context, state) {
         final reviewer = state.reviewer;
-        final role = context.read<AppBloc>().user.role;
-        final apply = state.apply;
-        LoggerManager().d('apply: ${apply.review?.isCreated ?? false}');
-        LoggerManager().d('reviewer: $reviewer');
-        LoggerManager().d('role: $role');
 
         return Visibility(
-          visible: (role.isAdmin && !(apply.review?.isCreated ?? false)) &&
-              (reviewer != null),
-          child: AppButton.blueDress(
-            child: const Text('Guardar'),
-            onPressed: () => context
-                .read<ApplyOverviewBloc>()
-                .add(const ApplyOverviewSubmit()),
+          visible: reviewer != null,
+          child: Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.xs),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: AppButton.darkAqua(
+                child: const Padding(
+                  padding: EdgeInsets.all(AppSpacing.xs),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(Icons.save),
+                      Text('Guardar y Enviar evaluación'),
+                    ],
+                  ),
+                ),
+                onPressed: () => context
+                    .read<ApplyOverviewBloc>()
+                    .add(const ApplyOverviewSubmit()),
+              ),
+            ),
           ),
         );
       },

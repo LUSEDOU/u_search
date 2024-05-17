@@ -32,6 +32,7 @@ void main() {
         tokenStorage: tokenStorage,
         apiClient: apiClient,
       );
+
       final applicationRepository = ApplicationRepository(apiClient: apiClient);
 
       return App(

@@ -22,7 +22,7 @@ FutureOr<Response> _selectReviewer(RequestContext context, int applyId) async {
   final dataSource = context.read<DataSource>();
   final apply = await dataSource.getApplicationRaw(applyId);
   final body = await context.request.json() as Map<String, dynamic>;
-  final reviewerId = body['reviewerId'];
+  final reviewerId = body['reviewer'];
 
   if (reviewerId is! int || apply == null) {
     return Response.json(statusCode: HttpStatus.badRequest);
