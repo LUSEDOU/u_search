@@ -51,27 +51,27 @@ class NavBar extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
               _tabButton(
-                'Home',
+                'Inicio',
                 Icons.home,
                 onPressed: () => context.go('/'),
               ),
               _tabButton(
-                'Applies',
+                'Aplicaciones',
                 Icons.assignment,
                 onPressed: () => context.go('/applies'),
               ),
               _tabButton(
-                'Contests',
+                'Concursos',
                 Icons.emoji_events,
                 onPressed: () => context.go('/contests'),
               ),
               _tabButton(
-                'Profile',
+                'Perfil',
                 Icons.person,
                 onPressed: () => context.go('/profile'),
               ),
               _tabButton(
-                'Logout',
+                'Cerrar sesión',
                 Icons.logout,
                 onPressed: () async {
                   await context.read<UserRepository>().logOut();
