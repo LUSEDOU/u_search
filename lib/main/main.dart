@@ -1,3 +1,4 @@
+import 'package:application_repository/application_repository.dart';
 import 'package:package_info_client/package_info_client.dart';
 import 'package:token_storage/token_storage.dart';
 import 'package:u_search_api/client.dart';
@@ -24,15 +25,19 @@ void main() {
         anonymousToken: packageInfoClient.packageName,
       );
 
+      final apiClient = USearchApiClient(
+        tokenProvider: tokenStorage.readToken,
+      );
+
       final userRepository = UserRepository(
         tokenStorage: tokenStorage,
-        apiClient: USearchApiClient(
-          tokenProvider: tokenStorage.readToken,
-        ),
+        apiClient: apiClient,
       );
+      final applicationRepository = ApplicationRepository(apiClient: apiClient);
 
       return App(
         userRepository: userRepository,
+        applicationRepository: applicationRepository,
         user: await userRepository.user.first,
       );
     },
