@@ -1,10 +1,7 @@
 import 'dart:async';
 
 import 'package:email_service/email_service.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
-
-typedef _Logger = void Function(Message message, {required bool success});
+import 'package:logging/logging.dart';
 
 /// {@template email_service}
 /// A Very Good Project created by Very Good CLI.
@@ -14,12 +11,17 @@ class EmailService {
   const EmailService({
     required SmtpServer smtp,
     this.admins = const [],
-    this.logger,
-  }) : _smtp = smtp;
+    Logger? logger,
+  })  : _smtp = smtp,
+        _logger = logger;
 
   final SmtpServer _smtp;
+
+  /// List of admin emails.
   final List<String> admins;
-  final _Logger? logger;
+
+  /// Logger function.
+  final Logger? _logger;
 
   Future<void> _sendMail({
     required String from,
@@ -36,10 +38,10 @@ class EmailService {
       ..subject = subject
       ..html = mailBody;
     try {
-      await send(message, _smtp);
-      logger?.call(message, success: true);
+      final report = await send(message, _smtp);
+      _logger?.info(report);
     } catch (error, stackTrace) {
-      logger?.call(message, success: false);
+      _logger?.warning('Error sending mail: $error', error, stackTrace);
       Error.throwWithStackTrace(error, stackTrace);
     }
   }
