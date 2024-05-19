@@ -92,37 +92,40 @@ class AppTextField extends StatelessWidget {
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 80),
-          child: TextFormField(
-            key: key,
-            initialValue: initialValue,
-            maxLines: maxLines,
-            controller: controller,
-            inputFormatters: inputFormatters,
-            keyboardType: keyboardType,
-            autocorrect: autocorrect,
-            readOnly: readOnly,
-            autofillHints: autoFillHints,
-            cursorColor: AppColors.darkAqua,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w500,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: TextFormField(
+              key: key,
+              initialValue: initialValue,
+              maxLines: maxLines,
+              controller: controller,
+              inputFormatters: inputFormatters,
+              keyboardType: keyboardType,
+              autocorrect: autocorrect,
+              readOnly: readOnly,
+              autofillHints: autoFillHints,
+              cursorColor: AppColors.darkAqua,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+              onFieldSubmitted: onSubmitted,
+              onSaved: onSaved,
+              decoration: InputDecoration(
+                hintText: hintText,
+                errorText: errorText,
+                prefixIcon: prefix,
+                suffixIcon: suffix,
+                suffixIconConstraints: const BoxConstraints.tightFor(
+                  width: 32,
+                  height: 32,
                 ),
-            onFieldSubmitted: onSubmitted,
-            onSaved: onSaved,
-            decoration: InputDecoration(
-              hintText: hintText,
-              errorText: errorText,
-              prefixIcon: prefix,
-              suffixIcon: suffix,
-              suffixIconConstraints: const BoxConstraints.tightFor(
-                width: 32,
-                height: 32,
+                prefixIconConstraints: const BoxConstraints.tightFor(
+                  width: 48,
+                ),
               ),
-              prefixIconConstraints: const BoxConstraints.tightFor(
-                width: 48,
-              ),
+              onChanged: onChanged,
+              onTap: onTap,
             ),
-            onChanged: onChanged,
-            onTap: onTap,
           ),
         ),
       ],
