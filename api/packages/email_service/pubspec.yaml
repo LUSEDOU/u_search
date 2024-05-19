@@ -16,3 +16,4 @@ dependencies:
   app_domain:
     path: ../app_domain
   path: ^1.9.0
+  logging: ^1.2.0

@@ -25,7 +25,6 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
   final userName = env['SMTP_USERNAME'] ?? '';
   final password = env['SMTP_PASSWORD'] ?? '';
   final admins = (env['ADMINS'] ?? '').split(',');
-  Logger('main').info('Admins: $admins');
 
   emailService = EmailService(
     smtp: SmtpServer(
@@ -34,8 +33,7 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
       password: password,
     ),
     admins: admins,
-    // logger: (message, {required success}) => Logger('EmailService')
-    //     .info('${message.from} ${message.headers} ${message.recipients}'),
+    logger: Logger('EmailService'),
   );
 
   return serve(
