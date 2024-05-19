@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Login Email</title>
+  <title>USIL Proyectos Inicia sesión</title>
   <style>
     .center {
       text-align: center;
@@ -22,10 +22,16 @@
 </head>
 
 <body>
-  <h1>Your Title Here</h1>
+  <h1>Hola denuevo, {{userName}}</h1>
+  <p>Para iniciar sesión en tu cuenta, haz clic en el siguiente botón:</p>
   <div class="center">
-    <button>Login</button>
+    <a href="{{loginLink}}">
+      <button>Iniciar sesión</button>
+    </a>
   </div>
+  <p>Si no puedes hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:</p>
+  <p>{{loginLink}}</p>
+  <p>Si no solicitaste iniciar sesión, ignora este mensaje.</p>
 </body>
 
 </html>

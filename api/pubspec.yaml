@@ -22,6 +22,7 @@ dependencies:
     path: packages/app_domain
   dart_frog_auth: ^1.1.0
   shelf_cors_headers: ^0.1.5
+  dotenv: ^4.2.0
 
 dev_dependencies:
   build_runner: ^2.4.8

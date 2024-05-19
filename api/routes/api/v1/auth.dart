@@ -48,6 +48,7 @@ FutureOr<Response> _auth(RequestContext context) async {
         to: email,
         parser: LoginWithLinkMailParser(
           link: 'localhost:8080/login?token=$token',
+          userName: user.name,
         ),
       );
 

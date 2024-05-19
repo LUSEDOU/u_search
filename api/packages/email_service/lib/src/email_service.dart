@@ -29,13 +29,12 @@ class EmailService {
     required String mailBody,
     List<String> cc = const [],
   }) async {
-    return;
     final message = Message()
       ..from = Address(from, username)
       ..recipients.add(to)
       ..ccRecipients.addAll(cc.map(Address.new))
       ..subject = subject
-      ..text = mailBody;
+      ..html = mailBody;
     try {
       await send(message, _smtp);
       logger?.call(message, success: true);

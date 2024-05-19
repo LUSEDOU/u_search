@@ -71,7 +71,7 @@ class MailParser {
         '${this.template}.html',
       );
 
-      return File(template).readAsString();
+      return await File(template).readAsString();
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(MailReadTemplateFailure(error), stackTrace);
     }
