@@ -20,7 +20,7 @@ class ApplyReviewForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(AppSpacing.xxxlg),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxxlg),
       child: BlocListener<ApplyReviewBloc, ApplyReviewState>(
         listenWhen: (previous, current) =>
             previous.status != current.status &&

@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,9 +15,6 @@ class ApplyReviewView extends StatelessWidget {
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(isEditable ? 'Edit Review' : 'Create Review'),
-      ),
       bottomNavigationBar: _BottomNavigator(
         isCreated: review.isCreated,
         formKey: formKey,
@@ -96,6 +94,8 @@ class _BottomNavigator extends StatelessWidget {
     LoggerManager().i('BottomNavigator build');
 
     return BottomAppBar(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.xxxlg, vertical: AppSpacing.md,),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -105,7 +105,23 @@ class _BottomNavigator extends StatelessWidget {
               child: Text('Calificar ${calification.value}'),
             )
           else
-            Text(calification.value),
+            Container(
+              decoration: ShapeDecoration(
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                shape: const StadiumBorder(),
+              ),
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.sm,
+                ),
+                child: Text(
+                  'Calificación: ${calification.value}',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+              ),
+            ),
         ],
       ),
     );
