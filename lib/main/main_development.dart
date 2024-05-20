@@ -23,6 +23,7 @@ void main() {
       );
 
       // await tokenStorage.clearToken();
+      await tokenStorage.saveToken('carlos');
 
       final apiClient = USearchApiClient.localhost(
         tokenProvider: tokenStorage.readToken,

@@ -34,18 +34,17 @@ class ApplyReviewForm extends StatelessWidget {
         },
         child: Form(
           key: formKey,
-          child: CupertinoScrollbar(
-            child: ListView.builder(
-              primary: true,
-              itemCount: node.children?.length ?? 0,
-              itemBuilder: (context, index) {
-                final child = node.children![index];
-                return CriteriumTile(
-                  node: child,
-                  isEditable: isEditable,
-                );
-              },
-            ),
+          child: ListView.builder(
+            padding: const EdgeInsets.all(AppSpacing.xlg),
+            primary: true,
+            itemCount: node.children?.length ?? 0,
+            itemBuilder: (context, index) {
+              final child = node.children![index];
+              return CriteriumTile(
+                node: child,
+                isEditable: isEditable,
+              );
+            },
           ),
         ),
       ),

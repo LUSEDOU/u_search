@@ -172,7 +172,7 @@ class ApplicationRepository {
     }
   }
 
-  Future<void> review({
+  Future<Review> review({
     required int apply,
     required Review review,
   }) async {
@@ -186,6 +186,7 @@ class ApplicationRepository {
       final index = current.indexWhere((element) => element.id == apply);
       current[index] = current[index].copyWith(review: ureview);
       _applicationController.add(current);
+      return ureview;
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ApplicationReviewFailure(error), stackTrace);
     }

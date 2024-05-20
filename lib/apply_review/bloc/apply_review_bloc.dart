@@ -116,24 +116,31 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     ApplyReviewSubmit event,
     Emitter<ApplyReviewState> emit,
   ) async {
+    LoggerManager().i('Submit event');
+    LoggerManager().i('State is valid: ${state.isValid}');
     if (!state.isValid) return;
     emit(state.copyWith(status: ApplyReviewStatus.loading));
-    LoggerManager().i(state.calification.toJson());
-    // try {
-    //   final calification = state.calification.toModels();
-    //   final criterias = state.calification.children;
-    //   await _applicationRepository.review(
-    //     apply: _applyId,
-    //     review: Review(
-    //       id: -1,
-    //       calification: calification,
-    //       criterias: criterias!,
-    //     ),
-    //   );
-    //   emit(state.copyWith(status: ApplyReviewStatus.success));
-    // } catch (error, stackTrace) {
-    //   addError(error, stackTrace);
-    //   emit(state.copyWith(status: ApplyReviewStatus.failure));
-    // }
+    LoggerManager().i('Submitting review...');
+    try {
+      final calification = state.calification.toModels();
+      final criterias = state.calification.children;
+      final review = await _applicationRepository.review(
+        apply: _applyId,
+        review: Review(
+          id: -1,
+          calification: calification,
+          criterias: criterias!,
+        ),
+      );
+      emit(
+        state.copyWith(
+          status: ApplyReviewStatus.success,
+          review: review,
+        ),
+      );
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: ApplyReviewStatus.failure));
+    }
   }
 }

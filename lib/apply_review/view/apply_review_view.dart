@@ -12,6 +12,7 @@ class ApplyReviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     final review = context.select((ApplyReviewBloc bloc) => bloc.state.review);
     final isEditable = !review.isCreated;
+    LoggerManager().i('ApplyReviewView build with isEditable: $isEditable');
     final formKey = GlobalKey<FormState>();
 
     return Scaffold(
@@ -82,47 +83,63 @@ class _BottomNavigator extends StatelessWidget {
   final GlobalKey<FormState> formKey;
 
   void _onTap(BuildContext context) {
-    formKey.currentState?.save();
     context.read<ApplyReviewBloc>().add(const ApplyReviewSubmit());
   }
 
   @override
   Widget build(BuildContext context) {
-    final calification = context.select(
-      (ApplyReviewBloc bloc) => bloc.state.calification.score,
-    );
     LoggerManager().i('BottomNavigator build');
 
     return BottomAppBar(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.xxxlg, vertical: AppSpacing.md,),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          if (!isCreated)
-            ElevatedButton(
-              onPressed: () => _onTap(context),
-              child: Text('Calificar ${calification.value}'),
-            )
-          else
-            Container(
-              decoration: ShapeDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                shape: const StadiumBorder(),
-              ),
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.sm,
+        horizontal: AppSpacing.xxxlg,
+        vertical: AppSpacing.md,
+      ),
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: SizedBox(
+          width: 200,
+          child: Builder(
+            builder: (context) {
+              if (!isCreated) {
+                return AppButton.darkAqua(
+                  onPressed: () => _onTap(context),
+                  child: Center(
+                    child: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
+                      buildWhen: (previous, current) =>
+                          previous.calification != current.calification,
+                      builder: (context, state) {
+                        final calification = state.calification.score.value;
+                        return Text('Calificar $calification');
+                      },
+                    ),
+                  ),
+                );
+              }
+
+              final calification =
+                  context.read<ApplyReviewBloc>().state.calification;
+
+              return Container(
+                decoration: ShapeDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  shape: const StadiumBorder(),
                 ),
-                child: Text(
-                  'Calificación: ${calification.value}',
-                  style: Theme.of(context).textTheme.headlineLarge,
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.sm,
+                  ),
+                  child: Text(
+                    'Calificación: ${calification.score}',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
                 ),
-              ),
-            ),
-        ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }

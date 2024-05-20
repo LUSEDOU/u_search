@@ -3,7 +3,7 @@ import 'package:formz/formz.dart';
 /// Validation error for [Comment].
 enum CommentValidationError {
   /// Generic invalid error.
-  empty('Please enter a comment');
+  empty('Por favor, escribe un comentario.');
 
   /// {@macro comment_validation_error}
   const CommentValidationError(this.message);

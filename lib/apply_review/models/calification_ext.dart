@@ -244,7 +244,7 @@ class Comment extends og.Comment with EquatableMixin {
   const Comment.dirty({super.value}) : super.dirty();
 
   @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [value, isPure, error];
 }
 
 class Score extends og.Score with EquatableMixin {
@@ -255,5 +255,5 @@ class Score extends og.Score with EquatableMixin {
   const Score.dirty({super.value, super.maxScore}) : super.dirty();
 
   @override
-  List<Object?> get props => [value];
+  List<Object?> get props => [value, isPure, error];
 }

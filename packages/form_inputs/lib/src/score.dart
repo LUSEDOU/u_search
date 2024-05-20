@@ -3,13 +3,13 @@ import 'package:formz/formz.dart';
 /// Validation errors for the [Score] [FormzInput].
 enum ScoreValidationError {
   /// When the score is empty
-  empty('Por favor ingrese una nota'),
+  empty('Ingrese una nota'),
 
   /// When the score is invalid
-  invalid('Por favor ingrese una nota válida'),
+  invalid('Nota inválida'),
 
   /// When the score is greater than the max score
-  greaterThanMax('La nota debe ser menor');
+  greaterThanMax('Nota debe ser menor');
 
   /// {@macro score_validation_error}
   const ScoreValidationError(this.message);

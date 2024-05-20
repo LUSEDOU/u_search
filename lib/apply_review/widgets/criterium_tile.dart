@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:u_search_flutter/apply_review/apply_review.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
@@ -87,7 +88,7 @@ class CriteriumTile extends StatelessWidget {
                   errorText: comment?.displayError?.message,
                   readOnly: !isEditable,
                   maxLines: 3,
-                  onSubmitted: (value) => context.read<ApplyReviewBloc>().add(
+                  onChanged: (value) => context.read<ApplyReviewBloc>().add(
                         ApplyReviewCommentChanged(
                           order: node.fullOrder,
                           comment: value,
@@ -182,6 +183,9 @@ class _ScoreFieldState extends State<ScoreField> {
                   '0.0';
         }
       },
+      buildWhen: (previous, current) =>
+          previous.calification.getFromOrder(widget.fullOrder)?.score !=
+          current.calification.getFromOrder(widget.fullOrder)?.score,
       builder: (context, state) {
         final score = state.calification.getFromOrder(widget.fullOrder)?.score;
         return AppTextField(
