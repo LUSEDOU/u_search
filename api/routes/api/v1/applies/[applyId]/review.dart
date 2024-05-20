@@ -73,5 +73,5 @@ FutureOr<Response> _createReview(RequestContext context, int applyId) async {
   final updatedApply = apply.copyWith(review: reviewId);
   await dataSource.updateApplication(updatedApply);
 
-  return Response.json(body: review);
+  return Response.json(body: review.copyWith(id: reviewId));
 }
