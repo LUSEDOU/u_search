@@ -41,6 +41,18 @@ class Review extends Equatable {
   /// Converts a [Review] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$ReviewToJson(this);
 
+  Review copyWith({
+    int? id,
+    Calification? calification,
+    List<Criterium>? criterias,
+  }) {
+    return Review(
+      id: id ?? this.id,
+      calification: calification ?? this.calification,
+      criterias: criterias ?? this.criterias,
+    );
+  }
+
   @override
   List<Object?> get props => [id, criterias, calification];
 }
