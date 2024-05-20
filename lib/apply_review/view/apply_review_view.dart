@@ -11,6 +11,8 @@ class ApplyReviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final review = context.select((ApplyReviewBloc bloc) => bloc.state.review);
+    final calification = context.read<ApplyReviewBloc>().state.calification;
+
     final isEditable = !review.isCreated;
     LoggerManager().i('ApplyReviewView build with isEditable: $isEditable');
     final formKey = GlobalKey<FormState>();
@@ -35,8 +37,8 @@ class ApplyReviewView extends StatelessWidget {
                   SnackBar(
                     content: Text(
                       state.review.isCreated
-                          ? 'Failed to create review'
-                          : 'Failed to save review',
+                          ? 'Ha ocurrido un error al actualizar la revisión'
+                          : 'Ha ocurrido un error al crear la revisión',
                     ),
                   ),
                 );
@@ -51,22 +53,16 @@ class ApplyReviewView extends StatelessWidget {
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
                   const SnackBar(
-                    content: Text('Review saved'),
+                    content: Text('Feedback enviado!'),
                   ),
                 );
             },
           ),
         ],
-        child: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
-          buildWhen: (previous, current) => previous.review != current.review,
-          builder: (context, state) {
-            final calification = state.calification;
-            return ApplyReviewForm(
-              node: calification,
-              isEditable: isEditable,
-              formKey: formKey,
-            );
-          },
+        child: ApplyReviewForm(
+          node: calification,
+          isEditable: isEditable,
+          formKey: formKey,
         ),
       ),
     );
@@ -83,6 +79,7 @@ class _BottomNavigator extends StatelessWidget {
   final GlobalKey<FormState> formKey;
 
   void _onTap(BuildContext context) {
+    // formKey.currentState?.save();
     context.read<ApplyReviewBloc>().add(const ApplyReviewSubmit());
   }
 
@@ -98,27 +95,29 @@ class _BottomNavigator extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerRight,
         child: SizedBox(
-          width: 200,
+          width: 300,
           child: Builder(
             builder: (context) {
               if (!isCreated) {
-                return AppButton.darkAqua(
-                  onPressed: () => _onTap(context),
-                  child: Center(
-                    child: BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
-                      buildWhen: (previous, current) =>
-                          previous.calification != current.calification,
-                      builder: (context, state) {
-                        final calification = state.calification.score.value;
-                        return Text('Calificar $calification');
-                      },
-                    ),
-                  ),
+                return BlocBuilder<ApplyReviewBloc, ApplyReviewState>(
+                  buildWhen: (previous, current) =>
+                      previous.calification != current.calification,
+                  builder: (context, state) {
+                    final calification = state.calification.score.value;
+
+                    return AppButton.darkAqua(
+                      onPressed: state.isValid ? () => _onTap(context) : null,
+                      child: Center(
+                        child: Text('Calificar $calification'),
+                      ),
+                    );
+                  },
                 );
               }
 
               final calification =
-                  context.read<ApplyReviewBloc>().state.calification;
+                  context.read<ApplyReviewBloc>().state.calification.score;
+              LoggerManager().i('BottomNavigator build with $calification');
 
               return Container(
                 decoration: ShapeDecoration(
@@ -132,8 +131,8 @@ class _BottomNavigator extends StatelessWidget {
                     vertical: AppSpacing.sm,
                   ),
                   child: Text(
-                    'Calificación: ${calification.score}',
-                    style: Theme.of(context).textTheme.headlineLarge,
+                    'Calificación: ${calification.numericValue}',
+                    style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
               );

@@ -39,7 +39,7 @@ class CalificationNode extends Criterium with EquatableMixin {
       children: children,
       maxScore: 100,
       score: Score.pure(
-        score: calification.isCreated ? calification.score.toString() : '0.0',
+        score: calification.isCreated ? calification.score.toString() : '',
       ),
     );
   }
@@ -54,10 +54,12 @@ class CalificationNode extends Criterium with EquatableMixin {
       'score': '${score.isValid ? '' : 'INVALID'} '
           '${scoreValue ?? ''} / $maxScore',
       'percent': percent,
+      'maxScore': maxScore,
+      'minScore': minScore,
       if (isLeaf) 'comment': comment?.value ?? '',
       if (!isLeaf && showChildren)
         'children': children
-            ?.map((child) => child.toJson(showChildren: false))
+            ?.map((child) => child.toJson(showChildren: showChildren))
             .toList(),
     };
   }
@@ -213,7 +215,7 @@ extension CriteriumExt on Criterium {
     List<int> parentOrder = const [],
   }) {
     final fullOrder = [...parentOrder, order];
-    final scoreValue = calification?.score ?? .0;
+    final scoreValue = calification?.score.toString() ?? '';
     return CalificationNode(
       order: order,
       name: name,
@@ -222,7 +224,7 @@ extension CriteriumExt on Criterium {
       maxScore: maxScore,
       minScore: minScore,
       percent: percent,
-      score: Score.pure(score: '$scoreValue', maxScore: maxScore),
+      score: Score.pure(score: scoreValue, maxScore: maxScore),
       children: subCriterias?.map(
         (subCriteria) {
           final cal = calification?.subCalifications?.firstWhere(

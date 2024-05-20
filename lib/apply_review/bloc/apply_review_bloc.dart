@@ -43,15 +43,16 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
       // LoggerManager().i('Review is created: ${review.isCreated}');
       // LoggerManager().i(review.toJson());
       // final calification = CalificationNode.fromReview(review);
-      // LoggerManager().i(calification.toJson());
+      final calification = CalificationNode.fromReview(review);
       emit(
         state.copyWith(
           review: review,
-          calification: CalificationNode.fromReview(review),
+          calification: calification,
           isValid: review.isCreated,
           status: ApplyReviewStatus.initial,
         ),
       );
+      LoggerManager().d(calification.toJson(showChildren: true));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.copyWith(status: ApplyReviewStatus.failure));
@@ -116,22 +117,20 @@ class ApplyReviewBloc extends Bloc<ApplyReviewEvent, ApplyReviewState> {
     ApplyReviewSubmit event,
     Emitter<ApplyReviewState> emit,
   ) async {
-    LoggerManager().i('Submit event');
-    LoggerManager().i('State is valid: ${state.isValid}');
     if (!state.isValid) return;
     emit(state.copyWith(status: ApplyReviewStatus.loading));
-    LoggerManager().i('Submitting review...');
     try {
       final calification = state.calification.toModels();
       final criterias = state.calification.children;
+
       final review = await _applicationRepository.review(
         apply: _applyId,
-        review: Review(
-          id: -1,
+        review: state.review.copyWith(
           calification: calification,
-          criterias: criterias!,
+          criterias: criterias,
         ),
       );
+      LoggerManager().d(review.toJson());
       emit(
         state.copyWith(
           status: ApplyReviewStatus.success,
