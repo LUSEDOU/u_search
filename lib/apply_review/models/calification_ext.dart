@@ -58,7 +58,7 @@ class CalificationNode extends Criterium with EquatableMixin {
       'minScore': minScore,
       if (isLeaf) 'comment': comment?.value ?? '',
       if (!isLeaf && showChildren)
-        'children': children
+        'subCriterias': children
             ?.map((child) => child.toJson(showChildren: showChildren))
             .toList(),
     };
