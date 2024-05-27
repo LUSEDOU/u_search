@@ -1,7 +1,10 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
+import 'dart:html' as html;
+import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
+// import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:storage/storage.dart';
 import 'package:u_search_api/api.dart';
@@ -68,13 +71,13 @@ class ApplicationRepository {
   /// Throws an [ApplicationApplyFailure] if an error occurs.
   Future<Apply> apply({
     required int contest,
-    required File research,
+    required Uint8List research,
     required String title,
   }) async {
     try {
       final researchResponse = await _apiClient.submitResearch(
         title: title,
-        file: research,
+        bytes: research,
       );
 
       final researchId = researchResponse.id;
@@ -189,6 +192,36 @@ class ApplicationRepository {
       return ureview;
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(ApplicationReviewFailure(error), stackTrace);
+    }
+  }
+
+  Future<void> downloadResearch(Research research) async {
+    try {
+      // final downloadPath =
+      // (await getDownloadsDirectory() ??
+      //     await getApplicationDocumentsDirectory())
+
+      final base64 = await _apiClient.downloadResearch(research: research.id);
+
+      // final anchor = html.AnchorElement(
+      //   href: 'localhost:8080/researches/${research.uuid}.pdf',
+      // )
+
+      final anchor = html.AnchorElement(
+        href: 'data:application/octet-stream;base64,$base64',
+      )
+        ..target = 'blank'
+        ..download = research.title;
+
+      html.document.body?.append(anchor);
+      anchor
+        ..click()
+        ..remove();
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationDownloadResearchFailure(error),
+        stackTrace,
+      );
     }
   }
 }

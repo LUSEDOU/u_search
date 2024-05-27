@@ -93,3 +93,7 @@ class ApplicationFetchReviewFailure extends ApplicationFailure {
   /// {@macro application_fetch_review_failure}
   const ApplicationFetchReviewFailure(super.error);
 }
+
+class ApplicationDownloadResearchFailure extends ApplicationFailure {
+  const ApplicationDownloadResearchFailure(super.error);
+}
