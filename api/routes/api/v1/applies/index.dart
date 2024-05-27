@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
@@ -35,8 +36,8 @@ FutureOr<Response> _getApplies(RequestContext context) async {
 
 FutureOr<Response> _createApply(RequestContext context) async {
   final body = await context.request.json() as Map<String, dynamic>;
-  final contestId = body['contestId'];
-  final researchId = body['researchId'];
+  final contestId = body['contest'];
+  final researchId = body['research'];
 
   if (contestId is! int || researchId is! int) {
     return Response.json(statusCode: HttpStatus.badRequest);
@@ -44,13 +45,14 @@ FutureOr<Response> _createApply(RequestContext context) async {
 
   final dataSource = context.read<DataSource>();
 
-  final application = Application(
-    contest: contestId,
-    research: researchId,
+  final applicationId = await dataSource.addApplication(
+    Application(
+      contest: contestId,
+      research: researchId,
+    ),
   );
-  await dataSource.addApplication(application);
 
-  final apply = await dataSource.getApplication(application.id);
+  final apply = await dataSource.getApplication(applicationId);
 
   if (apply == null) {
     return Response.json(statusCode: HttpStatus.internalServerError);

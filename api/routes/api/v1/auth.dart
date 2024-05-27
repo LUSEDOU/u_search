@@ -5,6 +5,9 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:email_service/email_service.dart';
 import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
+import 'package:url_provider/url_provider.dart';
+
+import '../../../main.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.post) {
@@ -47,7 +50,7 @@ FutureOr<Response> _auth(RequestContext context) async {
   await context.read<EmailService>().sendMailFromTemplate(
         to: email,
         parser: LoginWithLinkMailParser(
-          link: 'localhost:8080/login?token=$token',
+          link: context.read<UrlProvider>().webLink('login?token=$token'),
           userName: user.name,
         ),
       );

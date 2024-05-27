@@ -27,19 +27,15 @@ FutureOr<Response> _createResearch(RequestContext context) async {
   }
 
   final dataSource = context.read<DataSource>();
+  final filePath = path.join(
+    path.current,
+    'public',
+    'researches',
+  );
+  Logger.root.info(filePath);
 
   final uuid = const Uuid().v4();
-  final file = File(
-    path.join(
-      path.current,
-      'www',
-      'u_search',
-      'api',
-      'public',
-      'researches',
-      uuid,
-    ),
-  );
+  final file = File('${path.join(filePath, uuid)}.pdf');
   await file.writeAsBytes(base64Decode(encodedFile));
 
   final research = Research(
@@ -50,21 +46,8 @@ FutureOr<Response> _createResearch(RequestContext context) async {
   );
 
   // save the file in the www/u_search/api/public/researches directory
-  Logger.root
-    ..info(path.current)
-    ..info(
-      path.join(
-        path.current,
-        'www',
-        'u_search',
-        'api',
-        'public',
-        'researches',
-        research.uuid,
-      ),
-    );
 
   final id = await dataSource.addResearch(research);
-
+  //
   return Response.json(body: research.copyWith(id: id));
 }

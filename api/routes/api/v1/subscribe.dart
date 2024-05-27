@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
+import 'package:url_provider/url_provider.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.post) {
@@ -46,7 +47,9 @@ FutureOr<Response> _subscribe(RequestContext context) async {
         to: to,
         parser: SubscribeMailParser(
           email: email,
-          link: 'localhost:8080/users/new?email=$email',
+          link: context
+              .read<UrlProvider>()
+              .webLink('users/new?email=$email'),
         ),
       );
 

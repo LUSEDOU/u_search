@@ -5,6 +5,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:email_service/email_service.dart';
 import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
+import 'package:url_provider/url_provider.dart';
 
 FutureOr<Response> onRequest(RequestContext context, String applyId) async {
   final id = int.tryParse(applyId);
@@ -66,7 +67,7 @@ FutureOr<Response> _createReview(RequestContext context, int applyId) async {
     to: researcher.email,
     parser: ApplicationReviewedMailParser(
       application: apply,
-      link: 'localhost:8080/applies/$applyId/review',
+      link: context.read<UrlProvider>().webLink('applies/$applyId/review'),
     ),
   );
 

@@ -3,6 +3,7 @@ import 'package:dart_frog_auth/dart_frog_auth.dart';
 import 'package:email_service/email_service.dart';
 import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
+import 'package:url_provider/url_provider.dart';
 import '../headers/headers.dart';
 import '../main.dart';
 
@@ -29,6 +30,7 @@ Handler middleware(Handler handler) {
       .use(provider<DataSource>((_) => dataSource))
       .use(provider<EmailService>((_) => emailService))
       .use(provider<Logger>((_) => Logger.root))
+      .use(provider<UrlProvider>((_) => const UrlProvider()))
       .use(corsHeaders())
       .use(contentTypeHeader());
 }

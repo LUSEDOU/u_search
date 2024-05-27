@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:email_service/email_service.dart';
 import 'package:u_search_api/api.dart';
+import 'package:url_provider/url_provider.dart';
 
 FutureOr<Response> onRequest(RequestContext context, String applyId) async {
   switch (context.request.method) {
@@ -42,7 +43,9 @@ FutureOr<Response> _selectReviewer(RequestContext context, int applyId) async {
         parser: ReviewerAssignedMailParser(
           reviewer: reviewer,
           application: apply,
-          link: 'localhost:8080/applications/${apply.id}',
+          link: context
+              .read<UrlProvider>()
+              .webLink('applications/${apply.id}'),
         ),
       );
 
