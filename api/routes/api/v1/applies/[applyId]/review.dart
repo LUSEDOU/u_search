@@ -62,14 +62,14 @@ FutureOr<Response> _createReview(RequestContext context, int applyId) async {
 
   final reviewId = await dataSource.addReview(review);
 
-  final emailService = context.read<EmailService>();
-  await emailService.sendMailFromTemplate(
-    to: researcher.email,
-    parser: ApplicationReviewedMailParser(
-      application: apply,
-      link: context.read<UrlProvider>().webLink('applies/$applyId/review'),
-    ),
-  );
+
+  await context.read<EmailService>().sendMailFromTemplate(
+        to: researcher.email,
+        parser: ApplicationReviewedMailParser(
+          application: apply,
+          link: context.read<UrlProvider>().webLink('applies/$applyId/review'),
+        ),
+      );
 
   final updatedApply = apply.copyWith(review: reviewId);
   await dataSource.updateApplication(updatedApply);

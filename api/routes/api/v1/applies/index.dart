@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_frog/dart_frog.dart';
+import 'package:email_service/email_service.dart';
 import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
+import 'package:url_provider/url_provider.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
   switch (context.request.method) {
@@ -57,6 +59,15 @@ FutureOr<Response> _createApply(RequestContext context) async {
   if (apply == null) {
     return Response.json(statusCode: HttpStatus.internalServerError);
   }
+
+  context.read<EmailService>().sendMailFromTemplate(
+        to: context.read<User>().email,
+        parser: ApplicationSubmittedMailParser(
+          application: apply.toApplication(),
+          link:
+              context.read<UrlProvider>().webLink('applies/${apply.id}'),
+        ),
+      );
 
   return Response.json(body: apply);
 }

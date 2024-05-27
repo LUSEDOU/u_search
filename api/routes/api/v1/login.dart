@@ -24,7 +24,7 @@ FutureOr<Response> _logIn(RequestContext context) async {
 
   // checks if the user is already subscribed
   final dataSource = context.read<DataSource>();
-  final email = await dataSource.getEmailToken(token);
+  final email = await dataSource.getEmailFromToken(token);
   Logger('login').info('email: $email');
   if (email == null) {
     return Response.json(statusCode: HttpStatus.unauthorized);

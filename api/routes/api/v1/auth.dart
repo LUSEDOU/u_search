@@ -7,7 +7,6 @@ import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
 import 'package:url_provider/url_provider.dart';
 
-import '../../../main.dart';
 
 FutureOr<Response> onRequest(RequestContext context) async {
   if (context.request.method == HttpMethod.post) {
