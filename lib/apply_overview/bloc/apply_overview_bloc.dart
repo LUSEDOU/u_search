@@ -48,12 +48,15 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
     emit(state.copyWith(reviewer: () => event.reviewer));
   }
 
-  void _onDownloadRequested(
+  Future<void> _onDownloadRequested(
     ApplyOverviewDownloadRequested event,
     Emitter<ApplyOverviewState> emit,
-  ) {
+  ) async {
     try {
       emit(state.copyWith(status: ApplyOverviewStatus.loading));
+      LoggerManager()
+          .d('Downloading research with uuid ${state.apply.research.uuid}');
+      await _applicationRepository.downloadResearch(state.apply.research);
       emit(state.copyWith(status: ApplyOverviewStatus.success));
     } catch (error, stackTrace) {
       emit(state.copyWith(status: ApplyOverviewStatus.failure));

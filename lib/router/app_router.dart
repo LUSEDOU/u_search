@@ -119,12 +119,18 @@ GoRouter router = GoRouter(
           builder: ContestsPage.routeBuilder,
           routes: [
             GoRoute(
-              path: ':contestId/apply',
-              builder: ApplyPage.routeBuilder,
-            ),
-            GoRoute(
               path: ':contestId',
               builder: ContestPage.routeBuilder,
+              redirect: (context, state) {
+                final id = int.tryParse(state.pathParameters['contestId']!);
+                return id == null ? '/contests' : null;
+              },
+              routes: [
+                GoRoute(
+                  path: 'apply',
+                  builder: ApplyPage.routeBuilder,
+                ),
+              ],
             ),
           ],
         ),

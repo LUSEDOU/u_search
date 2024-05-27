@@ -7,6 +7,15 @@ sealed class ApplyEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class ApplyFetchContest extends ApplyEvent {
+  const ApplyFetchContest(this.contestId);
+
+  final int contestId;
+
+  @override
+  List<Object> get props => [contestId];
+}
+
 final class ApplyLoadFile extends ApplyEvent {
   const ApplyLoadFile({
     required this.file,
@@ -15,7 +24,7 @@ final class ApplyLoadFile extends ApplyEvent {
   final PlatformFile file;
 
   @override
-  List<Object> get props => [file];
+  List<Object> get props => [file.name];
 }
 
 final class ApplySubmissionRequested extends ApplyEvent {

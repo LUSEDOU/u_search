@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/app/bloc/app_bloc.dart';
+import 'package:u_search_flutter/apply/apply.dart';
 
 import 'package:u_search_flutter/contests/contests.dart';
 
@@ -62,22 +63,29 @@ class ContestsView extends StatelessWidget {
                               Icon(Icons.arrow_forward),
                             ],
                           ),
-                          onPressed: () =>
-                              context.go('/contests/${contest.id}/apply'),
+                          onPressed: () => context.go(
+                            '/contests/${contest.id}/apply',
+                            extra: ApplyData(contest: contest),
+                          ),
                         ),
                       ),
                     ),
-                    onTap: () => context.go(
-                      redirectToApply
-                          ? '/contests/${contest.id}/apply'
-                          : '/contests/${contest.id}',
-                    ),
+                    onTap: () {
+                      if (redirectToApply) {
+                        context.go(
+                          '/contests/${contest.id}/apply',
+                          extra: ApplyData(contest: contest),
+                        );
+                      } else {
+                        context.go('/contests/${contest.id}');
+                      }
+                    },
                   );
                 },
               );
             } else {
               return const Center(
-                child: Text('Failed to load contests'),
+                child: Text('No se encontraron concursos'),
               );
             }
           },
