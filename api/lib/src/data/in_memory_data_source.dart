@@ -144,7 +144,7 @@ class InMemoryDataSource implements DataSource {
   }
 
   @override
-  Future<String?> getEmailToken(String token) {
+  Future<String?> getEmailFromToken(String token) {
     Logger('DataSource').info('Token: $token');
     Logger('DataSource').info(_emailTokens);
     return Future.value(_emailTokens[token]);

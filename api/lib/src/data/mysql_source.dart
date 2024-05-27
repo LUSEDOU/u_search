@@ -192,7 +192,7 @@ class MysqlSource implements DataSource {
   }
 
   @override
-  Future<String> getEmailToken(String token) async {
+  Future<String> getEmailFromToken(String token) async {
     final result = await _client.selectOne(
       'email_token',
       where: 'token = $token',

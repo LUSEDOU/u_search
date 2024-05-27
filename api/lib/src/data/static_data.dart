@@ -5,7 +5,7 @@ final _users = <User>[
     id: 0,
     name: 'Admin',
     lastName: 'ADMIN',
-    email: 'admin@usil.test',
+    email: 'luis.dolorier.usil@gmail.com',
     role: Role.admin,
   ),
   const User(
@@ -331,6 +331,8 @@ final _applications = <Application>[
 
 final _emailTokens = <String, String>{
   'admin': 'luis.dolorier.usil@gmail.com',
+  'luis': 'luis.dolorier@usil.pe',
+  'jose': 'lusedou@gmail.com',
 };
 
 final _tokens = <int, String>{

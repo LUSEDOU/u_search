@@ -48,7 +48,7 @@ abstract class DataSource {
   /// Returns the email address associated with the given token.
   ///
   /// If the token is not found, `null` is returned.
-  Future<String?> getEmailToken(String email);
+  Future<String?> getEmailFromToken(String email);
 
   /// Generates a token for the given email address.
   ///

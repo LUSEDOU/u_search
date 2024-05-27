@@ -73,6 +73,14 @@ class Apply extends Equatable {
   /// Returns true if this [Apply] is created
   bool get isCreated => id > 0;
 
+  Application toApplication() => Application(
+        id: id,
+        contest: contest.id,
+        research: research.id,
+        reviewer: reviewer?.id,
+        review: review?.id,
+      );
+
   @override
   List<Object?> get props => [contest, research, id, reviewer, review];
 }
