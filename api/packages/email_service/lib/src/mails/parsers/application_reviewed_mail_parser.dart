@@ -26,7 +26,7 @@ class ApplicationReviewedMailParser extends MailParser {
     final template = await readTemplate();
 
     return template
-      ..replaceAll('{{applicationId}', '${application.id}')
-      ..replaceAll('{{link}}', link);
+        .replaceAll('{{applicationId}', '${application.id}')
+        .replaceAll('{{link}}', link);
   }
 }

@@ -31,12 +31,14 @@ class EmailService {
     required String mailBody,
     List<String> cc = const [],
   }) async {
+    _logger?.info('Sending mail to $to');
     final message = Message()
       ..from = Address(from, username)
       ..recipients.add(to)
       ..ccRecipients.addAll(cc.map(Address.new))
       ..subject = subject
       ..html = mailBody;
+
     try {
       final report = await send(message, _smtp);
       _logger?.info(report);

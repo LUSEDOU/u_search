@@ -23,19 +23,8 @@ class LoginWithLinkMailParser extends MailParser {
   @override
   Future<String> parseMail() async {
     final template = await readTemplate();
-    print('Mail read');
-
-    final hasLink = template.contains('{{loginLink}}');
-    assert(hasLink, 'The template does not contain the login link');
-    final _$ = template.replaceAll('{{loginLink}}', link);
-    assert(_$.contains(link), 'The link was not replaced');
-
-    final hasUserName = template.contains('{{userName}}');
-    assert(hasUserName, 'The template does not contain the user name');
-    final $ = _$.replaceAll('{{userName}}', userName);
-    assert($.contains(userName), 'The user name was not replaced');
-
-    print('Mail parsed: ${$}');
-    return $;
+    return template
+        .replaceAll('{{loginLink}}', link)
+        .replaceAll('{{userName}}', userName);
   }
 }

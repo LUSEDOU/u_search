@@ -30,8 +30,8 @@ class ReviewerAssignedMailParser extends MailParser {
     final template = await readTemplate();
 
     return template
-      ..replaceAll('{{applicationId}', '${application.id}')
-      ..replaceAll('{{reviewer}}', reviewer.name)
-      ..replaceAll('{{link}}', link);
+      .replaceAll('{{applicationId}', '${application.id}')
+      .replaceAll('{{reviewer}}', reviewer.name)
+      .replaceAll('{{link}}', link);
   }
 }

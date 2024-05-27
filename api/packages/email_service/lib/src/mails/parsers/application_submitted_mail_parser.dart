@@ -11,7 +11,7 @@ class ApplicationSubmittedMailParser extends MailParser {
     required this.link,
   }) : super(
           toAdmins: true,
-          template: 'application_reviewed',
+          template: 'application_submitted',
           subject: 'Aplicación enviada',
         );
 
@@ -26,7 +26,7 @@ class ApplicationSubmittedMailParser extends MailParser {
     final template = await readTemplate();
 
     return template
-      ..replaceAll('{{applicationId}', '${application.id}')
-      ..replaceAll('{{link}}', link);
+        .replaceAll('{{applicationId}', '${application.id}')
+        .replaceAll('{{link}}', link);
   }
 }

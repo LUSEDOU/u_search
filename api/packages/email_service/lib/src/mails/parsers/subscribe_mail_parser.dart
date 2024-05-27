@@ -24,9 +24,6 @@ class SubscribeMailParser extends MailParser {
   Future<String> parseMail() async {
     final template = await readTemplate();
 
-    template
-      ..replaceAll('{{email}}', email)
-      ..replaceAll('{{link}}', link);
-    return template;
+    return template.replaceAll('{{email}}', email).replaceAll('{{link}}', link);
   }
 }
