@@ -10,23 +10,23 @@ final _users = <User>[
   ),
   const User(
     id: 1,
-    name: 'Juan',
-    lastName: 'Perez',
-    email: 'juan@usil.test',
-    role: Role.researcher,
-  ),
-  const User(
-    id: 2,
     name: 'Maria',
     lastName: 'Gonzales',
     email: 'maria@usil.test',
     role: Role.researcher,
   ),
   const User(
+    id: 2,
+    name: 'Luis',
+    lastName: 'Dolorier',
+    email: 'luis.dolorier@usil.pe',
+    role: Role.researcher,
+  ),
+  const User(
     id: 3,
     name: 'Jose',
     lastName: 'Perez',
-    email: 'jose@usil.test',
+    email: 'lusedou@gmail.com',
     role: Role.reviewer,
   ),
   const User(
@@ -35,13 +35,6 @@ final _users = <User>[
     lastName: 'Gonzales',
     email: 'carlos@usil.test',
     role: Role.reviewer,
-  ),
-  const User(
-    id: 5,
-    name: 'Luis',
-    lastName: 'Dolorier',
-    email: 'luis.dolorier@usil.pe',
-    role: Role.admin,
   ),
 ];
 
@@ -337,7 +330,7 @@ final _applications = <Application>[
 ];
 
 final _emailTokens = <String, String>{
-  'admin': 'admin@usil.test',
+  'admin': 'luis.dolorier.usil@gmail.com',
 };
 
 final _tokens = <int, String>{

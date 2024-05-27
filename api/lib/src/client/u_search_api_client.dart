@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 // import 'package:u_search_api/client.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 import 'package:u_search_api/api.dart';
 
 /// {@template u_search_api_malformed_response}
@@ -454,17 +454,17 @@ class USearchApiClient {
   /// Submit the research PDF file to the server.
   ///
   /// Required parameters:
-  /// * [file] - The PDF file to submit.
+  /// * [bytes] - The bytes of the research PDF file.
   /// * [title] - The title of the research.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
   Future<Research> submitResearch({
-    required File file,
+    required Uint8List bytes,
     required String title,
   }) async {
     final uri = Uri.parse('$_baseUrl/api/v1/researches');
 
-    final encodedFile = base64Encode(await file.readAsBytes());
+    final encodedFile = base64Encode(bytes);
 
     final response = await _httpClient.post(
       uri,
@@ -558,6 +558,26 @@ class USearchApiClient {
     }
 
     return ReviewerResponse.fromJson(body);
+  }
+
+  Future<String> downloadResearch({
+    required int research,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/researches/$research');
+
+    final r = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+
+    if (r.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: r.json(),
+        statusCode: r.statusCode,
+      );
+    }
+
+    return r.json()['base64'] as String;
   }
 
   Future<Map<String, String>> _getRequestHeaders() async {
