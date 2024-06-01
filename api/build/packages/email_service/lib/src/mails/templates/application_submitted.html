@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Application Submission Confirmation</title>
+  <style>
+    .center {
+      text-align: center;
+    }
+
+    a.button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="center">Tu aplicacion se ha enviado de manera exitosa!</h1>
+  <!-- #{{applicationId}} was submitted successfully!</h1> -->
+  <p class="center">El numero de seguimiento de tu aplicacion es: #{{applicationId}}</p>
+  <p class="center">En breve, se te asignara un asesor para que revise tu aplicacion.</p>
+  <p />
+  <p class="center">Da click en el boton de abajo para ver el estado de tu aplicacion.</p>
+  <div class="center">
+    <a href="{{link}}" class="button">Ver estado de aplicacion</a>
+  </div>
+</body>
+
+</html>
