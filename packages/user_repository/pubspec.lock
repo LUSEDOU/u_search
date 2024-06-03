@@ -301,10 +301,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "7687075e408b093f36e6bbf6c91878cc0d4cd10f409506f7bc996f68220b9136"
+      sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
       url: "https://pub.dev"
     source: hosted
-    version: "1.12.0"
+    version: "1.11.0"
   mime:
     dependency: transitive
     description:
@@ -673,6 +673,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0+1"
+  url_provider:
+    dependency: transitive
+    description:
+      path: "../../api/packages/url_provider"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   uuid:
     dependency: transitive
     description:
