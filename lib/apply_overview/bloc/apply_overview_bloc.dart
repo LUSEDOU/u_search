@@ -1,6 +1,7 @@
 import 'package:application_repository/application_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:file_service/file_service.dart';
 import 'package:u_search_api/api.dart';
 import 'package:u_search_flutter/utils/logger_manager.dart';
 
@@ -56,7 +57,10 @@ class ApplyOverviewBloc extends Bloc<ApplyOverviewEvent, ApplyOverviewState> {
       emit(state.copyWith(status: ApplyOverviewStatus.loading));
       LoggerManager()
           .d('Downloading research with uuid ${state.apply.research.uuid}');
-      await _applicationRepository.downloadResearch(state.apply.research);
+      final base64 =
+          await _applicationRepository.downloadResearch(state.apply.research);
+
+      await const FileService().openFile(base64, state.apply.research.title);
       emit(state.copyWith(status: ApplyOverviewStatus.success));
     } catch (error, stackTrace) {
       emit(state.copyWith(status: ApplyOverviewStatus.failure));

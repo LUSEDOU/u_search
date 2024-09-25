@@ -19,4 +19,7 @@ run:
 runm:
 	flutter run --target ./lib/main/main_development.dart -d macos
 
+rund:
+	flutter run --target ./lib/main/main_development.dart -d windows
+
 .PHONY: clean build-runner build

@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:html' as html;
+// import 'dart:convert';
+// import 'dart:html' as html;
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
@@ -195,28 +195,29 @@ class ApplicationRepository {
     }
   }
 
-  Future<void> downloadResearch(Research research) async {
+  /// Returns the base64 string of the research
+  Future<String> downloadResearch(Research research) async {
     try {
       // final downloadPath =
       // (await getDownloadsDirectory() ??
       //     await getApplicationDocumentsDirectory())
 
-      final base64 = await _apiClient.downloadResearch(research: research.id);
+      return await _apiClient.downloadResearch(research: research.id);
 
       // final anchor = html.AnchorElement(
       //   href: 'localhost:8080/researches/${research.uuid}.pdf',
       // )
 
-      final anchor = html.AnchorElement(
-        href: 'data:application/octet-stream;base64,$base64',
-      )
-        ..target = 'blank'
-        ..download = research.title;
-
-      html.document.body?.append(anchor);
-      anchor
-        ..click()
-        ..remove();
+      // final anchor = html.AnchorElement(
+      //   href: 'data:application/octet-stream;base64,$base64',
+      // )
+      //   ..target = 'blank'
+      //   ..download = research.title;
+      //
+      // html.document.body?.append(anchor);
+      // anchor
+      //   ..click()
+      //   ..remove();
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(
         ApplicationDownloadResearchFailure(error),

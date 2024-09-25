@@ -17,6 +17,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   equatable: ^2.0.5
   file_picker: ^6.1.1
+  file_service:
+    path: ./packages/file_service
   # firebase_core: ^2.27.2
   # firebase_auth: ^4.3.0
   # firebase_dart_flutter: ^1.1.3
