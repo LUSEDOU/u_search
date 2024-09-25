@@ -66,6 +66,52 @@ class ApplicationRepository {
     }
   }
 
+  /// Fetches all [User]s from the repository.
+  ///
+  /// Throws an [ApplicationFetchReviewersFailure] if an error occurs.
+  // TODO(LUSEDOU): Change Failure to ApplicationFetchUsersFailure
+  Future<List<User>> fetchUsers() async {
+    try {
+      final response = await _apiClient.getUsers();
+      return response.users;
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchReviewersFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Updates a [User] in the repository.
+  ///
+  /// Throws an [ApplicationFetchReviewersFailure] if an error occurs.
+  // TODO(LUSEDOU): Change Failure to ApplicationUpdateUserFailure
+  Future<void> updateUser(User user) async {
+    try {
+      await _apiClient.updateUser(id: user.id, user: user);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchReviewersFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
+  /// Invites a [User] and adds them to the repository.
+  ///
+  /// Throws an [ApplicationFetchReviewersFailure] if an error occurs.
+  // TODO(LUSEDOU): Change Failure to ApplicationInviteUserFailure
+  Future<User> inviteUser(User user) async {
+    try {
+      return await _apiClient.createUser(user: user);
+    } catch (error, stackTrace) {
+      Error.throwWithStackTrace(
+        ApplicationFetchReviewersFailure(error),
+        stackTrace,
+      );
+    }
+  }
+
   /// Apply a reasearch paper to a contest.
   ///
   /// Throws an [ApplicationApplyFailure] if an error occurs.
@@ -154,7 +200,7 @@ class ApplicationRepository {
   Future<List<User>> fetchReviewers() async {
     try {
       final response = await _apiClient.getReviewers();
-      return response.reviewers;
+      return response.users;
     } catch (error, stackTrace) {
       Error.throwWithStackTrace(
         ApplicationFetchReviewersFailure(error),

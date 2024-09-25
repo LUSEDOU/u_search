@@ -71,6 +71,11 @@ class NavBar extends StatelessWidget {
                 onPressed: () => context.go('/profile'),
               ),
               _tabButton(
+                'Admin',
+                Icons.admin_panel_settings,
+                onPressed: () => context.go('/admin'),
+              ),
+              _tabButton(
                 'Cerrar sesión',
                 Icons.logout,
                 onPressed: () async {

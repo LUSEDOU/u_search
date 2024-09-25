@@ -40,8 +40,8 @@ class Application extends Equatable {
   /// Converts a [Application] instance into a [Map<String, dynamic>].
   Map<String, dynamic> toJson() => _$ApplicationToJson(this);
 
-  /// Creates a copy of this [Application] but with the given fields replaced with
-  /// the new values.
+  /// Creates a copy of this [Application] but with the given fields replaced
+  /// with the new values.
   Application copyWith({
     int? contest,
     int? research,

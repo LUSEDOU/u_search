@@ -1,11 +1,41 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:u_search_api/api.dart';
 import 'package:uuid/v4.dart';
 
 part 'static_data.dart';
 
+/// {@template in_memory_data_source}
+/// An in-memory data source.
+/// {@endtemplate}
 class InMemoryDataSource implements DataSource {
+  /// Creates a new in-memory data source.
+  const InMemoryDataSource({
+    required this.db,
+    required Logger logger,
+    this.uuid = const UuidV4(),
+  }) : _logger = logger;
+
+  /// Creates a new in-memory data source from a given path.
+  static Future<InMemoryDataSource> create(
+    String path, {
+    required Logger logger,
+  }) async {
+    logger.info('Creating in-memory data source at $path');
+    return InMemoryDataSource(
+      db: await databaseFactoryFfi.openDatabase(path),
+      logger: logger,
+    );
+  }
+
+  /// The DB instance.
+  final Database db;
+  final Logger _logger;
+
+  /// The UUID generator.
+  final UuidV4 uuid;
+
   @override
   Future<int> addApplication(Application application) {
     final length = _applications.length;
@@ -51,10 +81,15 @@ class InMemoryDataSource implements DataSource {
   }
 
   @override
-  Future<String> generateEmailToken(String email) {
-    final token = const UuidV4().generate();
-    _emailTokens[token] = email;
-    return Future.value(token);
+  Future<String> generateEmailToken(String email) async {
+    final token = uuid.generate();
+
+    await db.insert('access_tokens', {
+      'token': token,
+      'email': email,
+    });
+
+    return token;
   }
 
   @override
@@ -144,10 +179,17 @@ class InMemoryDataSource implements DataSource {
   }
 
   @override
-  Future<String?> getEmailFromToken(String token) {
-    Logger('DataSource').info('Token: $token');
-    Logger('DataSource').info(_emailTokens);
-    return Future.value(_emailTokens[token]);
+  Future<String?> getEmailFromToken(String token) async {
+    final result = await db.query(
+      'access_tokens',
+      columns: ['email'],
+      where: 'token = ?',
+      whereArgs: [token],
+    );
+
+    if (result.isEmpty) return null;
+
+    return result.first['email'] as String?;
   }
 
   @override
@@ -234,14 +276,17 @@ class InMemoryDataSource implements DataSource {
   }
 
   @override
-  Future<List<User>> getUsers({int? role}) {
-    return Future.value(
-      _users
-          .where(
-            (element) => role == null || element.role.value == role,
-          )
-          .toList(),
-    );
+  Future<List<User>> getUsers({int? role}) async {
+    return (await watch(db.query, 'users'))
+        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .toList();
+    // return Future.value(
+    //   _users
+    //       .where(
+    //         (element) => role == null || element.role.value == role,
+    //       )
+    //       .toList(),
+    // );
   }
 
   @override
@@ -257,5 +302,42 @@ class InMemoryDataSource implements DataSource {
     _applications[index] = uApplication;
 
     return Future.value();
+  }
+
+  @override
+  Future<User> createUser(User user) async {
+    final data = user.toJson()..remove('id');
+    final id = await db.insert('users', data);
+
+    return (await watch(
+      (t) async => db.query(
+        t,
+        where: 'id = ?',
+        whereArgs: [id],
+      ),
+      'users',
+    ))
+        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .first;
+  }
+
+  @override
+  Future<void> updateUser(User user) async {
+    await db.insert(
+      'users',
+      user.toJson(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  /// a
+  Future<T> watch<T extends List<dynamic>>(
+    Future<T> Function(String a) callback,
+    String a,
+  ) async {
+    _logger.info('watching $a');
+    final l = await callback(a);
+    _logger.info('$a count: ${l.length}');
+    return l;
   }
 }

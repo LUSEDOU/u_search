@@ -82,20 +82,26 @@ enum Role {
   none._(-1),
 
   /// A reviewer user.
-  reviewer._(0),
+  reviewer._(0, 'Revisor'),
 
   /// A researcher user.
-  researcher._(1),
+  researcher._(1, 'Investigador'),
 
   /// An admin user.
-  admin._(2);
+  admin._(2, 'Administrador');
 
-  const Role._(this.value);
+  const Role._(this.value, [this.label = '']);
 
   /// The value of the enum
   final int value;
 
+  /// The name of the role.
+  final String label;
+
+  /// Whether the role is a reviewer.
   bool get isReviewer => this == Role.reviewer;
+  /// Whether the role is a researcher.
   bool get isResearcher => this == Role.researcher;
+  /// Whether the role is an admin.
   bool get isAdmin => this == Role.admin;
 }

@@ -7,49 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
 import 'package:u_search_api/api.dart';
 
-/// {@template u_search_api_malformed_response}
-/// An exception thrown when there is a problem decoded the response body.
-/// {@endtemplate}
-class USearchApiMalformedResponse with EquatableMixin implements Exception {
-  /// {@macro u_search_api_malformed_response}
-  const USearchApiMalformedResponse({required this.error});
-
-  /// The associated error.
-  final Object error;
-
-  @override
-  List<Object?> get props => [error];
-}
-
-/// {@template u_search_api_request_failure}
-/// An exception thrown when an http request failure occurs.
-/// {@endtemplate}
-class USearchApiRequestFailure implements Exception {
-  /// {@macro u_search_api_request_failure}
-  const USearchApiRequestFailure({
-    required this.statusCode,
-    required this.body,
-  });
-
-  /// The associated http status code.
-  final int statusCode;
-
-  /// The associated response body.
-  final Map<String, dynamic> body;
-
-  @override
-  String toString() {
-    return 'USearchApiRequestFailure: $statusCode $body';
-  }
-}
-
-/// {@template u_search_api_unauthorized_request_failure}
-/// An exception thrown when an unauthorized request is made.
-/// {@endtemplate}
-class USearchApiUnauthorizedFailure implements Exception {
-  /// {@macro u_search_api_unauthorized_request_failure}
-  const USearchApiUnauthorizedFailure();
-}
+part 'u_search_api_client_failure.dart';
 
 /// Signature for the authentication token provider.
 typedef TokenProvider = Future<String> Function();
@@ -96,44 +54,6 @@ class USearchApiClient {
   final String _baseUrl;
   final http.Client _httpClient;
   final TokenProvider _tokenProvider;
-
-  /// GET /api/v1/articles/<id>
-  /// Requests article content metadata.
-  ///
-  /// Supported parameters:
-  /// * [id] - Article id for which content is requested.
-  /// * [limit] - The number of results to return.
-  /// * [offset] - The (zero-based) offset of the first item
-  /// in the collection to return.
-  /// * [preview] - Whether to return a preview of the article.
-  // Future<ArticleResponse> getArticle({
-  //   required String id,
-  //   int? limit,
-  //   int? offset,
-  //   bool preview = false,
-  // }) async {
-  //   final uri = Uri.parse('$_baseUrl/api/v1/articles/$id').replace(
-  //     queryParameters: <String, String>{
-  //       if (limit != null) 'limit': '$limit',
-  //       if (offset != null) 'offset': '$offset',
-  //       'preview': '$preview',
-  //     },
-  //   );
-  //   final response = await _httpClient.get(
-  //     uri,
-  //     headers: await _getRequestHeaders(),
-  //   );
-  //   final body = response.json();
-
-  //   if (response.statusCode != HttpStatus.ok) {
-  //     throw USearchApiRequestFailure(
-  //       body: body,
-  //       statusCode: response.statusCode,
-  //     );
-  //   }
-  //
-  //   return ArticleResponse.fromJson(body);
-  // }
 
   /// GET /api/v1/me
   Future<User> me() async {
@@ -542,7 +462,7 @@ class USearchApiClient {
   /// Requests all reviewers.
   ///
   /// Throws a [USearchApiRequestFailure] if an exception occurs.
-  Future<ReviewerResponse> getReviewers() async {
+  Future<UsersResponse> getReviewers() async {
     final uri = Uri.parse('$_baseUrl/api/v1/users/reviewers');
     final response = await _httpClient.get(
       uri,
@@ -557,9 +477,10 @@ class USearchApiClient {
       );
     }
 
-    return ReviewerResponse.fromJson(body);
+    return UsersResponse.fromJson(body);
   }
 
+  /// GET /api/v1/researches
   Future<String> downloadResearch({
     required int research,
   }) async {
@@ -578,6 +499,72 @@ class USearchApiClient {
     }
 
     return r.json()['base64'] as String;
+  }
+
+  /// GET /api/v1/users
+  Future<UsersResponse> getUsers() async {
+    final uri = Uri.parse('$_baseUrl/api/v1/users');
+
+    final response = await _httpClient.get(
+      uri,
+      headers: await _getRequestHeaders(),
+    );
+
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return UsersResponse.fromJson(body);
+  }
+
+  /// POST /api/v1/users/<userId>
+  Future<void> updateUser({
+    required int id,
+    required User user,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/users/$id');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(user.toJson()),
+    );
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: response.json(),
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
+  /// POST /api/v1/users
+  Future<User> createUser({
+    required User user,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/api/v1/users');
+
+    final response = await _httpClient.post(
+      uri,
+      headers: await _getRequestHeaders(),
+      body: jsonEncode(user.toJson()),
+    );
+
+    final body = response.json();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw USearchApiRequestFailure(
+        body: body,
+        statusCode: response.statusCode,
+      );
+    }
+
+    return User.fromJson(body);
   }
 
   Future<Map<String, String>> _getRequestHeaders() async {

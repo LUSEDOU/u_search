@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
+import 'package:u_search_flutter/admin/admin.dart';
 import 'package:u_search_flutter/app/bloc/app_bloc.dart';
 import 'package:u_search_flutter/applies_overview/applies_overview.dart';
 import 'package:u_search_flutter/apply/apply.dart';
@@ -113,6 +114,10 @@ GoRouter router = GoRouter(
               builder: ApplyPage.routeBuilder,
             ),
           ],
+        ),
+        GoRoute(
+          path: '/admin',
+          builder: AdminPage.routeBuilder,
         ),
         GoRoute(
           path: '/contests',

@@ -26,7 +26,10 @@ class AppTextField extends StatelessWidget {
     this.onSaved,
     this.onSubmitted,
     this.onTap,
+    this.isRequired,
+    this.label,
   });
+
 
   /// A value to initialize the field to.
   final String? initialValue;
@@ -66,6 +69,12 @@ class AppTextField extends StatelessWidget {
 
   /// A widget that appears after the editable part of the text field.
   final Widget? suffix;
+
+  /// The label text displayed above the text field.
+  final String? label;
+
+  /// Whether the field is required.
+  final bool? isRequired;
 
   /// The type of keyboard to use for editing the text.
   /// Defaults to [TextInputType.text] if maxLines is one and
@@ -110,6 +119,21 @@ class AppTextField extends StatelessWidget {
                   ),
               onFieldSubmitted: onSubmitted,
               onSaved: onSaved,
+              autovalidateMode: switch (isRequired) {
+                true => AutovalidateMode.onUserInteraction,
+                false => AutovalidateMode.disabled,
+                null => null,
+              },
+              validator: isRequired == null
+                  ? null
+                  : (value) {
+                      if (isRequired!) {
+                        if (value == null || value.isEmpty) {
+                          return 'Este campo es requerido.';
+                        }
+                      }
+                      return null;
+                    },
               decoration: InputDecoration(
                 hintText: hintText,
                 errorText: errorText,
@@ -122,6 +146,7 @@ class AppTextField extends StatelessWidget {
                 prefixIconConstraints: const BoxConstraints.tightFor(
                   width: 48,
                 ),
+                labelText: label,
               ),
               onChanged: onChanged,
               onTap: onTap,

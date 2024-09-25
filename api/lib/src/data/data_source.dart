@@ -31,7 +31,11 @@ abstract class DataSource {
   Future<User?> getUser(int id);
   Future<User?> getUserByEmail(String email);
   Future<User?> getUserByToken(String token);
+
   Future<int> addUser(User reviewer);
+
+  Future<User> createUser(User user);
+  Future<void> updateUser(User user);
 
   /// Returns the review for the given apply id.
   ///

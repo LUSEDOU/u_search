@@ -26,6 +26,10 @@ class ContestsView extends StatelessWidget {
           style: ttheme.headlineLarge,
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: const Icon(Icons.add),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxxlg),
         child: BlocBuilder<ContestsBloc, ContestsState>(
