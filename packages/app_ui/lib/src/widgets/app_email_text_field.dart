@@ -13,6 +13,8 @@ class AppEmailTextField extends StatelessWidget {
     this.suffix,
     this.readOnly,
     this.onChanged,
+    this.onSaved,
+    this.autofocus,
   });
 
   /// Controls the text being edited.
@@ -31,6 +33,12 @@ class AppEmailTextField extends StatelessWidget {
   /// Defaults to false.
   final bool? readOnly;
 
+  /// Whether the text field should be autofocused.
+  final bool? autofocus;
+
+  /// Called when the form is saved.
+  final void Function(String?)? onSaved;
+
   @override
   Widget build(BuildContext context) {
     return AppTextField(
@@ -39,6 +47,9 @@ class AppEmailTextField extends StatelessWidget {
       keyboardType: TextInputType.emailAddress,
       autoFillHints: const [AutofillHints.email],
       autocorrect: false,
+      autofocus: autofocus,
+      onSaved: onSaved,
+      onSubmitted: onSaved,
       prefix: const Padding(
         padding: EdgeInsets.all(AppSpacing.sm),
         child: Icon(

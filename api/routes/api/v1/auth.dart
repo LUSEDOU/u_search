@@ -17,10 +17,10 @@ FutureOr<Response> onRequest(RequestContext context) async {
 }
 
 FutureOr<Response> _auth(RequestContext context) async {
-  final _logger = Logger('auth');
+  final logger = Logger('auth');
 
   final json = await context.request.json() as Map<String, dynamic>;
-  _logger.info(json);
+  logger.info(json);
   final email = json['email'];
 
   if (email is! String) {
@@ -32,20 +32,20 @@ FutureOr<Response> _auth(RequestContext context) async {
   );
 
   if (!regExp.hasMatch(email)) {
-    _logger.info('not match $email');
+    logger.info('not match $email');
     return Response.json();
   }
-  _logger.info('match');
+  logger.info('match');
 
   if (!context.read<User>().isAnonymous) return Response.json();
 
   final dataSource = context.read<DataSource>();
   final user = await dataSource.getUserByEmail(email);
-  _logger.info(user?.toJson());
+  logger.info(user?.toJson());
   if (user == null) return Response.json();
 
   final token = await dataSource.generateEmailToken(email);
-  _logger.info(token);
+  logger.info(token);
   await context.read<EmailService>().sendMailFromTemplate(
         to: email,
         parser: LoginWithLinkMailParser(

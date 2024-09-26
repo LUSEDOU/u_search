@@ -4,6 +4,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:dotenv/dotenv.dart';
 import 'package:email_service/email_service.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:u_search_api/api.dart';
 import 'package:u_search_api/src/data/in_memory_data_source.dart';
@@ -67,14 +68,15 @@ Future<void> init(InternetAddress ip, int port) async {
 
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
+
+  dataSource = await InMemoryDataSource.create(
+    path.join(path.current, 'db.sqlite'),
+    // '${Directory.current.path}\\db.sqlite',
+    logger: Logger('DataSource'),
+  );
 }
 
 Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
-  dataSource = await InMemoryDataSource.create(
-    '${Directory.current.path}\\db.sqlite',
-    logger: Logger('DataSource'),
-  );
-
   return serve(
     handler,
     ip,

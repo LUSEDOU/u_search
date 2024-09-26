@@ -52,11 +52,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthEmailSubmitted event,
     Emitter<AuthState> emit,
   ) async {
-    if (!state.isValid) return;
+    final email = Email.dirty(event.email);
+    if (!email.isValid) {
+      return emit(
+        state.copyWith(
+          email: email,
+          isValid: email.isValid,
+        ),
+      );
+    }
 
     emit(state.copyWith(status: AuthStatus.loading));
     try {
-      await _userRepository.sendLoginEmailLink(email: state.email.value);
+      await _userRepository.sendLoginEmailLink(email: event.email);
       emit(state.copyWith(status: AuthStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);

@@ -26,5 +26,15 @@ final class AuthEmailChanged extends AuthEvent {
 }
 
 final class AuthEmailSubmitted extends AuthEvent {
-  const AuthEmailSubmitted();
+  const AuthEmailSubmitted(this.email);
+                // onChanged: (email) =>
+                //     context.read<AuthBloc>().add(AuthEmailChanged(email)),
+
+  final String email;
+
+  @override
+  List<Object?> get props => [email];
+
+  @override
+  String toString() => 'AuthEmailSubmitted { email: $email }';
 }

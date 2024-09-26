@@ -83,6 +83,7 @@ class InMemoryDataSource implements DataSource {
   @override
   Future<String> generateEmailToken(String email) async {
     final token = uuid.generate();
+    _logger.info('Generated token $token for $email');
 
     await db.insert('access_tokens', {
       'token': token,
@@ -258,12 +259,17 @@ class InMemoryDataSource implements DataSource {
   }
 
   @override
-  Future<User?> getUserByEmail(String email) {
-    return Future.value(
-      _users.firstWhereOrNull(
-        (element) => element.email == email,
+  Future<User?> getUserByEmail(String email) async {
+    return (await watch(
+      (t) async => db.query(
+        t,
+        where: 'email = ?',
+        whereArgs: [email],
       ),
-    );
+      'users',
+    ))
+        .map((e) => User.fromJson(e as Map<String, dynamic>))
+        .firstOrNull;
   }
 
   @override

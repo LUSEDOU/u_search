@@ -8,7 +8,7 @@
 --     UNIQUE (email)
 -- );
 INSERT INTO users (name, lastName, email, role)
-    VALUES ( 'Admin', 'ADMIN', 'luis.dolorier.usil@gmail.com', 2),
+    VALUES ( 'Admin', 'ADMIN', 'luis.dolorier.usil@usil.pe', 2),
     ( 'Maria', 'Gonzales', 'maria@usil.test', 1),
     ( 'Luis', 'Dolorier', 'luis.dolorier@usil.pe', 1),
     ( 'Jose', 'Perez', 'lusedou@gmail.com', 0),

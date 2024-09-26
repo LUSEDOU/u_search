@@ -26,10 +26,11 @@ class AppTextField extends StatelessWidget {
     this.onSaved,
     this.onSubmitted,
     this.onTap,
+    this.validator,
     this.isRequired,
     this.label,
+    this.autofocus,
   });
-
 
   /// A value to initialize the field to.
   final String? initialValue;
@@ -93,8 +94,22 @@ class AppTextField extends StatelessWidget {
   /// Called when the text field has been tapped.
   final VoidCallback? onTap;
 
+  /// An optional function to validate the input.
+  final String? Function(String?)? validator;
+
+  /// Whether the text field should be autofocused.
+  final bool? autofocus;
+
+  static final _border = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(8),
+    borderSide: const BorderSide(
+      color: AppColors.mediumEmphasisSurface,
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,9 +129,10 @@ class AppTextField extends StatelessWidget {
               readOnly: readOnly,
               autofillHints: autoFillHints,
               cursorColor: AppColors.darkAqua,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
+              autofocus: autofocus ?? false,
               onFieldSubmitted: onSubmitted,
               onSaved: onSaved,
               autovalidateMode: switch (isRequired) {
@@ -124,15 +140,15 @@ class AppTextField extends StatelessWidget {
                 false => AutovalidateMode.disabled,
                 null => null,
               },
-              validator: isRequired == null
+              validator: isRequired == null && validator == null
                   ? null
                   : (value) {
-                      if (isRequired!) {
+                      if (isRequired ?? false) {
                         if (value == null || value.isEmpty) {
                           return 'Este campo es requerido.';
                         }
                       }
-                      return null;
+                      return validator?.call(value);
                     },
               decoration: InputDecoration(
                 hintText: hintText,
@@ -147,6 +163,26 @@ class AppTextField extends StatelessWidget {
                   width: 48,
                 ),
                 labelText: label,
+                fillColor: theme.colorScheme.surface,
+                focusColor: theme.colorScheme.primary.withOpacity(0.1),
+                hoverColor: theme.colorScheme.primary.withOpacity(0.1),
+                border: _border,
+                enabledBorder: _border,
+                errorBorder: _border.copyWith(
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+                focusedErrorBorder: _border.copyWith(
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.error,
+                  ),
+                ),
+                focusedBorder: _border.copyWith(
+                  borderSide: BorderSide(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
               ),
               onChanged: onChanged,
               onTap: onTap,
