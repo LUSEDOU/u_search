@@ -27,17 +27,18 @@ FutureOr<Response> _auth(RequestContext context) async {
     return Response.json(statusCode: HttpStatus.badRequest);
   }
 
-  final regExp = RegExp(
-    r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@(usil\.pe|usil\.edu\.pe|epg\.usil\.pe)$',
-  );
-
-  if (!regExp.hasMatch(email)) {
-    logger.info('not match $email');
-    return Response.json();
-  }
-  logger.info('match');
-
   if (!context.read<User>().isAnonymous) return Response.json();
+
+  // final regExp = RegExp(
+  //   r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@(usil\.pe|usil\.edu\.pe|epg\.usil\.pe)$',
+  // );
+  //
+  // if (!regExp.hasMatch(email)) {
+  //   logger.info('not match $email');
+  //   return Response.json();
+  // }
+  // logger.info('match');
+
 
   final dataSource = context.read<DataSource>();
   final user = await dataSource.getUserByEmail(email);

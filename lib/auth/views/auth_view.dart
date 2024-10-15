@@ -102,27 +102,32 @@ class _AuthFormState extends State<_AuthForm> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: AppSpacing.xlg),
-        Form(
-          key: _formEmailKey,
-          child: BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              final status = state.status;
-              final enable =
-                  status == AuthStatus.initial || status == AuthStatus.failure;
-              return AppEmailTextField(
-                onSaved: (email) => email?.isEmpty ?? true
-                    ? null
-                    : context.read<AuthBloc>().add(AuthEmailSubmitted(email!)),
-                hintText: 'Email',
-                readOnly: !enable,
-                autofocus: enable,
-                suffix: IconButton(
-                  icon: const Icon(Icons.send),
-                  padding: EdgeInsets.zero,
-                  onPressed: _formEmailKey.currentState?.save,
-                ),
-              );
-            },
+        SizedBox(
+          width: 500,
+          child: Form(
+            key: _formEmailKey,
+            child: BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                final status = state.status;
+                final enable = status == AuthStatus.initial ||
+                    status == AuthStatus.failure;
+                return AppEmailTextField(
+                  onSaved: (email) => email?.isEmpty ?? true
+                      ? null
+                      : context
+                          .read<AuthBloc>()
+                          .add(AuthEmailSubmitted(email!)),
+                  hintText: 'Email',
+                  readOnly: !enable,
+                  autofocus: enable,
+                  suffix: IconButton(
+                    icon: const Icon(Icons.send),
+                    padding: EdgeInsets.zero,
+                    onPressed: _formEmailKey.currentState?.save,
+                  ),
+                );
+              },
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.xlg),
@@ -152,7 +157,11 @@ class _AuthFormState extends State<_AuthForm> {
           },
         ),
         const SizedBox(height: AppSpacing.xlg),
-        if (kDebugMode) const TokenField(),
+        if (kDebugMode)
+          const SizedBox(
+            width: 500,
+            child:  TokenField(),
+          ),
       ],
     );
   }
