@@ -28,7 +28,8 @@ class ContestsView extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          CriteriumForm.show(context, pointsLeft: 20, order: 0);
+          context.go('/contests/new');
+          // CriteriumForm.show(context, pointsLeft: 20, order: 0);
         },
         child: const Icon(Icons.add),
       ),

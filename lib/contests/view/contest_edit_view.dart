@@ -1,9 +1,7 @@
-import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_search_flutter/contests/contests.dart';
-import 'package:u_search_flutter/utils/logger_manager.dart';
 
 class ContestEditView extends StatelessWidget {
   const ContestEditView({super.key});
@@ -23,7 +21,7 @@ class ContestEditView extends StatelessWidget {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text(
                       'Ha ocurrido un error',
                     ),

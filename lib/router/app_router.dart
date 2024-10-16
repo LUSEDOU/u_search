@@ -124,6 +124,10 @@ GoRouter router = GoRouter(
           builder: ContestsPage.routeBuilder,
           routes: [
             GoRoute(
+              path: 'new',
+              builder: ContestEditPage.routeBuilder,
+            ),
+            GoRoute(
               path: ':contestId',
               builder: ContestPage.routeBuilder,
               redirect: (context, state) {
