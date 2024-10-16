@@ -19,7 +19,8 @@ CREATE TABLE access_tokens (
     token TEXT NOT NULL,
     email TEXT NOT NULL,
     FOREIGN KEY (email) REFERENCES users(email),
-    UNIQUE (token)
+    UNIQUE (token),
+    UNIQUE (email)
 );
 
 CREATE INDEX access_tokens_user_index ON access_tokens (email);

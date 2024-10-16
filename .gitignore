@@ -125,3 +125,4 @@ app.*.map.json
 !.idea/runConfigurations/
 
 .firebase/
+api/db.sqlite

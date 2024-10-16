@@ -1,5 +1,7 @@
+FLUTTER = fvm flutter
+
 clean:
-	flutter clean
+	$(FLUTTER) clean
 
 build-runner:
 	dart run build_runner build --delete-conflicting-outputs && \
@@ -8,18 +10,18 @@ build-runner:
 		cd ..
 
 build: build-runner
-	flutter build web --target ./lib/main/main_development.dart
+	$(FLUTTER) build web --target ./lib/main/main_development.dart
 
 runw:
-	flutter run --target ./lib/main/main_development.dart -d chrome
+	$(FLUTTER) run --target ./lib/main/main_development.dart -d chrome
 
 run:
-	flutter run --target ./lib/main/main_development.dart -d linux
+	$(FLUTTER) run --target ./lib/main/main_development.dart -d linux
 
 runm:
-	flutter run --target ./lib/main/main_development.dart -d macos
+	$(FLUTTER) run --target ./lib/main/main_development.dart -d macos
 
 rund:
-	flutter run --target ./lib/main/main_development.dart -d windows
+	$(FLUTTER) run --target ./lib/main/main_development.dart -d windows
 
 .PHONY: clean build-runner build

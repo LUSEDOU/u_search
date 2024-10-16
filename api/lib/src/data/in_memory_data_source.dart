@@ -85,10 +85,14 @@ class InMemoryDataSource implements DataSource {
     final token = uuid.generate();
     _logger.info('Generated token $token for $email');
 
-    await db.insert('access_tokens', {
-      'token': token,
-      'email': email,
-    });
+    await db.insert(
+      'access_tokens',
+      {
+        'token': token,
+        'email': email,
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
 
     return token;
   }

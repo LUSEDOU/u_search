@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:u_search_flutter/app/app.dart';
 import 'package:u_search_flutter/auth/auth.dart';
 
@@ -108,9 +109,8 @@ class _AuthFormState extends State<_AuthForm> {
             key: _formEmailKey,
             child: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
-                final status = state.status;
-                final enable = status == AuthStatus.initial ||
-                    status == AuthStatus.failure;
+
+                // Logger().i('status: $status, enable: $enable');
                 return AppEmailTextField(
                   onSaved: (email) => email?.isEmpty ?? true
                       ? null
@@ -118,8 +118,8 @@ class _AuthFormState extends State<_AuthForm> {
                           .read<AuthBloc>()
                           .add(AuthEmailSubmitted(email!)),
                   hintText: 'Email',
-                  readOnly: !enable,
-                  autofocus: enable,
+                  // readOnly: !enable,
+                  // autofocus: enable,
                   suffix: IconButton(
                     icon: const Icon(Icons.send),
                     padding: EdgeInsets.zero,
